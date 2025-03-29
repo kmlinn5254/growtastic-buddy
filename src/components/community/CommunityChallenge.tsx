@@ -21,14 +21,21 @@ const CommunityChallenge = () => {
       return;
     }
 
-    // Get post form element and set focus
+    // Get post form element
     const postFormElement = document.querySelector('textarea[placeholder*="Share your plant journey"]');
     
     if (postFormElement) {
-      // Set value to hashtag and place cursor at beginning
-      const hashTag = "#PlantSpace ";
-      (postFormElement as HTMLTextAreaElement).value = hashTag;
+      // Get current content and append hashtag at the end
+      const hashTag = " #PlantSpace";
+      const currentContent = (postFormElement as HTMLTextAreaElement).value;
+      const newContent = currentContent + hashTag;
+      
+      (postFormElement as HTMLTextAreaElement).value = newContent;
       (postFormElement as HTMLTextAreaElement).focus();
+      
+      // Place cursor at the end
+      const len = newContent.length;
+      (postFormElement as HTMLTextAreaElement).setSelectionRange(len, len);
       
       // Trigger a change event to update state
       const event = new Event('change', { bubbles: true });
@@ -39,7 +46,7 @@ const CommunityChallenge = () => {
       
       toast({
         title: "Challenge joined!",
-        description: "Start posting with the #PlantSpace hashtag."
+        description: "Your post now includes the #PlantSpace hashtag."
       });
     } else {
       // If the form element isn't found
