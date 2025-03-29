@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,7 +5,7 @@ import Navigation from "@/components/Navigation";
 import PlantSelection from "@/components/PlantSelection";
 import ReminderSystem from "@/components/ReminderSystem";
 import { Plant } from "@/components/PlantSelection";
-import { Shovel, Bell, SeedingIcon } from "lucide-react";
+import { Shovel, Bell, Sprout } from "lucide-react";
 
 // Sample plants data for growing
 const growablePlants: Plant[] = [
@@ -100,7 +99,7 @@ const MyGarden = () => {
           <Tabs defaultValue="my-plants" className="space-y-6">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="my-plants" className="flex items-center">
-                <SeedingIcon className="h-4 w-4 mr-2" />
+                <Sprout className="h-4 w-4 mr-2" />
                 My Plants
               </TabsTrigger>
               <TabsTrigger value="add-plants" className="flex items-center">
