@@ -18,23 +18,24 @@ const GoogleLoginButton = ({ isLoading }: GoogleLoginButtonProps) => {
     try {
       console.log("Starting Google login process from button", {
         currentUrl: window.location.href,
-        origin: window.location.origin
+        origin: window.location.origin,
+        pathname: window.location.pathname
       });
       
+      // Clear any previous OAuth state from localStorage to prevent conflicts
+      localStorage.removeItem('supabase.auth.token');
+      
       const result = await googleLogin();
+      
+      console.log("Google login response:", result);
       
       if (result?.error) {
         console.error("Google login error in button handler:", result.error);
         throw result.error;
       } else {
-        console.log("Google login initiated successfully:", result);
-        // This line will only show up in the console if the OAuth flow doesn't
-        // immediately redirect the user away from the page
-        console.log("OAuth flow started - user should be redirected to Google");
+        console.log("Google OAuth flow initiated successfully");
+        // The auth flow will now redirect to Google for authentication
       }
-      
-      // We don't need to navigate here - the OAuth flow will handle redirection
-      // and the auth state change listener will handle post-auth navigation
     } catch (error: any) {
       console.error("Google login error:", error);
       toast({
