@@ -25,14 +25,9 @@ const PostForm = ({ onSubmitPost, initialContent = "" }: PostFormProps) => {
   const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
-    // If there's initialContent, set focus to beginning of textarea
-    if (initialContent && textareaRef.current) {
-      textareaRef.current.focus();
-      
-      // Set cursor position to beginning
-      if (typeof textareaRef.current.setSelectionRange === 'function') {
-        textareaRef.current.setSelectionRange(0, 0);
-      }
+    // If there's initialContent, update the state
+    if (initialContent) {
+      setNewPost(initialContent);
     }
   }, [initialContent]);
   
@@ -58,9 +53,6 @@ const PostForm = ({ onSubmitPost, initialContent = "" }: PostFormProps) => {
     }
     
     try {
-      if (user.id) {
-        await createPost(newPost, user.id, imagePreview || "");
-      }
       onSubmitPost(newPost, imagePreview || "");
       setNewPost("");
       setSelectedImage(null);
@@ -119,11 +111,11 @@ const PostForm = ({ onSubmitPost, initialContent = "" }: PostFormProps) => {
             placeholder={isAuthenticated ? "Share your plant journey..." : "Sign in to share your plant journey..."}
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
-            className="plant-input border-b-2 border-x-0 border-t-0 rounded-none px-0 focus-visible:ring-0 focus-visible:border-plant-primary min-h-[80px] resize-none overflow-hidden"
+            className="plant-input border-b-2 border-x-0 border-t-0 rounded-none px-0 focus-visible:ring-0 focus-visible:border-plant-primary min-h-[100px] resize-none overflow-hidden"
             disabled={!isAuthenticated}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            rows={3}
+            rows={4}
           />
           {!isAuthenticated && (
             <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400">

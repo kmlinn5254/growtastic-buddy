@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PostItem, { Post } from "./PostItem";
 import { useToast } from "@/hooks/use-toast";
 import { addReaction } from "@/services/posts/reactionService";
@@ -9,13 +9,19 @@ import { useAuth } from "@/hooks/useAuth";
 
 interface PostFeedProps {
   initialPosts: Post[];
+  onRefresh?: () => void;
 }
 
-const PostFeed = ({ initialPosts }: PostFeedProps) => {
+const PostFeed = ({ initialPosts, onRefresh }: PostFeedProps) => {
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
   const { toast } = useToast();
   const { user } = useAuth();
+  
+  // Update posts when initialPosts changes
+  useEffect(() => {
+    setPosts(initialPosts);
+  }, [initialPosts]);
   
   const handleLike = async (postId: number) => {
     if (!user) {
@@ -134,16 +140,22 @@ const PostFeed = ({ initialPosts }: PostFeedProps) => {
 
   return (
     <div className="space-y-6">
-      {posts.map((post) => (
-        <PostItem 
-          key={post.id} 
-          post={post} 
-          isLiked={likedPosts.includes(post.id)}
-          onLike={handleLike}
-          onComment={handleComment}
-          onShare={handleShare}
-        />
-      ))}
+      {posts.length > 0 ? (
+        posts.map((post) => (
+          <PostItem 
+            key={post.id} 
+            post={post} 
+            isLiked={likedPosts.includes(post.id)}
+            onLike={handleLike}
+            onComment={handleComment}
+            onShare={handleShare}
+          />
+        ))
+      ) : (
+        <div className="text-center py-8 bg-white rounded-lg shadow">
+          <p className="text-gray-500 mb-4">No posts yet. Be the first to share your plant journey!</p>
+        </div>
+      )}
     </div>
   );
 };

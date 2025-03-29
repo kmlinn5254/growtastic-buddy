@@ -25,29 +25,42 @@ const CommunityChallenge = () => {
     const postFormElement = document.querySelector('textarea[placeholder*="Share your plant journey"]');
     
     if (postFormElement) {
-      // Get current content and append hashtag at the end
-      const hashTag = " #PlantSpace";
+      // Get current content and append hashtag if it doesn't already exist
+      const hashTag = "#PlantSpace";
       const currentContent = (postFormElement as HTMLTextAreaElement).value;
-      const newContent = currentContent + hashTag;
       
-      (postFormElement as HTMLTextAreaElement).value = newContent;
-      (postFormElement as HTMLTextAreaElement).focus();
-      
-      // Place cursor at the end
-      const len = newContent.length;
-      (postFormElement as HTMLTextAreaElement).setSelectionRange(len, len);
-      
-      // Trigger a change event to update state
-      const event = new Event('change', { bubbles: true });
-      postFormElement.dispatchEvent(event);
-      
-      // Scroll to post form
-      postFormElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      
-      toast({
-        title: "Challenge joined!",
-        description: "Your post now includes the #PlantSpace hashtag."
-      });
+      // Only add the hashtag if it doesn't already exist
+      if (!currentContent.includes(hashTag)) {
+        const newContent = currentContent ? currentContent + " " + hashTag : hashTag;
+        
+        (postFormElement as HTMLTextAreaElement).value = newContent;
+        (postFormElement as HTMLTextAreaElement).focus();
+        
+        // Place cursor at the end
+        const len = newContent.length;
+        (postFormElement as HTMLTextAreaElement).setSelectionRange(len, len);
+        
+        // Trigger a change event to update state
+        const event = new Event('change', { bubbles: true });
+        postFormElement.dispatchEvent(event);
+        
+        // Scroll to post form
+        postFormElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        toast({
+          title: "Challenge joined!",
+          description: "Your post now includes the #PlantSpace hashtag."
+        });
+      } else {
+        // If the hashtag already exists
+        toast({
+          title: "Already participating!",
+          description: "Your post already includes the #PlantSpace hashtag."
+        });
+        
+        // Still focus the textarea
+        (postFormElement as HTMLTextAreaElement).focus();
+      }
     } else {
       // If the form element isn't found
       toast({

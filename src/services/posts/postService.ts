@@ -1,5 +1,6 @@
 
 import { fromTable } from '@/lib/supabaseHelpers';
+import { supabase } from '@/lib/supabase';
 import { SupabasePost } from './types';
 
 // Fetch posts from Supabase
@@ -8,7 +9,7 @@ export const fetchPosts = async (): Promise<SupabasePost[]> => {
     const { data, error } = await fromTable('posts')
       .select(`
         *,
-        user:user_id (
+        user:profiles(
           name,
           avatar_url
         ),
@@ -30,11 +31,13 @@ export const fetchPosts = async (): Promise<SupabasePost[]> => {
 // Create a new post
 export const createPost = async (content: string, userId: string, imageUrl: string = '') => {
   try {
-    if (!userId) throw new Error('User not authenticated');
+    // Get the current user
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('User not authenticated');
     
     const { data, error } = await fromTable('posts')
       .insert([{
-        user_id: userId,
+        user_id: user.id,
         content,
         image_url: imageUrl
       }])
