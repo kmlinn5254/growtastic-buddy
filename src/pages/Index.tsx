@@ -1,7 +1,6 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf, Upload, Users, BookOpen, MapPin, Sparkles } from "lucide-react";
+import { Leaf, Upload, Users, BookOpen, MapPin, Sparkles, Sprout } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 
@@ -12,6 +11,13 @@ const features = [
     icon: Leaf,
     link: "/plant-checker",
     color: "bg-green-100 text-green-700"
+  },
+  {
+    title: "My Garden",
+    description: "Keep track of your plants, monitor their growth, and get personalized care reminders.",
+    icon: Sprout,
+    link: "/my-garden",
+    color: "bg-emerald-100 text-emerald-700"
   },
   {
     title: "Plant Community",
@@ -74,7 +80,7 @@ const Index = () => {
         {/* Features Section */}
         <section className="py-12 plant-section">
           <h2 className="text-3xl font-bold text-center mb-12 text-plant-dark">Our Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => (
               <Card key={index} className="h-full hover:shadow-lg transition-shadow duration-300">
                 <CardHeader className="pb-3">

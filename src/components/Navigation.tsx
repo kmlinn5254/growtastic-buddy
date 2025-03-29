@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Brain, Book, Users, Map, Settings, Home, Sprout, Menu, X } from "lucide-react";
+import { Brain, Book, Users, Map, Settings, Home, Sprout, Menu, X, Leaf } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -14,8 +14,7 @@ const Navigation = () => {
   
   const navItems = [
     { label: "Home", path: "/", icon: Home },
-    { label: "Plant Checker", path: "/plant-checker", icon: Sprout },
-    { label: "My Garden", path: "/my-garden", icon: Sprout },
+    { label: "Plant Checker", path: "/plant-checker", icon: Leaf },
     { label: "Community", path: "/community", icon: Users },
     { label: "Plant Guides", path: "/guides", icon: Book },
     { label: "Store Locator", path: "/stores", icon: Map },
