@@ -1,15 +1,17 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, Camera, FileText, Sparkles, Leaf, Info, AlertTriangle } from "lucide-react";
+import { Camera, FileText } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import Navigation from "@/components/Navigation";
 import { savePlant } from "@/services/plants";
 import { Plant } from "@/types/plants";
+import ImageUploader from "@/components/plant-checker/ImageUploader";
+import TextDescriptionInput from "@/components/plant-checker/TextDescriptionInput";
+import AnalysisResult from "@/components/plant-checker/AnalysisResult";
+import { getPlantAnalysis, getTextAnalysis } from "@/utils/plantAnalysisData";
 
 const PlantChecker = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -70,28 +72,15 @@ const PlantChecker = () => {
     analyzeImage();
   };
 
-  // Mock function for text analysis
+  // Text analysis with variety
   const analyzeText = () => {
     setIsAnalyzing(true);
     
     // Simulate API call delay
     setTimeout(() => {
-      // This is a mock response
-      setResult({
-        plantName: "Fiddle Leaf Fig",
-        condition: "Stressed",
-        issues: [
-          "Yellowing leaves indicate overwatering",
-          "Brown spots suggest sunburn",
-          "Leaves drooping may indicate low humidity"
-        ],
-        recommendations: [
-          "Water only when top 2 inches of soil are dry",
-          "Move to a location with bright, indirect light",
-          "Increase humidity with a humidifier or pebble tray",
-          "Apply a balanced fertilizer once a month during growing season"
-        ]
-      });
+      // Get analysis based on text description
+      const analysisResult = getTextAnalysis(description);
+      setResult(analysisResult);
       
       setIsAnalyzing(false);
       toast({
@@ -101,27 +90,16 @@ const PlantChecker = () => {
     }, 2000);
   };
 
-  // Mock function for image analysis
+  // Image analysis with variety
   const analyzeImage = () => {
     setIsAnalyzing(true);
     
     // Simulate API call delay
     setTimeout(() => {
-      // This is a mock response
-      setResult({
-        plantName: "Monstera Deliciosa",
-        condition: "Healthy with minor issues",
-        issues: [
-          "Some leaf edges showing brown tips",
-          "Minor pest infestation (spider mites)"
-        ],
-        recommendations: [
-          "Increase humidity around the plant",
-          "Wipe leaves with neem oil solution to treat mites",
-          "Ensure good air circulation around the plant",
-          "Maintain consistent watering schedule"
-        ]
-      });
+      // Get a random analysis result for the image
+      // In a real application, this would analyze the actual image
+      const analysisResult = getPlantAnalysis(file || undefined);
+      setResult(analysisResult);
       
       setIsAnalyzing(false);
       toast({
@@ -230,55 +208,12 @@ const PlantChecker = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <form onSubmit={handleImageSubmit}>
-                      <div className="mb-6">
-                        <label 
-                          htmlFor="image-upload" 
-                          className={`flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer
-                            ${preview ? 'border-plant-primary bg-plant-light/10' : 'border-gray-300 hover:border-plant-light bg-gray-50'}`}
-                        >
-                          {preview ? (
-                            <img 
-                              src={preview} 
-                              alt="Plant preview" 
-                              className="h-full object-contain"
-                            />
-                          ) : (
-                            <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                              <Upload className="w-10 h-10 mb-3 text-gray-400" />
-                              <p className="mb-2 text-sm text-gray-500">
-                                <span className="font-semibold">Click to upload</span> or drag and drop
-                              </p>
-                              <p className="text-xs text-gray-500">PNG, JPG or WEBP (MAX. 10MB)</p>
-                            </div>
-                          )}
-                          <Input 
-                            id="image-upload" 
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={handleFileChange}
-                          />
-                        </label>
-                      </div>
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-plant-primary hover:bg-plant-dark"
-                        disabled={isAnalyzing || !file}
-                      >
-                        {isAnalyzing ? (
-                          <>
-                            <Sparkles className="mr-2 h-4 w-4 animate-spin" />
-                            Analyzing...
-                          </>
-                        ) : (
-                          <>
-                            <Leaf className="mr-2 h-4 w-4" />
-                            Analyze Plant
-                          </>
-                        )}
-                      </Button>
-                    </form>
+                    <ImageUploader 
+                      preview={preview}
+                      isAnalyzing={isAnalyzing}
+                      onImageSubmit={handleImageSubmit}
+                      onFileChange={handleFileChange}
+                    />
                   </CardContent>
                 </Card>
               </TabsContent>
@@ -292,100 +227,25 @@ const PlantChecker = () => {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <form onSubmit={handleTextSubmit}>
-                      <div className="mb-6">
-                        <Textarea
-                          placeholder="Example: My fiddle leaf fig has yellowing leaves and brown spots. The soil has been kept moist, and it's near a south-facing window."
-                          className="plant-input h-64 resize-none"
-                          value={description}
-                          onChange={(e) => setDescription(e.target.value)}
-                        />
-                      </div>
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-plant-primary hover:bg-plant-dark"
-                        disabled={isAnalyzing || !description.trim()}
-                      >
-                        {isAnalyzing ? (
-                          <>
-                            <Sparkles className="mr-2 h-4 w-4 animate-spin" />
-                            Analyzing...
-                          </>
-                        ) : (
-                          <>
-                            <Leaf className="mr-2 h-4 w-4" />
-                            Analyze Description
-                          </>
-                        )}
-                      </Button>
-                    </form>
+                    <TextDescriptionInput 
+                      description={description}
+                      isAnalyzing={isAnalyzing}
+                      onDescriptionChange={(e) => setDescription(e.target.value)}
+                      onTextSubmit={handleTextSubmit}
+                    />
                   </CardContent>
                 </Card>
               </TabsContent>
             </Tabs>
           ) : (
             <div className="plant-section">
-              <Card>
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-2xl">{result.plantName}</CardTitle>
-                      <CardDescription className="text-lg">
-                        Condition: {result.condition}
-                      </CardDescription>
-                    </div>
-                    {preview && (
-                      <div className="w-20 h-20 rounded-lg overflow-hidden">
-                        <img 
-                          src={preview} 
-                          alt="Plant" 
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold flex items-center mb-3 text-amber-600">
-                      <AlertTriangle className="mr-2 h-5 w-5" />
-                      Identified Issues
-                    </h3>
-                    <ul className="list-disc pl-5 space-y-2">
-                      {result.issues.map((issue: string, index: number) => (
-                        <li key={index} className="text-gray-700">{issue}</li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h3 className="text-lg font-semibold flex items-center mb-3 text-plant-primary">
-                      <Info className="mr-2 h-5 w-5" />
-                      Recommendations
-                    </h3>
-                    <ul className="list-disc pl-5 space-y-2">
-                      {result.recommendations.map((recommendation: string, index: number) => (
-                        <li key={index} className="text-gray-700">{recommendation}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-between">
-                  <Button 
-                    variant="outline" 
-                    onClick={resetAnalysis}
-                  >
-                    Check Another Plant
-                  </Button>
-                  <Button 
-                    className="bg-plant-primary hover:bg-plant-dark"
-                    onClick={saveResults}
-                    disabled={isSaving}
-                  >
-                    {isSaving ? "Saving..." : "Save Results"}
-                  </Button>
-                </CardFooter>
-              </Card>
+              <AnalysisResult 
+                result={result}
+                preview={preview}
+                isSaving={isSaving}
+                onSaveResults={saveResults}
+                onResetAnalysis={resetAnalysis}
+              />
             </div>
           )}
         </div>
