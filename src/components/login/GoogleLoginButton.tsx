@@ -26,6 +26,9 @@ const GoogleLoginButton = ({ isLoading }: GoogleLoginButtonProps) => {
         fullUrl: `${window.location.origin}${window.location.pathname}`
       });
       
+      // Log the Supabase URL we're using
+      console.log("Supabase URL:", "https://uvjisnawrhxfxorajgqv.supabase.co");
+      
       const result = await googleLogin();
       
       console.log("Google login response:", result);
