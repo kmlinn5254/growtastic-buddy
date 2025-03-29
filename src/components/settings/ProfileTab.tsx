@@ -17,6 +17,10 @@ const ProfileTab = () => {
     setUsername,
     email,
     setEmail,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
     isUpdating,
     profilePicture,
     handleProfileUpdate,
@@ -103,11 +107,21 @@ const ProfileTab = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
-                <Input id="firstName" defaultValue="Jane" className="plant-input" />
+                <Input 
+                  id="firstName" 
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="plant-input" 
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="lastName">Last Name</Label>
-                <Input id="lastName" defaultValue="Smith" className="plant-input" />
+                <Input 
+                  id="lastName" 
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)} 
+                  className="plant-input" 
+                />
               </div>
             </div>
             

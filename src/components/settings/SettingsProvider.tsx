@@ -16,6 +16,10 @@ interface SettingsContextType {
   setUsername: React.Dispatch<React.SetStateAction<string>>;
   email: string;
   setEmail: React.Dispatch<React.SetStateAction<string>>;
+  firstName: string;
+  setFirstName: React.Dispatch<React.SetStateAction<string>>;
+  lastName: string;
+  setLastName: React.Dispatch<React.SetStateAction<string>>;
   isUpdating: boolean;
   setIsUpdating: React.Dispatch<React.SetStateAction<boolean>>;
   profilePicture: string | null;
@@ -42,6 +46,11 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [profilePicture, setProfilePicture] = useState<string | null>(user?.photoURL || null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   
+  // Split username into first and last name
+  const nameParts = username.split(" ");
+  const [firstName, setFirstName] = useState(nameParts[0] || "");
+  const [lastName, setLastName] = useState(nameParts.slice(1).join(" ") || "");
+  
   // Get translations for current language
   const t = translations[language] || translations.en;
   
@@ -50,11 +59,25 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     if (user) {
       setUsername(user.name);
       setEmail(user.email);
+      
+      // Update first and last name when username changes
+      const parts = user.name.split(" ");
+      setFirstName(parts[0] || "");
+      setLastName(parts.slice(1).join(" ") || "");
+      
       if (user.photoURL) {
         setProfilePicture(user.photoURL);
       }
     }
   }, [user]);
+  
+  // Update username when first or last name changes
+  useEffect(() => {
+    const fullName = [firstName, lastName].filter(Boolean).join(" ");
+    if (fullName && fullName !== username) {
+      setUsername(fullName);
+    }
+  }, [firstName, lastName]);
   
   const [notifications, setNotifications] = useState({
     plantReminders: true,
@@ -115,6 +138,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setUsername,
     email,
     setEmail,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
     isUpdating,
     setIsUpdating,
     profilePicture,
