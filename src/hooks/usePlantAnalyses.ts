@@ -4,6 +4,7 @@ import { Plant } from "@/types/plants";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { fromTable } from "@/lib/supabaseHelpers";
+import { useLocation } from "react-router-dom";
 
 interface UsePlantAnalysesOptions {
   itemsPerPage: number;
@@ -15,6 +16,8 @@ export function usePlantAnalyses({ itemsPerPage = 5 }: UsePlantAnalysesOptions) 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const { toast } = useToast();
+  const location = useLocation();
+  const isFaqsPage = location.pathname === "/faqs";
 
   useEffect(() => {
     const fetchAnalyses = async () => {
@@ -32,9 +35,10 @@ export function usePlantAnalyses({ itemsPerPage = 5 }: UsePlantAnalysesOptions) 
             .order('created_at', { ascending: false })
             .range((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage - 1);
 
-          if (error) throw error;
-          
-          if (data && data.length > 0) {
+          if (error) {
+            console.error("Supabase error:", error);
+            // Continue to localStorage fallback without throwing
+          } else if (data && data.length > 0) {
             // Map Supabase data to Plant type with proper type assertions and null checking
             const plants: Plant[] = data.map((item: any) => ({
               id: typeof item.id === 'number' ? item.id : Number(item.id) || 0,
@@ -53,40 +57,57 @@ export function usePlantAnalyses({ itemsPerPage = 5 }: UsePlantAnalysesOptions) 
             
             setAnalyses(plants);
             setTotalPages(Math.ceil((count || 0) / itemsPerPage));
-          } else {
-            // Fallback to localStorage if no database results
-            const storedPlants = localStorage.getItem('external_plants');
-            if (storedPlants) {
-              const parsedPlants: Plant[] = JSON.parse(storedPlants);
-              setAnalyses(parsedPlants);
-              setTotalPages(Math.ceil(parsedPlants.length / itemsPerPage));
-            } else {
-              setAnalyses([]);
-            }
+            setIsLoading(false);
+            return; // Exit early if we have data
+          }
+        }
+        
+        // If no user is logged in or no DB results, try localStorage
+        const storedPlants = localStorage.getItem('external_plants');
+        if (storedPlants) {
+          try {
+            const parsedPlants: Plant[] = JSON.parse(storedPlants);
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = Math.min(start + itemsPerPage, parsedPlants.length);
+            setAnalyses(parsedPlants.slice(start, end));
+            setTotalPages(Math.ceil(parsedPlants.length / itemsPerPage));
+          } catch (e) {
+            console.error("Error parsing localStorage data:", e);
+            setAnalyses([]);
+            setTotalPages(1);
           }
         } else {
-          // If no user is logged in, just check localStorage
-          const storedPlants = localStorage.getItem('external_plants');
-          if (storedPlants) {
-            const parsedPlants: Plant[] = JSON.parse(storedPlants);
-            setAnalyses(parsedPlants);
-            setTotalPages(Math.ceil(parsedPlants.length / itemsPerPage));
-          }
+          setAnalyses([]);
+          setTotalPages(1);
         }
       } catch (error) {
         console.error("Error fetching plant analyses:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load your previous analyses.",
-          variant: "destructive"
-        });
+        
+        // Don't show toast on FAQs page
+        if (!isFaqsPage) {
+          toast({
+            title: "Error",
+            description: "Failed to load your previous analyses.",
+            variant: "destructive"
+          });
+        }
         
         // Try localStorage as fallback
         const storedPlants = localStorage.getItem('external_plants');
         if (storedPlants) {
-          const parsedPlants: Plant[] = JSON.parse(storedPlants);
-          setAnalyses(parsedPlants);
-          setTotalPages(Math.ceil(parsedPlants.length / itemsPerPage));
+          try {
+            const parsedPlants: Plant[] = JSON.parse(storedPlants);
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = Math.min(start + itemsPerPage, parsedPlants.length);
+            setAnalyses(parsedPlants.slice(start, end));
+            setTotalPages(Math.ceil(parsedPlants.length / itemsPerPage));
+          } catch (e) {
+            console.error("Error parsing localStorage data:", e);
+            setAnalyses([]);
+            setTotalPages(1);
+          }
+        } else {
+          setAnalyses([]);
         }
       } finally {
         setIsLoading(false);
@@ -94,7 +115,7 @@ export function usePlantAnalyses({ itemsPerPage = 5 }: UsePlantAnalysesOptions) 
     };
 
     fetchAnalyses();
-  }, [currentPage, itemsPerPage, toast]);
+  }, [currentPage, itemsPerPage, toast, isFaqsPage]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);

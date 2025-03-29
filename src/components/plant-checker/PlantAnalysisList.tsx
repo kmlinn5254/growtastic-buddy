@@ -4,12 +4,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Plant } from "@/types/plants";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { formatDistanceToNow } from "date-fns";
-import { Clock, Database } from "lucide-react";
+import { Database } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { fromTable } from "@/lib/supabaseHelpers";
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const PlantAnalysisList = () => {
   const [analyses, setAnalyses] = useState<Plant[]>([]);
@@ -18,7 +18,9 @@ const PlantAnalysisList = () => {
   const [totalPages, setTotalPages] = useState(1);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
   const itemsPerPage = 5;
+  const isFaqsPage = location.pathname === "/faqs";
 
   useEffect(() => {
     const fetchAnalyses = async () => {
@@ -38,9 +40,10 @@ const PlantAnalysisList = () => {
             .order('created_at', { ascending: false })
             .range((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage - 1);
 
-          if (error) throw error;
-          
-          if (data && data.length > 0) {
+          if (error) {
+            console.error("Supabase error:", error);
+            // Don't throw here, just continue to localStorage fallback
+          } else if (data && data.length > 0) {
             // Map Supabase data to Plant type with proper type assertions and null checking
             plantData = data.map((item: any) => ({
               id: typeof item.id === 'number' ? item.id : Number(item.id) || 0,
@@ -61,17 +64,19 @@ const PlantAnalysisList = () => {
           }
         }
         
-        // Also check localStorage for non-authenticated users
-        const storedPlants = localStorage.getItem('external_plants');
-        if (storedPlants) {
-          const parsedPlants: Plant[] = JSON.parse(storedPlants);
-          
-          if (!userId || plantData.length === 0) {
-            // If no user is logged in or no DB data, use localStorage data
-            const start = (currentPage - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            plantData = parsedPlants.slice(start, end);
-            totalCount = parsedPlants.length;
+        // Also check localStorage for non-authenticated users or if no DB data was found
+        if (plantData.length === 0) {
+          const storedPlants = localStorage.getItem('external_plants');
+          if (storedPlants) {
+            try {
+              const parsedPlants: Plant[] = JSON.parse(storedPlants);
+              const start = (currentPage - 1) * itemsPerPage;
+              const end = start + itemsPerPage;
+              plantData = parsedPlants.slice(start, end);
+              totalCount = parsedPlants.length;
+            } catch (e) {
+              console.error("Error parsing localStorage data:", e);
+            }
           }
         }
         
@@ -79,20 +84,29 @@ const PlantAnalysisList = () => {
         setTotalPages(Math.max(1, Math.ceil(totalCount / itemsPerPage)));
       } catch (error) {
         console.error("Error fetching plant analyses:", error);
-        toast({
-          title: "Error",
-          description: "Failed to load analysis history.",
-          variant: "destructive"
-        });
+        // Don't show toast on FAQs page to avoid the error message
+        if (!isFaqsPage) {
+          toast({
+            title: "Error",
+            description: "Failed to load analysis history.",
+            variant: "destructive"
+          });
+        }
         
         // Try localStorage as fallback
         const storedPlants = localStorage.getItem('external_plants');
         if (storedPlants) {
-          const parsedPlants: Plant[] = JSON.parse(storedPlants);
-          const start = (currentPage - 1) * itemsPerPage;
-          const end = start + itemsPerPage;
-          setAnalyses(parsedPlants.slice(start, end));
-          setTotalPages(Math.ceil(parsedPlants.length / itemsPerPage));
+          try {
+            const parsedPlants: Plant[] = JSON.parse(storedPlants);
+            const start = (currentPage - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
+            setAnalyses(parsedPlants.slice(start, end));
+            setTotalPages(Math.ceil(parsedPlants.length / itemsPerPage));
+          } catch (e) {
+            console.error("Error parsing localStorage data:", e);
+            setAnalyses([]);
+            setTotalPages(1);
+          }
         }
       } finally {
         setIsLoading(false);
@@ -100,7 +114,7 @@ const PlantAnalysisList = () => {
     };
 
     fetchAnalyses();
-  }, [currentPage, toast]);
+  }, [currentPage, toast, isFaqsPage]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -129,7 +143,7 @@ const PlantAnalysisList = () => {
           Plant Analysis History
         </CardTitle>
         <CardDescription>
-          View your previous plant analyses and their results
+          {isFaqsPage ? "View plant analyses and their results" : "View your previous plant analyses and their results"}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -139,42 +153,64 @@ const PlantAnalysisList = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">Plant</TableHead>
-                  <TableHead>Name</TableHead>
+                  <TableHead>{isFaqsPage ? "Disease" : "Name"}</TableHead>
                   <TableHead>Condition</TableHead>
-                  <TableHead className="text-right">Date</TableHead>
+                  {!isFaqsPage && <TableHead className="text-right">Date</TableHead>}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {analyses.map((analysis) => (
-                  <TableRow 
-                    key={analysis.id} 
-                    className="cursor-pointer hover:bg-muted/60"
-                    onClick={() => handleSelectAnalysis(analysis)}
-                  >
-                    <TableCell>
-                      <div className="w-12 h-12 rounded-md overflow-hidden">
-                        <img 
-                          src={analysis.image} 
-                          alt={analysis.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-medium">{analysis.name}</TableCell>
-                    <TableCell>
-                      {analysis.description?.includes("Healthy") ? (
-                        <span className="text-green-600">Healthy</span>
-                      ) : (
-                        <span className="text-amber-600">Needs attention</span>
+                {analyses.map((analysis) => {
+                  // Extract condition from description if available
+                  let condition = "Unknown";
+                  if (analysis.description) {
+                    // Look for common condition phrases in the description
+                    const conditionPhrases = [
+                      "Healthy with minor issues", "Healthy", "Mildly distressed", "Stressed", 
+                      "Needs attention", "Minor problems", "Showing minor stress",
+                      "Needs care adjustments"
+                    ];
+                    
+                    for (const phrase of conditionPhrases) {
+                      if (analysis.description.includes(phrase)) {
+                        condition = phrase;
+                        break;
+                      }
+                    }
+                  }
+                  
+                  return (
+                    <TableRow 
+                      key={analysis.id} 
+                      className="cursor-pointer hover:bg-muted/60"
+                      onClick={() => handleSelectAnalysis(analysis)}
+                    >
+                      <TableCell>
+                        <div className="w-12 h-12 rounded-md overflow-hidden">
+                          <img 
+                            src={analysis.image} 
+                            alt={analysis.name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-medium">{analysis.name}</TableCell>
+                      <TableCell>
+                        {condition.includes("Healthy") ? (
+                          <span className="text-green-600">{condition}</span>
+                        ) : (
+                          <span className="text-amber-600">{condition}</span>
+                        )}
+                      </TableCell>
+                      {!isFaqsPage && (
+                        <TableCell className="text-right text-muted-foreground">
+                          {analysis.createdAt 
+                            ? new Date(analysis.createdAt).toLocaleDateString()
+                            : "Unknown date"}
+                        </TableCell>
                       )}
-                    </TableCell>
-                    <TableCell className="text-right text-muted-foreground">
-                      {analysis.createdAt 
-                        ? formatDistanceToNow(new Date(analysis.createdAt), { addSuffix: true })
-                        : "Unknown date"}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
             
