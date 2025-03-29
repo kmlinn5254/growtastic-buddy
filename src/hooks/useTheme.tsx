@@ -1,7 +1,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
-import { useToast } from './use-toast';
-import { useLanguage } from './useLanguage';
+import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/hooks/useLanguage';
 
 type Theme = 'light' | 'dark';
 
@@ -48,8 +48,8 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     setTheme(newTheme);
     
     toast({
-      title: newTheme === 'dark' ? t.darkModeEnabled : t.lightModeEnabled,
-      description: newTheme === 'dark' ? t.darkModeEnabledDesc : t.lightModeEnabledDesc,
+      title: newTheme === 'dark' ? t.darkModeEnabled || "Dark Mode Enabled" : t.lightModeEnabled || "Light Mode Enabled",
+      description: newTheme === 'dark' ? t.darkModeEnabledDesc || "Dark mode has been applied." : t.lightModeEnabledDesc || "Light mode has been applied.",
     });
   };
   

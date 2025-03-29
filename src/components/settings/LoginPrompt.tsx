@@ -16,9 +16,9 @@ const LoginPrompt = () => {
       <CardContent className="space-y-6">
         <div className="flex flex-col items-center justify-center">
           <LogIn className="h-16 w-16 text-plant-primary mb-4" />
-          <h2 className="text-2xl font-bold dark:text-white">{t.loginRequired}</h2>
+          <h2 className="text-2xl font-bold dark:text-white">{t.loginRequired || "Login Required"}</h2>
           <p className="text-gray-500 dark:text-gray-400 mt-2 max-w-md mx-auto">
-            {t.loginToAccessSettings}
+            {t.loginToAccessSettings || "Please login to access your settings."}
           </p>
         </div>
         
@@ -27,7 +27,7 @@ const LoginPrompt = () => {
           onClick={() => navigate("/login")}
         >
           <LogIn className="mr-2 h-4 w-4" />
-          {t.login}
+          {t.login || "Login"}
         </Button>
       </CardContent>
     </Card>

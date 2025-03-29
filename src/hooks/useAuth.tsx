@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/hooks/useLanguage";
 
 type User = {
   id: string;
@@ -19,6 +20,7 @@ interface AuthContextType {
   signUp: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
   verifyEmail: (email: string) => Promise<void>;
+  sendVerificationEmail: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,6 +29,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
+  const { language, translations } = useLanguage();
+  const t = translations[language] || translations.en;
 
   // Check if user is already logged in from localStorage
   useEffect(() => {
@@ -60,12 +64,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem("user", JSON.stringify(mockUser));
       
       toast({
-        title: "Login successful",
-        description: "Welcome back!",
+        title: t.loginSuccessful || "Login successful",
+        description: t.welcomeBack || "Welcome back!",
       });
     } catch (error) {
       toast({
-        title: "Login failed",
+        title: t.loginFailed || "Login failed",
         description: error instanceof Error ? error.message : "Please try again",
         variant: "destructive",
       });
@@ -94,13 +98,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem("user", JSON.stringify(mockUser));
       
       toast({
-        title: "Google login successful",
-        description: "Welcome back!",
+        title: t.googleLoginSuccessful || "Google login successful",
+        description: t.welcomeBack || "Welcome back!",
       });
     } catch (error) {
       toast({
-        title: "Google login failed",
-        description: "Could not log in with Google. Please try again.",
+        title: t.googleLoginFailed || "Google login failed",
+        description: t.googleLoginFailedDesc || "Could not log in with Google. Please try again.",
         variant: "destructive",
       });
       throw error;
@@ -132,12 +136,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem("user", JSON.stringify(mockUser));
       
       toast({
-        title: "Account created",
-        description: "Welcome to ArgoMind!",
+        title: t.accountCreated || "Account created",
+        description: t.welcomeToApp || "Welcome to ArgoMind!",
       });
     } catch (error) {
       toast({
-        title: "Sign up failed",
+        title: t.signUpFailed || "Sign up failed",
         description: error instanceof Error ? error.message : "Please try again",
         variant: "destructive",
       });
@@ -152,8 +156,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
     localStorage.removeItem("user");
     toast({
-      title: "Logged out",
-      description: "You have been logged out successfully.",
+      title: t.loggedOut || "Logged out",
+      description: t.loggedOutDesc || "You have been logged out successfully.",
     });
   };
 
@@ -178,8 +182,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return Promise.resolve();
     } catch (error) {
       toast({
-        title: "Verification failed",
-        description: "Could not send verification email. Please try again.",
+        title: t.verificationFailed || "Verification failed",
+        description: t.verificationFailedDesc || "Could not send verification email. Please try again.",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Send verification email
+  const sendVerificationEmail = async () => {
+    setIsLoading(true);
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast({
+        title: t.verificationEmailSent || "Verification email sent",
+        description: t.verificationEmailSentDesc || "Please check your inbox and verify your email.",
+      });
+      
+      return Promise.resolve();
+    } catch (error) {
+      toast({
+        title: t.verificationEmailFailed || "Failed to send verification email",
+        description: t.verificationEmailFailedDesc || "Please try again later.",
         variant: "destructive",
       });
       throw error;
@@ -198,7 +227,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         googleLogin,
         signUp,
         logout,
-        verifyEmail
+        verifyEmail,
+        sendVerificationEmail
       }}
     >
       {children}
