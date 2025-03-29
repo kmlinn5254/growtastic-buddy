@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,11 +20,11 @@ const PostForm = ({ onSubmitPost }: PostFormProps) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmitPost = (e: React.FormEvent) => {
+  const handleSubmitPost = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPost.trim() && !imagePreview) return;
     
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !user) {
       toast({
         title: "Authentication required",
         description: "You need to sign in to create posts.",
@@ -34,10 +33,21 @@ const PostForm = ({ onSubmitPost }: PostFormProps) => {
       return;
     }
     
-    onSubmitPost(newPost, imagePreview || "");
-    setNewPost("");
-    setSelectedImage(null);
-    setImagePreview(null);
+    try {
+      if (user.id) {
+        await createPost(newPost, user.id, imagePreview || "");
+      }
+      onSubmitPost(newPost, imagePreview || "");
+      setNewPost("");
+      setSelectedImage(null);
+      setImagePreview(null);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create post.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

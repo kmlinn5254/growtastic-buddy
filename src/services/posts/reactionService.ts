@@ -1,20 +1,18 @@
 
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/auth/useAuth';
+import { supabase } from '@/lib/supabase';
 import { ReactionType } from './types';
 
 // Add a reaction to a post
-export const addReaction = async (postId: number, type: 'like' | 'heart' | 'celebrate' | 'support' = 'like') => {
+export const addReaction = async (postId: number, userId: string, type: 'like' | 'heart' | 'celebrate' | 'support' = 'like') => {
   try {
-    const { user } = useAuth();
-    if (!user) throw new Error('User not authenticated');
+    if (!userId) throw new Error('User not authenticated');
     
     // Check if user already reacted
     const { data: existingReaction } = await supabase
       .from('reactions')
       .select('id, type')
       .eq('post_id', postId)
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .single();
       
     if (existingReaction) {
@@ -28,7 +26,7 @@ export const addReaction = async (postId: number, type: 'like' | 'heart' | 'cele
           .single();
           
         if (error) throw error;
-        return data;
+        return data as ReactionType;
       }
       
       // Remove reaction if same type (toggle off)
@@ -46,7 +44,7 @@ export const addReaction = async (postId: number, type: 'like' | 'heart' | 'cele
       .from('reactions')
       .insert([{
         post_id: postId,
-        user_id: user.id,
+        user_id: userId,
         type
       }])
       .select()
@@ -54,7 +52,7 @@ export const addReaction = async (postId: number, type: 'like' | 'heart' | 'cele
       
     if (error) throw error;
     
-    return data;
+    return data as ReactionType;
   } catch (error) {
     console.error('Error adding reaction:', error);
     throw error;
@@ -62,16 +60,15 @@ export const addReaction = async (postId: number, type: 'like' | 'heart' | 'cele
 };
 
 // Check if user has reacted to a post
-export const hasUserReacted = async (postId: number): Promise<boolean> => {
+export const hasUserReacted = async (postId: number, userId: string): Promise<boolean> => {
   try {
-    const { user } = useAuth();
-    if (!user) return false;
+    if (!userId) return false;
     
     const { data, error } = await supabase
       .from('reactions')
       .select('id')
       .eq('post_id', postId)
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .single();
       
     if (error && error.code !== 'PGRST116') throw error; // PGRST116 is "no rows returned"

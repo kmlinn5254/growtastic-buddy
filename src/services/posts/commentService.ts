@@ -1,6 +1,5 @@
 
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/auth/useAuth';
+import { supabase } from '@/lib/supabase';
 import { SupabaseComment } from './types';
 
 // Fetch comments for a post
@@ -20,7 +19,7 @@ export const fetchComments = async (postId: number): Promise<SupabaseComment[]> 
       
     if (error) throw error;
     
-    return data || [];
+    return (data || []) as SupabaseComment[];
   } catch (error) {
     console.error('Error fetching comments:', error);
     return [];
@@ -28,16 +27,15 @@ export const fetchComments = async (postId: number): Promise<SupabaseComment[]> 
 };
 
 // Add a comment to a post
-export const addComment = async (postId: number, content: string) => {
+export const addComment = async (postId: number, content: string, userId: string) => {
   try {
-    const { user } = useAuth();
-    if (!user) throw new Error('User not authenticated');
+    if (!userId) throw new Error('User not authenticated');
     
     const { data, error } = await supabase
       .from('comments')
       .insert([{
         post_id: postId,
-        user_id: user.id,
+        user_id: userId,
         content
       }])
       .select()
@@ -45,7 +43,7 @@ export const addComment = async (postId: number, content: string) => {
       
     if (error) throw error;
     
-    return data;
+    return data as SupabaseComment;
   } catch (error) {
     console.error('Error adding comment:', error);
     throw error;
