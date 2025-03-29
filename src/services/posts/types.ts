@@ -7,7 +7,7 @@ export interface SupabasePost {
   content: string;
   image_url: string;
   created_at: string;
-  user: {
+  profiles?: {
     name: string;
     avatar_url: string;
   };
