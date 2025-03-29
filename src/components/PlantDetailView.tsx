@@ -3,8 +3,8 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Leaf, DropletIcon, SunIcon, ThermometerIcon, Wind, CheckCircle, Trash2 } from "lucide-react";
-import { Plant, deleteImportedPlant } from "@/services/plantService";
-import { useToast } from "@/components/ui/use-toast";
+import { Plant, deleteExternalPlant } from "@/services/plantService";
+import { useToast } from "@/hooks/use-toast";
 
 interface PlantDetailProps {
   selectedPlant: Plant;
@@ -44,8 +44,8 @@ const PlantDetailView: React.FC<PlantDetailProps> = ({ selectedPlant, onBack }) 
   ];
 
   const handleDelete = () => {
-    if (selectedPlant.isImported && selectedPlant.id) {
-      const success = deleteImportedPlant(selectedPlant.id);
+    if (selectedPlant.isExternal && selectedPlant.id) {
+      const success = deleteExternalPlant(selectedPlant.id);
       if (success) {
         toast({
           title: "Plant guide deleted",
@@ -76,7 +76,7 @@ const PlantDetailView: React.FC<PlantDetailProps> = ({ selectedPlant, onBack }) 
           <h2 className="text-2xl font-bold text-plant-dark">{selectedPlant.name} Care Guide</h2>
         </div>
         
-        {selectedPlant.isImported && (
+        {selectedPlant.isExternal && (
           <Button variant="destructive" size="sm" onClick={handleDelete}>
             <Trash2 className="h-4 w-4 mr-1" /> Delete Guide
           </Button>
