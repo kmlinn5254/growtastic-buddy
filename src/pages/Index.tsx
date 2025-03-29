@@ -46,7 +46,7 @@ const Index = () => {
         <section className="py-12 md:py-20 text-center plant-section">
           <h1 className="text-4xl md:text-6xl font-bold text-plant-dark mb-6">
             <span className="relative">
-              GrowTastic
+              GrowWithUs
               <span className="absolute -top-6 -right-8">
                 <Sparkles className="h-8 w-8 text-plant-accent animate-pulse" />
               </span>
@@ -132,10 +132,10 @@ const Index = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
               <Leaf className="h-6 w-6 mr-2" />
-              <span className="text-lg font-semibold">GrowTastic</span>
+              <span className="text-lg font-semibold">GrowWithUs</span>
             </div>
             <div className="text-sm text-gray-300">
-              &copy; {new Date().getFullYear()} GrowTastic. All rights reserved.
+              &copy; {new Date().getFullYear()} GrowWithUs. All rights reserved.
             </div>
           </div>
         </div>
