@@ -1,7 +1,6 @@
 
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
 import { searchPlants } from "@/services/plantService";
 import { allPlants } from "@/data/plantFAQ";
@@ -11,14 +10,12 @@ import PlantDetailView from "@/components/PlantDetailView";
 import SeasonalGuideView from "@/components/SeasonalGuideView";
 import PlantCardGrid from "@/components/PlantCardGrid";
 import SeasonalGuidesGrid from "@/components/SeasonalGuidesGrid";
-import ImportPlantForm from "@/components/ImportPlantForm";
-import { Leaf, Plus, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 const PlantGuides = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlant, setSelectedPlant] = useState<typeof allPlants[0] | null>(null);
   const [selectedSeasonalGuide, setSelectedSeasonalGuide] = useState<typeof seasonalGuides[0] | null>(null);
-  const [showImportForm, setShowImportForm] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [filteredPlants, setFilteredPlants] = useState<typeof allPlants>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -30,6 +27,10 @@ const PlantGuides = () => {
       try {
         const plants = await searchPlants(searchQuery);
         setFilteredPlants(plants);
+        // If plants were fetched from external API, trigger a refresh
+        if (plants.some(plant => plant.isExternal)) {
+          setRefreshTrigger(prev => prev + 1);
+        }
       } catch (error) {
         console.error("Error searching plants:", error);
       } finally {
@@ -39,12 +40,6 @@ const PlantGuides = () => {
     
     fetchPlants();
   }, [searchQuery, refreshTrigger]);
-  
-  const handleImportSuccess = () => {
-    setShowImportForm(false);
-    // Trigger a refresh of the plant list
-    setRefreshTrigger(prev => prev + 1);
-  };
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
@@ -60,12 +55,7 @@ const PlantGuides = () => {
             </p>
           </div>
           
-          {showImportForm ? (
-            <ImportPlantForm 
-              onSuccess={handleImportSuccess} 
-              onCancel={() => setShowImportForm(false)} 
-            />
-          ) : selectedPlant ? (
+          {selectedPlant ? (
             <PlantDetailView 
               selectedPlant={selectedPlant} 
               onBack={() => setSelectedPlant(null)} 
@@ -77,19 +67,12 @@ const PlantGuides = () => {
             />
           ) : (
             <>
-              <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+              <div className="flex justify-center mb-6">
                 <SearchPlant 
                   searchQuery={searchQuery} 
                   setSearchQuery={setSearchQuery} 
+                  className="w-full max-w-md"
                 />
-                
-                <Button 
-                  onClick={() => setShowImportForm(true)}
-                  className="w-full md:w-auto"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Import Plant Guide
-                </Button>
               </div>
               
               <Tabs defaultValue="popular" className="plant-section">

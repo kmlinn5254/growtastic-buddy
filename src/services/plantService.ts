@@ -1,6 +1,5 @@
 
 import { allPlants } from "@/data/plantFAQ";
-import { Leaf } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 // Plant interface for consistent type checking
@@ -17,27 +16,12 @@ export interface Plant {
     title: string;
     description: string;
   }[];
-  // Flag to identify if this is an imported plant
-  isImported?: boolean;
   // Flag to identify if this is from external API
   isExternal?: boolean;
 }
 
-// Storage key for imported plants
-const IMPORTED_PLANTS_KEY = 'imported_plants';
 // Storage key for externally fetched plants
 const EXTERNAL_PLANTS_KEY = 'external_plants';
-
-// Get imported plants from localStorage
-export const getImportedPlants = (): Plant[] => {
-  try {
-    const storedPlants = localStorage.getItem(IMPORTED_PLANTS_KEY);
-    return storedPlants ? JSON.parse(storedPlants) : [];
-  } catch (error) {
-    console.error("Error loading imported plants:", error);
-    return [];
-  }
-};
 
 // Get externally fetched plants from localStorage
 export const getExternalPlants = (): Plant[] => {
@@ -47,38 +31,6 @@ export const getExternalPlants = (): Plant[] => {
   } catch (error) {
     console.error("Error loading external plants:", error);
     return [];
-  }
-};
-
-// Save imported plants to localStorage
-export const saveImportedPlant = (plant: Plant): boolean => {
-  try {
-    const importedPlants = getImportedPlants();
-    
-    // Check if plant with same name already exists
-    const existingIndex = importedPlants.findIndex(p => 
-      p.name.toLowerCase() === plant.name.toLowerCase()
-    );
-    
-    // Generate a unique ID for the new plant
-    const newPlant = {
-      ...plant,
-      id: existingIndex >= 0 ? importedPlants[existingIndex].id : Date.now(),
-      isImported: true
-    };
-    
-    // Replace if exists, otherwise add
-    if (existingIndex >= 0) {
-      importedPlants[existingIndex] = newPlant;
-    } else {
-      importedPlants.push(newPlant);
-    }
-    
-    localStorage.setItem(IMPORTED_PLANTS_KEY, JSON.stringify(importedPlants));
-    return true;
-  } catch (error) {
-    console.error("Error saving imported plant:", error);
-    return false;
   }
 };
 
@@ -110,19 +62,6 @@ export const saveExternalPlant = (plant: Plant): boolean => {
     return true;
   } catch (error) {
     console.error("Error saving external plant:", error);
-    return false;
-  }
-};
-
-// Delete an imported plant
-export const deleteImportedPlant = (plantId: number): boolean => {
-  try {
-    const importedPlants = getImportedPlants();
-    const filteredPlants = importedPlants.filter(p => p.id !== plantId);
-    localStorage.setItem(IMPORTED_PLANTS_KEY, JSON.stringify(filteredPlants));
-    return true;
-  } catch (error) {
-    console.error("Error deleting imported plant:", error);
     return false;
   }
 };
@@ -162,9 +101,9 @@ export const fetchPlantFromExternalAPI = async (plantName: string): Promise<Plan
         image: plantData.default_image?.medium_url || plantData.default_image?.regular_url || 
                `https://source.unsplash.com/featured/?${encodeURIComponent(plantName)},plant`,
         difficulty: plantData.care_level || "Moderate",
-        light: getWaterRequirement(plantData.watering),
-        water: getLightRequirement(plantData.sunlight),
-        temperature: `${plantData.hardiness.min || "Unknown"} - ${plantData.hardiness.max || "Unknown"}`,
+        light: getLightRequirement(plantData.sunlight),
+        water: getWaterRequirement(plantData.watering),
+        temperature: `${plantData.hardiness?.min || "Unknown"} - ${plantData.hardiness?.max || "Unknown"}`,
         description: plantData.description,
         careSteps: [
           {
@@ -177,7 +116,7 @@ export const fetchPlantFromExternalAPI = async (plantName: string): Promise<Plan
           },
           {
             title: "Temperature",
-            description: `Preferred temperature range: ${plantData.hardiness.min || "Unknown"} - ${plantData.hardiness.max || "Unknown"}`
+            description: `Preferred temperature range: ${plantData.hardiness?.min || "Unknown"} - ${plantData.hardiness?.max || "Unknown"}`
           }
         ],
         isExternal: true
@@ -187,7 +126,7 @@ export const fetchPlantFromExternalAPI = async (plantName: string): Promise<Plan
       saveExternalPlant(plant);
       toast({
         title: "Plant Guide Found",
-        description: `Successfully imported care guide for ${plant.name}`,
+        description: `Successfully added care guide for ${plant.name} to your database`,
       });
       return plant;
     }
@@ -237,18 +176,19 @@ function getLightRequirement(sunlight: string[] | undefined): string {
 
 // Plant search service
 export const searchPlants = async (query: string): Promise<Plant[]> => {
+  // Get all plants from our internal database first
+  const internalPlants = [...allPlants, ...getExternalPlants()];
+  
   if (!query.trim()) {
-    // Return combined list of predefined, imported, and external plants
-    return [...allPlants, ...getImportedPlants(), ...getExternalPlants()];
+    // Return all plants if no query provided
+    return internalPlants;
   }
   
   const normalizedQuery = query.toLowerCase().trim();
-  const importedPlants = getImportedPlants();
-  const externalPlants = getExternalPlants();
-  const allAvailablePlants = [...allPlants, ...importedPlants, ...externalPlants];
   
-  // First try exact matches
-  const exactMatches = allAvailablePlants.filter(plant => 
+  // First check for matches in our internal database
+  // Try exact matches first
+  const exactMatches = internalPlants.filter(plant => 
     plant.name.toLowerCase() === normalizedQuery
   );
   
@@ -257,7 +197,7 @@ export const searchPlants = async (query: string): Promise<Plant[]> => {
   }
   
   // Then try partial matches
-  const partialMatches = allAvailablePlants.filter(plant => 
+  const partialMatches = internalPlants.filter(plant => 
     plant.name.toLowerCase().includes(normalizedQuery)
   );
   
@@ -265,27 +205,12 @@ export const searchPlants = async (query: string): Promise<Plant[]> => {
     return partialMatches;
   }
   
-  // If no local matches found, try to fetch from external API
+  // If no matches found in internal database, try to fetch from external API
   const externalPlant = await fetchPlantFromExternalAPI(query);
   if (externalPlant) {
     return [externalPlant];
   }
   
-  // If no matches found anywhere, create a "placeholder" plant with the search query
-  // This simulates the ability to search for any plant and uses query-relevant images
-  const plantName = query.charAt(0).toUpperCase() + query.slice(1);
-  
-  // Try to get an image via Unsplash but use a placeholder icon name in the alt text
-  // for better accessibility and to indicate the use of a generic placeholder
-  const imageUrl = `https://source.unsplash.com/featured/?${encodeURIComponent(plantName)},plant`;
-  
-  return [{
-    id: 9999,
-    name: plantName,
-    image: imageUrl,
-    difficulty: "Unknown",
-    light: "Research needed",
-    water: "Research needed",
-    temperature: "Check local conditions"
-  }];
+  // If no matches found anywhere, return empty array
+  return [];
 };
