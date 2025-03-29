@@ -1,5 +1,5 @@
 
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 // Login with email/password
 export const loginWithEmailAndPassword = async (email: string, password: string) => {
