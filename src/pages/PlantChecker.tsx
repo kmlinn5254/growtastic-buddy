@@ -8,12 +8,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Upload, Camera, FileText, Sparkles, Leaf, Info, AlertTriangle } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import Navigation from "@/components/Navigation";
+import { savePlant } from "@/services/plants";
+import { Plant } from "@/types/plants";
 
 const PlantChecker = () => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [result, setResult] = useState<any | null>(null);
   const { toast } = useToast();
 
@@ -126,6 +129,62 @@ const PlantChecker = () => {
         description: "We've analyzed your plant image!",
       });
     }, 2000);
+  };
+
+  // Function to save analysis results
+  const saveResults = async () => {
+    if (!result) return;
+    
+    setIsSaving(true);
+    
+    try {
+      // Format the recommendations and issues into care steps
+      const careSteps = [
+        {
+          title: "Identified Issues",
+          description: result.issues.join("\n")
+        },
+        {
+          title: "Recommendations",
+          description: result.recommendations.join("\n")
+        }
+      ];
+      
+      // Create plant object from analysis result
+      const plantToSave: Omit<Plant, 'id'> = {
+        name: result.plantName,
+        image: preview || `https://source.unsplash.com/featured/?${encodeURIComponent(result.plantName)},plant`,
+        difficulty: "Moderate",
+        light: "Indirect light",
+        water: "Regular",
+        temperature: "65-80°F",
+        description: `Plant health check result: ${result.condition}`,
+        careSteps: careSteps,
+        edible: false,
+        edibleParts: ""
+      };
+      
+      // Save plant using the plantSaveService
+      const savedPlant = await savePlant(plantToSave);
+      
+      if (savedPlant) {
+        toast({
+          title: "Success",
+          description: "Plant analysis saved successfully!",
+        });
+      } else {
+        throw new Error("Failed to save plant analysis");
+      }
+    } catch (error) {
+      console.error("Error saving plant analysis:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save plant analysis. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Reset analysis
@@ -318,8 +377,12 @@ const PlantChecker = () => {
                   >
                     Check Another Plant
                   </Button>
-                  <Button className="bg-plant-primary hover:bg-plant-dark">
-                    Save Results
+                  <Button 
+                    className="bg-plant-primary hover:bg-plant-dark"
+                    onClick={saveResults}
+                    disabled={isSaving}
+                  >
+                    {isSaving ? "Saving..." : "Save Results"}
                   </Button>
                 </CardFooter>
               </Card>
