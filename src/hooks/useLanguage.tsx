@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState } from "react";
 
 export type LanguageCode = "en" | "es" | "fr";
@@ -14,7 +15,7 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguage] = useState<LanguageCode>("en");
 
-  const languageOptions = [
+  const languageOptions: { value: LanguageCode; label: string; nativeName: string }[] = [
     { value: "en", label: "English", nativeName: "English" },
     { value: "es", label: "Spanish", nativeName: "Español" },
     { value: "fr", label: "French", nativeName: "Français" },
@@ -58,7 +59,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       loginRequired: "Login Required",
       loginToAccessSettings: "Please login to access your settings and personalize your experience.",
       login: "Login",
-      logout: "Logout"
+      logout: "Logout",
+      saveLanguagePreferences: "Save Language Preferences"
     },
     es: {
       settings: "Configuración",
@@ -97,7 +99,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       loginRequired: "Inicio de sesión requerido",
       loginToAccessSettings: "Por favor, inicia sesión para acceder a tus ajustes y personalizar tu experiencia.",
       login: "Iniciar sesión",
-      logout: "Cerrar sesión"
+      logout: "Cerrar sesión",
+      saveLanguagePreferences: "Guardar Preferencias de Idioma"
     },
     fr: {
       settings: "Paramètres",
@@ -136,7 +139,8 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       loginRequired: "Connexion requise",
       loginToAccessSettings: "Veuillez vous connecter pour accéder à vos paramètres et personnaliser votre expérience.",
       login: "Connexion",
-      logout: "Déconnexion"
+      logout: "Déconnexion",
+      saveLanguagePreferences: "Enregistrer les Préférences de Langue"
     },
   };
 

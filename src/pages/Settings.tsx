@@ -28,6 +28,9 @@ const Settings = () => {
   const [profilePicture, setProfilePicture] = useState<string | null>(user?.photoURL || null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
+  // Get translations for current language
+  const t = translations[language] || translations.en;
+  
   // Update user data if auth state changes
   useEffect(() => {
     if (user) {
@@ -54,8 +57,8 @@ const Settings = () => {
     setTimeout(() => {
       setIsUpdating(false);
       toast({
-        title: translations.profileUpdated,
-        description: translations.profileUpdatedDesc,
+        title: t.profileUpdated,
+        description: t.profileUpdatedDesc,
       });
     }, 1000);
   };
@@ -67,8 +70,8 @@ const Settings = () => {
     });
     
     toast({
-      title: translations.notificationSettingsUpdated,
-      description: `${key} ${!notifications[key] ? translations.enabled : translations.disabled}.`,
+      title: t.notificationSettingsUpdated,
+      description: `${key} ${!notifications[key] ? t.enabled : t.disabled}.`,
     });
   };
 
@@ -87,8 +90,8 @@ const Settings = () => {
       setProfilePicture(imageUrl);
       
       toast({
-        title: translations.profilePictureUpdated,
-        description: translations.profilePictureUpdatedDesc,
+        title: t.profilePictureUpdated,
+        description: t.profilePictureUpdatedDesc,
       });
     }
   };
@@ -97,8 +100,8 @@ const Settings = () => {
     setLanguage(value as LanguageCode);
     
     toast({
-      title: translations.languageChanged,
-      description: `${translations.languageChangedTo} ${languageOptions.find(option => option.value === value)?.label}`,
+      title: t.languageChanged,
+      description: `${t.languageChangedTo} ${languageOptions.find(option => option.value === value)?.label}`,
     });
   };
 
@@ -115,15 +118,15 @@ const Settings = () => {
         
         <main className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-3xl font-bold text-center mb-8 text-plant-dark plant-section">{translations.settings}</h1>
+            <h1 className="text-3xl font-bold text-center mb-8 text-plant-dark plant-section">{t.settings}</h1>
             
             <Card className="text-center py-12">
               <CardContent className="space-y-6">
                 <div className="flex flex-col items-center justify-center">
                   <LogIn className="h-16 w-16 text-plant-primary mb-4" />
-                  <h2 className="text-2xl font-bold">{translations.loginRequired || "Login Required"}</h2>
+                  <h2 className="text-2xl font-bold">{t.loginRequired}</h2>
                   <p className="text-gray-500 mt-2 max-w-md mx-auto">
-                    {translations.loginToAccessSettings || "Please login to access your settings and personalize your experience."}
+                    {t.loginToAccessSettings}
                   </p>
                 </div>
                 
@@ -132,7 +135,7 @@ const Settings = () => {
                   onClick={() => navigate("/login")}
                 >
                   <LogIn className="mr-2 h-4 w-4" />
-                  {translations.login || "Login"}
+                  {t.login}
                 </Button>
               </CardContent>
             </Card>
@@ -148,38 +151,38 @@ const Settings = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-center mb-8 text-plant-dark plant-section">{translations.settings}</h1>
+          <h1 className="text-3xl font-bold text-center mb-8 text-plant-dark plant-section">{t.settings}</h1>
           
           <Tabs defaultValue="profile" className="plant-section">
             <TabsList className="grid w-full grid-cols-5 mb-8">
               <TabsTrigger value="profile" className="flex items-center">
                 <User className="mr-2 h-4 w-4" />
-                {translations.profile}
+                {t.profile}
               </TabsTrigger>
               <TabsTrigger value="notifications" className="flex items-center">
                 <Bell className="mr-2 h-4 w-4" />
-                {translations.notifications}
+                {t.notifications}
               </TabsTrigger>
               <TabsTrigger value="privacy" className="flex items-center">
                 <Shield className="mr-2 h-4 w-4" />
-                {translations.privacy}
+                {t.privacy}
               </TabsTrigger>
               <TabsTrigger value="security" className="flex items-center">
                 <Key className="mr-2 h-4 w-4" />
-                {translations.security}
+                {t.security}
               </TabsTrigger>
               <TabsTrigger value="language" className="flex items-center">
                 <Globe className="mr-2 h-4 w-4" />
-                {translations.language}
+                {t.language}
               </TabsTrigger>
             </TabsList>
             
             <TabsContent value="profile">
               <Card>
                 <CardHeader>
-                  <CardTitle>{translations.profileSettings}</CardTitle>
+                  <CardTitle>{t.profileSettings}</CardTitle>
                   <CardDescription>
-                    {translations.profileSettingsDesc}
+                    {t.profileSettingsDesc}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -218,7 +221,7 @@ const Settings = () => {
                           className="mt-2 text-sm h-8"
                           onClick={handleProfilePictureClick}
                         >
-                          {translations.changeProfilePicture}
+                          {t.changeProfilePicture}
                         </Button>
                       </div>
                     </div>
@@ -270,13 +273,13 @@ const Settings = () => {
                   </form>
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                  <Button variant="outline">{translations.cancel}</Button>
+                  <Button variant="outline">{t.cancel}</Button>
                   <Button 
                     className="bg-plant-primary hover:bg-plant-dark"
                     onClick={handleProfileUpdate}
                     disabled={isUpdating}
                   >
-                    {isUpdating ? translations.updating : translations.saveChanges}
+                    {isUpdating ? t.updating : t.saveChanges}
                   </Button>
                 </CardFooter>
               </Card>
@@ -285,9 +288,9 @@ const Settings = () => {
             <TabsContent value="notifications">
               <Card>
                 <CardHeader>
-                  <CardTitle>{translations.notificationSettings}</CardTitle>
+                  <CardTitle>{t.notificationSettings}</CardTitle>
                   <CardDescription>
-                    {translations.notificationSettingsDesc}
+                    {t.notificationSettingsDesc}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -349,9 +352,9 @@ const Settings = () => {
             <TabsContent value="privacy">
               <Card>
                 <CardHeader>
-                  <CardTitle>{translations.privacySettings}</CardTitle>
+                  <CardTitle>{t.privacySettings}</CardTitle>
                   <CardDescription>
-                    {translations.privacySettingsDesc}
+                    {t.privacySettingsDesc}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -397,9 +400,9 @@ const Settings = () => {
             <TabsContent value="security">
               <Card>
                 <CardHeader>
-                  <CardTitle>{translations.securitySettings}</CardTitle>
+                  <CardTitle>{t.securitySettings}</CardTitle>
                   <CardDescription>
-                    {translations.securitySettingsDesc}
+                    {t.securitySettingsDesc}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -447,18 +450,18 @@ const Settings = () => {
             <TabsContent value="language">
               <Card>
                 <CardHeader>
-                  <CardTitle>{translations.languageSettings}</CardTitle>
+                  <CardTitle>{t.languageSettings}</CardTitle>
                   <CardDescription>
-                    {translations.languageSettingsDesc}
+                    {t.languageSettingsDesc}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="language-select">{translations.selectLanguage}</Label>
+                      <Label htmlFor="language-select">{t.selectLanguage}</Label>
                       <Select value={language} onValueChange={handleLanguageChange}>
                         <SelectTrigger id="language-select" className="w-full md:w-[250px]">
-                          <SelectValue placeholder={translations.selectLanguage} />
+                          <SelectValue placeholder={t.selectLanguage} />
                         </SelectTrigger>
                         <SelectContent>
                           {languageOptions.map((option) => (
@@ -471,7 +474,7 @@ const Settings = () => {
                     </div>
                     
                     <div className="pt-4 text-sm text-gray-500">
-                      <p>{translations.languageNote}</p>
+                      <p>{t.languageNote}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -479,11 +482,11 @@ const Settings = () => {
                   <Button 
                     className="bg-plant-primary hover:bg-plant-dark"
                     onClick={() => toast({
-                      title: translations.languagePreferencesSaved,
-                      description: translations.languagePreferencesSavedDesc,
+                      title: t.languagePreferencesSaved,
+                      description: t.languagePreferencesSavedDesc,
                     })}
                   >
-                    {translations.saveLanguagePreferences}
+                    {t.saveLanguagePreferences}
                   </Button>
                 </CardFooter>
               </Card>
@@ -498,7 +501,7 @@ const Settings = () => {
               onClick={handleLogout}
             >
               <LogOut className="mr-2 h-4 w-4" />
-              {translations.logout || "Logout"}
+              {t.logout}
             </Button>
           </div>
         </div>
