@@ -114,28 +114,34 @@ const Navigation = () => {
             <div className="hidden md:flex items-center space-x-4">
               {renderNavLinks()}
               
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={toggleTheme}
-                className="ml-2 text-gray-700 dark:text-gray-300"
-              >
-                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                <span className="sr-only">Toggle theme</span>
-              </Button>
+              {/* Only show theme toggle for authenticated users */}
+              {isAuthenticated && (
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={toggleTheme}
+                  className="ml-2 text-gray-700 dark:text-gray-300"
+                >
+                  {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                  <span className="sr-only">Toggle theme</span>
+                </Button>
+              )}
             </div>
             
             {/* Mobile - we'll hide this since we're using bottom nav */}
             <div className="block md:hidden">
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                onClick={toggleTheme}
-                className="mr-2 text-gray-700 dark:text-gray-300"
-              >
-                {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                <span className="sr-only">Toggle theme</span>
-              </Button>
+              {/* Only show theme toggle for authenticated users */}
+              {isAuthenticated && (
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  onClick={toggleTheme}
+                  className="mr-2 text-gray-700 dark:text-gray-300"
+                >
+                  {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                  <span className="sr-only">Toggle theme</span>
+                </Button>
+              )}
               
               <Drawer>
                 <DrawerTrigger asChild>
