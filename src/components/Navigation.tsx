@@ -83,7 +83,7 @@ const Navigation = () => {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="flex items-center">
-                <Sprout className="h-8 w-8 text-plant-primary" />
+                <Leaf className="h-8 w-8 text-plant-primary" />
                 <span className="ml-2 text-xl font-bold text-plant-dark">ArgoMind</span>
               </Link>
             </div>
