@@ -2,9 +2,10 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MessageCircle, X, Send, Minimize } from "lucide-react";
+import { MessageCircle, X, Send, Minimize, Mic, Volume2, VolumeX } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Leaf } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Sample answers for common plant questions
 const plantFAQ = {
@@ -35,7 +36,9 @@ const ChatBot = () => {
     },
   ]);
   const [inputValue, setInputValue] = useState("");
+  const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const speechSynthesisRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -44,6 +47,60 @@ const ChatBot = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    // Initialize speech synthesis
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      speechSynthesisRef.current = new SpeechSynthesisUtterance();
+      
+      // Configure voice settings for natural sound
+      speechSynthesisRef.current.rate = 1.0;
+      speechSynthesisRef.current.pitch = 1.0;
+      
+      // Try to get a good voice
+      const voices = window.speechSynthesis.getVoices();
+      const preferredVoices = voices.filter(voice => 
+        voice.lang.includes('en') && 
+        (voice.name.includes('Google') || voice.name.includes('Natural') || voice.name.includes('Female'))
+      );
+      
+      if (preferredVoices.length > 0) {
+        speechSynthesisRef.current.voice = preferredVoices[0];
+      }
+      
+      // Handle voice updates
+      window.speechSynthesis.onvoiceschanged = () => {
+        const updatedVoices = window.speechSynthesis.getVoices();
+        const updatedPreferredVoices = updatedVoices.filter(voice => 
+          voice.lang.includes('en') && 
+          (voice.name.includes('Google') || voice.name.includes('Natural') || voice.name.includes('Female'))
+        );
+        
+        if (updatedPreferredVoices.length > 0 && speechSynthesisRef.current) {
+          speechSynthesisRef.current.voice = updatedPreferredVoices[0];
+        }
+      };
+    }
+    
+    return () => {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, []);
+
+  const speakText = (text: string) => {
+    if (isVoiceEnabled && speechSynthesisRef.current && typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
+      
+      // Set the text to speak
+      speechSynthesisRef.current.text = text;
+      
+      // Speak the text
+      window.speechSynthesis.speak(speechSynthesisRef.current);
+    }
+  };
 
   const handleSendMessage = () => {
     if (!inputValue.trim()) return;
@@ -58,12 +115,16 @@ const ChatBot = () => {
 
     // Generate bot response
     setTimeout(() => {
+      const botResponse = generateResponse(inputValue);
       const botMessage: Message = {
-        text: generateResponse(inputValue),
+        text: botResponse,
         isUser: false,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, botMessage]);
+      
+      // Speak the bot response if voice is enabled
+      speakText(botResponse);
     }, 500);
 
     setInputValue("");
@@ -98,6 +159,17 @@ const ChatBot = () => {
     setIsMinimized(true);
   };
 
+  const toggleVoice = () => {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      // If turning off voice, cancel any ongoing speech
+      if (isVoiceEnabled) {
+        window.speechSynthesis.cancel();
+      }
+      
+      setIsVoiceEnabled(!isVoiceEnabled);
+    }
+  };
+
   return (
     <div className="fixed bottom-4 right-4 z-50">
       {!isOpen && (
@@ -124,20 +196,52 @@ const ChatBot = () => {
             </CardTitle>
             <div className="flex items-center space-x-1">
               {!isMinimized && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6"
-                  onClick={minimizeChat}
-                >
-                  <Minimize className="h-4 w-4" />
-                </Button>
+                <>
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-6 w-6"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleVoice();
+                          }}
+                        >
+                          {isVoiceEnabled ? (
+                            <Volume2 className="h-4 w-4 text-plant-primary" />
+                          ) : (
+                            <VolumeX className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="top">
+                        {isVoiceEnabled ? "Disable voice" : "Enable voice"}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      minimizeChat();
+                    }}
+                  >
+                    <Minimize className="h-4 w-4" />
+                  </Button>
+                </>
               )}
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-6 w-6"
-                onClick={toggleChat}
+                onClick={(e) => {
+                  if (!isMinimized) e.stopPropagation();
+                  toggleChat();
+                }}
               >
                 <X className="h-4 w-4" />
               </Button>
