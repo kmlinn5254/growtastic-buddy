@@ -18,4 +18,6 @@ export interface Plant {
   }[];
   // Flag to identify if this is from external API
   isExternal?: boolean;
+  // Addition of createdAt for history tracking
+  createdAt?: string;
 }

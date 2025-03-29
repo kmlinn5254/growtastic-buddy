@@ -21,7 +21,8 @@ const PlantChecker = () => {
             handleImageSubmit,
             handleDescriptionChange,
             saveResults,
-            resetAnalysis
+            resetAnalysis,
+            selectAnalysis
           }) => (
             <PlantCheckerLayout
               preview={preview}
@@ -35,6 +36,7 @@ const PlantChecker = () => {
               handleDescriptionChange={handleDescriptionChange}
               saveResults={saveResults}
               resetAnalysis={resetAnalysis}
+              selectAnalysis={selectAnalysis}
             />
           )}
         </PlantCheckerContainer>

@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { savePlant } from "@/services/plants";
 import { Plant } from "@/types/plants";
 import { getPlantAnalysis, getTextAnalysis } from "@/utils/plantAnalysisData";
@@ -19,6 +18,7 @@ interface PlantCheckerContainerProps {
     handleDescriptionChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
     saveResults: () => void;
     resetAnalysis: () => void;
+    selectAnalysis: (plant: Plant) => void;
   }) => React.ReactNode;
 }
 
@@ -85,13 +85,10 @@ const PlantCheckerContainer = ({ children }: PlantCheckerContainerProps) => {
     analyzeImage();
   };
 
-  // Text analysis with variety
   const analyzeText = () => {
     setIsAnalyzing(true);
     
-    // Simulate API call delay
     setTimeout(() => {
-      // Get analysis based on text description
       const analysisResult = getTextAnalysis(description);
       setResult(analysisResult);
       
@@ -103,13 +100,10 @@ const PlantCheckerContainer = ({ children }: PlantCheckerContainerProps) => {
     }, 2000);
   };
 
-  // Image analysis with variety
   const analyzeImage = () => {
     setIsAnalyzing(true);
     
-    // Simulate API call delay
     setTimeout(() => {
-      // Get a random analysis result for the image
       const analysisResult = getPlantAnalysis(file || undefined);
       setResult(analysisResult);
       
@@ -121,14 +115,12 @@ const PlantCheckerContainer = ({ children }: PlantCheckerContainerProps) => {
     }, 2000);
   };
 
-  // Function to save analysis results
   const saveResults = async () => {
     if (!result) return;
     
     setIsSaving(true);
     
     try {
-      // Format the recommendations and issues into care steps
       const careSteps = [
         {
           title: "Identified Issues",
@@ -140,7 +132,6 @@ const PlantCheckerContainer = ({ children }: PlantCheckerContainerProps) => {
         }
       ];
       
-      // Create plant object from analysis result
       const plantToSave: Omit<Plant, 'id'> = {
         name: result.plantName,
         image: preview || `https://source.unsplash.com/featured/?${encodeURIComponent(result.plantName)},plant`,
@@ -154,7 +145,6 @@ const PlantCheckerContainer = ({ children }: PlantCheckerContainerProps) => {
         edibleParts: ""
       };
       
-      // Save plant using the plantSaveService
       const savedPlant = await savePlant(plantToSave);
       
       if (savedPlant) {
@@ -177,12 +167,28 @@ const PlantCheckerContainer = ({ children }: PlantCheckerContainerProps) => {
     }
   };
 
-  // Reset analysis
   const resetAnalysis = () => {
     setFile(null);
     setPreview(null);
     setDescription("");
     setResult(null);
+  };
+
+  const selectAnalysis = (plant: Plant) => {
+    const analysisResult = {
+      plantName: plant.name,
+      condition: plant.description?.replace("Plant health check result: ", "") || "Unknown",
+      issues: plant.careSteps?.find(step => step.title === "Identified Issues")?.description.split("\n") || [],
+      recommendations: plant.careSteps?.find(step => step.title === "Recommendations")?.description.split("\n") || []
+    };
+    
+    setResult(analysisResult);
+    setPreview(plant.image);
+    
+    toast({
+      title: "Analysis loaded",
+      description: `Viewing analysis for ${plant.name}`,
+    });
   };
 
   return children({
@@ -197,7 +203,8 @@ const PlantCheckerContainer = ({ children }: PlantCheckerContainerProps) => {
     handleImageSubmit,
     handleDescriptionChange,
     saveResults,
-    resetAnalysis
+    resetAnalysis,
+    selectAnalysis
   });
 };
 
