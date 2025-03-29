@@ -78,12 +78,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Mock Google login with account selection dialog
+  // Google login using browser accounts
   const googleLogin = async () => {
     setIsLoading(true);
     try {
-      // Display a mock account selection dialog
-      const selectedAccount = await showGoogleAccountSelectionDialog();
+      // In a real implementation, this would redirect to Google OAuth
+      // For our mock implementation, we'll simulate the browser account selection
+      
+      // Create a dialog for browser account selection
+      const selectedAccount = await showBrowserAccountSelectionDialog();
       
       if (!selectedAccount) {
         // User cancelled the account selection
@@ -95,7 +98,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       const mockUser: User = {
-        id: "google-user-1",
+        id: "google-user-" + Date.now(),
         email: selectedAccount.email,
         name: selectedAccount.name,
         photoURL: selectedAccount.photoURL,
@@ -121,10 +124,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
   
-  // Mock function to show a Google account selection dialog
-  const showGoogleAccountSelectionDialog = (): Promise<{ email: string; name: string; photoURL: string } | null> => {
+  // Function to show browser account selection dialog
+  const showBrowserAccountSelectionDialog = (): Promise<{ email: string; name: string; photoURL: string } | null> => {
     return new Promise((resolve) => {
-      // Create a dialog for account selection
+      // Create a dialog to simulate browser account selection
       const dialog = document.createElement('div');
       dialog.className = 'fixed inset-0 flex items-center justify-center bg-black/50 z-50';
       dialog.innerHTML = `
@@ -133,17 +136,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           <p class="text-gray-500 dark:text-gray-400 mb-4">to continue to ArgoMind</p>
           <div class="space-y-2">
             <button class="account-option w-full flex items-center p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-              <img src="https://lh3.googleusercontent.com/a/default-user=s48-c" class="w-8 h-8 rounded-full mr-3" />
+              <img src="https://ui-avatars.com/api/?name=Current+User&background=0D8ABC&color=fff" class="w-8 h-8 rounded-full mr-3" />
               <div class="text-left">
-                <div class="font-medium dark:text-white">John Doe</div>
-                <div class="text-sm text-gray-500 dark:text-gray-400">johndoe@gmail.com</div>
+                <div class="font-medium dark:text-white">Current User</div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">user@gmail.com</div>
               </div>
             </button>
             <button class="account-option w-full flex items-center p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
-              <img src="https://lh3.googleusercontent.com/a/default-user=s48-c" class="w-8 h-8 rounded-full mr-3" />
+              <img src="https://ui-avatars.com/api/?name=Work+Account&background=4285F4&color=fff" class="w-8 h-8 rounded-full mr-3" />
               <div class="text-left">
-                <div class="font-medium dark:text-white">Jane Smith</div>
-                <div class="text-sm text-gray-500 dark:text-gray-400">janesmith@gmail.com</div>
+                <div class="font-medium dark:text-white">Work Account</div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">work@company.com</div>
               </div>
             </button>
             <button class="account-option w-full flex items-center p-3 hover:bg-gray-100 dark:hover:bg-gray-700 rounded">
@@ -171,23 +174,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           document.body.removeChild(dialog);
           if (index === 0) {
             resolve({
-              email: 'johndoe@gmail.com',
-              name: 'John Doe',
-              photoURL: 'https://lh3.googleusercontent.com/a/default-user=s120-c'
+              email: 'user@gmail.com',
+              name: 'Current User',
+              photoURL: 'https://ui-avatars.com/api/?name=Current+User&background=0D8ABC&color=fff'
             });
           } else if (index === 1) {
             resolve({
-              email: 'janesmith@gmail.com',
-              name: 'Jane Smith',
-              photoURL: 'https://lh3.googleusercontent.com/a/default-user=s120-c'
+              email: 'work@company.com',
+              name: 'Work Account',
+              photoURL: 'https://ui-avatars.com/api/?name=Work+Account&background=4285F4&color=fff'
             });
           } else {
             // "Use another account" - would typically open the Google OAuth flow
             // For mock purposes, we'll just use a different account
             resolve({
-              email: 'newuser@gmail.com',
-              name: 'New User',
-              photoURL: 'https://lh3.googleusercontent.com/a/default-user=s120-c'
+              email: 'new@example.com',
+              name: 'New Account',
+              photoURL: 'https://ui-avatars.com/api/?name=New+Account&background=34A853&color=fff'
             });
           }
         });

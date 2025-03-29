@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 
-export type LanguageCode = "en" | "es" | "fr";
+export type LanguageCode = "en" | "es" | "fr" | "my";
 
 interface LanguageContextType {
   language: LanguageCode;
@@ -18,6 +18,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     { value: "en", label: "English", nativeName: "English" },
     { value: "es", label: "Spanish", nativeName: "Español" },
     { value: "fr", label: "French", nativeName: "Français" },
+    { value: "my", label: "Burmese", nativeName: "မြန်မာဘာသာ" },
   ];
 
   const translations = {
@@ -118,6 +119,60 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       darkModeEnabledDesc: "Le mode sombre a été appliqué.",
       lightModeEnabled: "Mode Clair Activé",
       lightModeEnabledDesc: "Le mode clair a été appliqué."
+    },
+    my: {
+      settings: "ဆက်တင်များ",
+      profile: "ပရိုဖိုင်",
+      notifications: "အသိပေးချက်များ",
+      privacy: "လုံခြုံမှု",
+      security: "လုံခြုံရေး",
+      language: "ဘာသာစကား",
+      theme: "အပြင်အဆင်",
+      appSettings: "အက်ပ်ဆက်တင်များ",
+      profileSettings: "ပရိုဖိုင်ဆက်တင်များ",
+      profileSettingsDesc: "သင့်ပရိုဖိုင်အချက်အလက်နှင့် နှစ်သက်မှုများကို စီမံပါ။",
+      changeProfilePicture: "ပရိုဖိုင်ဓာတ်ပုံပြောင်းပါ",
+      cancel: "ပယ်ဖျက်ပါ",
+      saveChanges: "ပြောင်းလဲမှုများကို သိမ်းပါ",
+      updating: "အပ်ဒိတ်လုပ်နေသည်...",
+      notificationSettings: "အသိပေးချက်ဆက်တင်များ",
+      notificationSettingsDesc: "သင့်အသိပေးချက်ဆက်တင်များကို စီမံပါ။",
+      enabled: "ဖွင့်ထားသည်",
+      disabled: "ပိတ်ထားသည်",
+      notificationSettingsUpdated: "အသိပေးချက်ဆက်တင်များ အပ်ဒိတ်လုပ်ပြီးပါပြီ",
+      privacySettings: "လုံခြုံမှုဆက်တင်များ",
+      privacySettingsDesc: "သင့်လုံခြုံမှုဆက်တင်များနှင့် ဒေတာနှစ်သက်မှုများကို စီမံပါ။",
+      securitySettings: "လုံခြုံရေးဆက်တင်များ",
+      securitySettingsDesc: "သင့်စကားဝှက်ကို အပ်ဒိတ်လုပ်ပြီး အကောင့်လုံခြုံရေးကို စီမံပါ။",
+      languageSettings: "ဘာသာစကားဆက်တင်များ",
+      languageSettingsDesc: "အက်ပ်အတွက် သင်နှစ်သက်သော ဘာသာစကားကို ရွေးချယ်ပါ။",
+      themeSettings: "အပြင်အဆင်ဆက်တင်များ",
+      themeSettingsDesc: "အက်ပလီကေးရှင်း၏ အသွင်အပြင်ကို ပြောင်းလဲပါ။",
+      darkMode: "မှောင်မိုက်ပုံစံ",
+      lightMode: "လင်းလက်ပုံစံ",
+      darkModeDesc: "လက်ရှိအသုံးပြုနေသည်မှာ မှောင်မိုက်ပုံစံဖြစ်သည်။ လင်းလက်ပုံစံသို့ ပြောင်းရန် နှိပ်ပါ။",
+      lightModeDesc: "လက်ရှိအသုံးပြုနေသည်မှာ လင်းလက်ပုံစံဖြစ်သည်။ မှောင်မိုက်ပုံစံသို့ ပြောင်းရန် နှိပ်ပါ။",
+      switchToLight: "လင်းလက်ပုံစံသို့ ပြောင်းပါ",
+      switchToDark: "မှောင်မိုက်ပုံစံသို့ ပြောင်းပါ",
+      selectLanguage: "ဘာသာစကားရွေးချယ်ပါ",
+      languageNote: "ဘာသာစကားပြောင်းခြင်းသည် အက်ပ်တစ်ခုလုံးရှိ စာသားများကို အပ်ဒိတ်လုပ်ပေးပါမည်။",
+      languagePreferencesSaved: "ဘာသာစကားနှစ်သက်မှုများ သိမ်းဆည်းပြီးပါပြီ",
+      languagePreferencesSavedDesc: "သင့်ဘာသာစကားနှစ်သက်မှုများကို သိမ်းဆည်းပြီးပါပြီ။",
+      profileUpdated: "ပရိုဖိုင်အပ်ဒိတ်လုပ်ပြီးပါပြီ",
+      profileUpdatedDesc: "သင့်ပရိုဖိုင်ကို အောင်မြင်စွာ အပ်ဒိတ်လုပ်ပြီးပါပြီ။",
+      profilePictureUpdated: "ပရိုဖိုင်ဓာတ်ပုံ အပ်ဒိတ်လုပ်ပြီးပါပြီ",
+      profilePictureUpdatedDesc: "သင့်ပရိုဖိုင်ဓာတ်ပုံကို အပ်ဒိတ်လုပ်ပြီးပါပြီ။",
+      languageChanged: "ဘာသာစကား ပြောင်းလဲပြီးပါပြီ",
+      languageChangedTo: "ဘာသာစကားကို ပြောင်းလဲပြီးပါပြီ -",
+      loginRequired: "လော့ဂ်အင်လိုအပ်သည်",
+      loginToAccessSettings: "သင့်ဆက်တင်များကို ဝင်ရောက်ကြည့်ရှုရန်နှင့် သင့်အတွေ့အကြုံကို စိတ်ကြိုက်ပြုလုပ်ရန် ကျေးဇူးပြု၍ လော့ဂ်အင်ဝင်ပါ။",
+      login: "လော့ဂ်အင်",
+      logout: "ထွက်ခွာရန်",
+      saveLanguagePreferences: "ဘာသာစကားနှစ်သက်မှုများကို သိမ်းဆည်းရန်",
+      darkModeEnabled: "မှောင်မိုက်ပုံစံ ဖွင့်ထားသည်",
+      darkModeEnabledDesc: "မှောင်မိုက်ပုံစံကို အသုံးပြုပြီးပါပြီ။",
+      lightModeEnabled: "လင်းလက်ပုံစံ ဖွင့်ထားသည်",
+      lightModeEnabledDesc: "လင်းလက်ပုံစံကို အသုံးပြုပြီးပါပြီ။"
     },
   };
 
