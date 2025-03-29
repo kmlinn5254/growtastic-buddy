@@ -7,6 +7,9 @@ import { Heart, MessageCircle, Share2, Send } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { addComment } from "@/services/posts/commentService";
+import { addReaction } from "@/services/posts/reactionService";
+import { sharePost } from "@/services/posts/shareService";
 
 export interface Post {
   id: number;

@@ -7,6 +7,7 @@ import { Lock, Send, Image as ImageIcon, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
+import { createPost } from "@/services/posts/postService";
 
 interface PostFormProps {
   onSubmitPost: (content: string, imageUrl: string) => void;

@@ -2,6 +2,9 @@
 import { useState } from "react";
 import PostItem, { Post } from "./PostItem";
 import { useToast } from "@/hooks/use-toast";
+import { addReaction } from "@/services/posts/reactionService";
+import { addComment } from "@/services/posts/commentService";
+import { sharePost } from "@/services/posts/shareService";
 
 interface PostFeedProps {
   initialPosts: Post[];

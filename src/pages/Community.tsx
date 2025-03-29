@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import Navigation from "@/components/Navigation";
@@ -7,6 +7,8 @@ import PostForm from "@/components/community/PostForm";
 import CommunityChallenge from "@/components/community/CommunityChallenge";
 import PostFeed from "@/components/community/PostFeed";
 import { Post } from "@/components/community/PostItem";
+import { fetchPosts, createPost } from "@/services/posts/postService";
+import { SupabasePost } from "@/services/posts/types";
 
 // Mock data for community posts
 const initialPosts: Post[] = [
