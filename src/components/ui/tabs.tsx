@@ -40,7 +40,7 @@ const TabsListScrollable = React.forwardRef<
 
   if (scrollable && isMobile) {
     return (
-      <div className="relative flex items-center">
+      <div className="relative flex items-center mb-16">
         <button 
           onClick={() => handleScroll('left')}
           className="absolute left-0 z-10 bg-background/80 p-1 rounded-full shadow-sm"
