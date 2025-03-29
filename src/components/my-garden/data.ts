@@ -6,7 +6,7 @@ export const growablePlants: Plant[] = [
   {
     id: 1,
     name: "Basil",
-    image: "https://images.unsplash.com/photo-1528796940112-4979b4a98424?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
+    image: "https://images.unsplash.com/photo-1619846227717-205b9dccac17?q=80&w=987&auto=format&fit=crop",
     difficulty: "Easy",
     light: "Full sun",
     water: "Keep soil moist",
@@ -16,7 +16,7 @@ export const growablePlants: Plant[] = [
   {
     id: 2,
     name: "Cherry Tomatoes",
-    image: "https://images.unsplash.com/photo-1592841200221-a6898f307baa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
+    image: "https://images.unsplash.com/photo-1629185752152-fe85697ffa27?q=80&w=987&auto=format&fit=crop",
     difficulty: "Moderate",
     light: "Full sun",
     water: "Regular watering",
@@ -26,7 +26,7 @@ export const growablePlants: Plant[] = [
   {
     id: 3,
     name: "Mint",
-    image: "https://images.unsplash.com/photo-1628556270448-4d67a3e5e456?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+    image: "https://images.unsplash.com/photo-1594131431617-93ffd9b61a31?q=80&w=987&auto=format&fit=crop",
     difficulty: "Very Easy",
     light: "Partial shade",
     water: "Keep soil moist",
@@ -36,7 +36,7 @@ export const growablePlants: Plant[] = [
   {
     id: 4,
     name: "Lettuce",
-    image: "https://images.unsplash.com/photo-1556801712-76c8eb07bbc9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1025&q=80",
+    image: "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?q=80&w=1170&auto=format&fit=crop",
     difficulty: "Easy",
     light: "Partial sun",
     water: "Regular watering",
@@ -46,7 +46,7 @@ export const growablePlants: Plant[] = [
   {
     id: 5,
     name: "Chili Peppers",
-    image: "https://images.unsplash.com/photo-1583119022894-919a68a3d0e3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    image: "https://images.unsplash.com/photo-1603049489986-d01b0ff891cd?q=80&w=1170&auto=format&fit=crop",
     difficulty: "Moderate",
     light: "Full sun",
     water: "Moderate watering",
@@ -56,7 +56,7 @@ export const growablePlants: Plant[] = [
   {
     id: 6,
     name: "Cilantro",
-    image: "https://images.unsplash.com/photo-1503767849114-976b67568b02?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    image: "https://images.unsplash.com/photo-1638867422967-3273df064d74?q=80&w=1170&auto=format&fit=crop",
     difficulty: "Easy",
     light: "Partial sun",
     water: "Keep soil moist",
