@@ -2,21 +2,20 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Plant } from '@/types/plants';
 import { SupabasePlant, SupabasePlantCareStep, mapSupabasePlantToPlant } from './plantTypes';
+import { fromTable } from '@/lib/supabaseHelpers';
 
 // Fetch all plants from Supabase
 export const fetchPlants = async (): Promise<Plant[]> => {
   try {
     // Try to fetch from the database first
     try {
-      const { data: plantsData, error: plantsError } = await supabase
-        .from('plants')
+      const { data: plantsData, error: plantsError } = await fromTable('plants')
         .select('*');
         
       if (plantsError) throw plantsError;
       
       // Get care steps for all plants
-      const { data: careStepsData, error: careStepsError } = await supabase
-        .from('plant_care_steps')
+      const { data: careStepsData, error: careStepsError } = await fromTable('plant_care_steps')
         .select('*');
         
       if (careStepsError) throw careStepsError;
@@ -45,8 +44,7 @@ export const fetchPlants = async (): Promise<Plant[]> => {
 export const fetchPlantById = async (id: number): Promise<Plant | null> => {
   try {
     try {
-      const { data: plant, error: plantError } = await supabase
-        .from('plants')
+      const { data: plant, error: plantError } = await fromTable('plants')
         .select('*')
         .eq('id', id)
         .single();
@@ -55,8 +53,7 @@ export const fetchPlantById = async (id: number): Promise<Plant | null> => {
       if (!plant) return null;
       
       // Get care steps for this plant
-      const { data: careSteps, error: careStepsError } = await supabase
-        .from('plant_care_steps')
+      const { data: careSteps, error: careStepsError } = await fromTable('plant_care_steps')
         .select('*')
         .eq('plant_id', id)
         .order('order');
@@ -85,8 +82,7 @@ export const searchPlantsInDb = async (query: string): Promise<Plant[]> => {
   
   try {
     try {
-      const { data: plantsData, error: plantsError } = await supabase
-        .from('plants')
+      const { data: plantsData, error: plantsError } = await fromTable('plants')
         .select('*')
         .ilike('name', `%${query}%`)
         .order('name');
@@ -98,8 +94,7 @@ export const searchPlantsInDb = async (query: string): Promise<Plant[]> => {
       
       let careStepsData: SupabasePlantCareStep[] = [];
       if (plantIds.length > 0) {
-        const { data: careSteps, error: careStepsError } = await supabase
-          .from('plant_care_steps')
+        const { data: careSteps, error: careStepsError } = await fromTable('plant_care_steps')
           .select('*')
           .in('plant_id', plantIds);
           

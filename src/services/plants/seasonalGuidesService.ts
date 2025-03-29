@@ -1,5 +1,6 @@
 
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
+import { fromTable } from '@/lib/supabaseHelpers';
 
 // Interface for seasonal guides
 export interface SeasonalGuide {

@@ -1,5 +1,5 @@
 
-import { supabase } from '@/lib/supabase';
+import { fromTable } from '@/lib/supabaseHelpers';
 import { ReactionType } from './types';
 
 // Add a reaction to a post
@@ -8,8 +8,7 @@ export const addReaction = async (postId: number, userId: string, type: 'like' |
     if (!userId) throw new Error('User not authenticated');
     
     // Check if user already reacted
-    const { data: existingReaction } = await supabase
-      .from('reactions')
+    const { data: existingReaction } = await fromTable('reactions')
       .select('id, type')
       .eq('post_id', postId)
       .eq('user_id', userId)
@@ -18,8 +17,7 @@ export const addReaction = async (postId: number, userId: string, type: 'like' |
     if (existingReaction) {
       // Update existing reaction if different type
       if ((existingReaction as unknown as ReactionType).type !== type) {
-        const { data, error } = await supabase
-          .from('reactions')
+        const { data, error } = await fromTable('reactions')
           .update({ type } as any)
           .eq('id', (existingReaction as unknown as ReactionType).id)
           .select()
@@ -30,8 +28,7 @@ export const addReaction = async (postId: number, userId: string, type: 'like' |
       }
       
       // Remove reaction if same type (toggle off)
-      const { error } = await supabase
-        .from('reactions')
+      const { error } = await fromTable('reactions')
         .delete()
         .eq('id', (existingReaction as unknown as ReactionType).id);
         
@@ -40,8 +37,7 @@ export const addReaction = async (postId: number, userId: string, type: 'like' |
     }
     
     // Create new reaction
-    const { data, error } = await supabase
-      .from('reactions')
+    const { data, error } = await fromTable('reactions')
       .insert([{
         post_id: postId,
         user_id: userId,
@@ -64,8 +60,7 @@ export const hasUserReacted = async (postId: number, userId: string): Promise<bo
   try {
     if (!userId) return false;
     
-    const { data, error } = await supabase
-      .from('reactions')
+    const { data, error } = await fromTable('reactions')
       .select('id')
       .eq('post_id', postId)
       .eq('user_id', userId)

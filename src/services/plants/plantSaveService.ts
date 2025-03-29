@@ -2,6 +2,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { Plant } from '@/types/plants';
 import { fetchPlantById } from './plantFetchService';
+import { fromTable } from '@/lib/supabaseHelpers';
 
 // Save a plant to Supabase
 export const savePlant = async (plant: Omit<Plant, 'id'>): Promise<Plant | null> => {
@@ -9,8 +10,7 @@ export const savePlant = async (plant: Omit<Plant, 'id'>): Promise<Plant | null>
     // Try to insert data, falling back to mock data on failure
     try {
       // Insert plant data
-      const { data, error } = await supabase
-        .from('plants')
+      const { data, error } = await fromTable('plants')
         .insert([{
           name: plant.name,
           image: plant.image,
@@ -38,15 +38,14 @@ export const savePlant = async (plant: Omit<Plant, 'id'>): Promise<Plant | null>
           order: index
         }));
         
-        const { error: stepsError } = await supabase
-          .from('plant_care_steps')
+        const { error: stepsError } = await fromTable('plant_care_steps')
           .insert(careStepsData as any);
           
         if (stepsError) throw stepsError;
       }
       
       // Return the newly created plant
-      return await fetchPlantById(data.id);
+      return await fetchPlantById(Number(data.id));
     } catch (dbError) {
       // Handle saving to localStorage as fallback
       console.error('Error saving to database, using local storage instead:', dbError);
