@@ -88,7 +88,7 @@ export const allPlants = [
   {
     id: 9,
     name: "Aloe Vera",
-    image: "https://images.pexels.com/photos/4505165/pexels-photo-4505165.jpeg",
+    image: "https://images.pexels.com/photos/1022695/pexels-photo-1022695.jpeg",
     difficulty: "Easy",
     light: "Bright direct to indirect",
     water: "When soil is completely dry",
@@ -97,7 +97,7 @@ export const allPlants = [
   {
     id: 10,
     name: "Jade Plant",
-    image: "https://images.pexels.com/photos/6208086/pexels-photo-6208086.jpeg",
+    image: "https://images.pexels.com/photos/1382394/pexels-photo-1382394.jpeg",
     difficulty: "Easy",
     light: "Bright direct to indirect",
     water: "When soil is completely dry",
