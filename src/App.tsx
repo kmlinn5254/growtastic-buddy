@@ -23,8 +23,8 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AuthProvider>
-        <LanguageProvider>
+      <LanguageProvider>
+        <AuthProvider>
           <ThemeProvider>
             <Toaster />
             <Sonner />
@@ -44,8 +44,8 @@ const App = () => (
               <ChatBot />
             </BrowserRouter>
           </ThemeProvider>
-        </LanguageProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
