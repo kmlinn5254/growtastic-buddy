@@ -1,10 +1,12 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { savePlant } from "@/services/plants";
 import { Plant } from "@/types/plants";
 import { getPlantAnalysis, getTextAnalysis } from "@/utils/plantAnalysisData";
 
 interface PlantCheckerContainerProps {
+  initialPlant?: Plant;
   children: (props: {
     file: File | null;
     preview: string | null;
@@ -22,7 +24,7 @@ interface PlantCheckerContainerProps {
   }) => React.ReactNode;
 }
 
-const PlantCheckerContainer = ({ children }: PlantCheckerContainerProps) => {
+const PlantCheckerContainer = ({ initialPlant, children }: PlantCheckerContainerProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [description, setDescription] = useState("");
@@ -30,6 +32,28 @@ const PlantCheckerContainer = ({ children }: PlantCheckerContainerProps) => {
   const [isSaving, setIsSaving] = useState(false);
   const [result, setResult] = useState<any | null>(null);
   const { toast } = useToast();
+
+  // Handle initialPlant if provided (from navigation)
+  useEffect(() => {
+    if (initialPlant) {
+      setPreview(initialPlant.image);
+      
+      // Convert the plant to the analysis result format
+      const analysisResult = {
+        plantName: initialPlant.name,
+        condition: initialPlant.description?.replace("Plant health check result: ", "") || "Unknown",
+        issues: initialPlant.careSteps?.find(step => step.title === "Identified Issues")?.description.split("\n") || [],
+        recommendations: initialPlant.careSteps?.find(step => step.title === "Recommendations")?.description.split("\n") || []
+      };
+      
+      setResult(analysisResult);
+      
+      toast({
+        title: "Analysis loaded",
+        description: `Viewing analysis for ${initialPlant.name}`,
+      });
+    }
+  }, [initialPlant, toast]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

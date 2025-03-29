@@ -13,11 +13,11 @@ import Settings from "./pages/Settings";
 import MyGarden from "./pages/MyGarden";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import FAQs from "./pages/FAQs";
 import ChatBot from "./components/ChatBot";
 import { LanguageProvider } from "./hooks/useLanguage";
 import { AuthProvider } from "./hooks/useAuth";
 import { ThemeProvider } from "./hooks/useTheme";
-import { useState } from "react";
 
 // Create a QueryClient instance outside the component to avoid re-initialization
 const queryClient = new QueryClient();
@@ -41,6 +41,7 @@ const App = () => {
                   <Route path="/settings" element={<Settings />} />
                   <Route path="/my-garden" element={<MyGarden />} />
                   <Route path="/login" element={<Login />} />
+                  <Route path="/faqs" element={<FAQs />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>

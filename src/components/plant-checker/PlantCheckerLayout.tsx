@@ -1,12 +1,11 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Camera, FileText, HelpCircle } from "lucide-react";
+import { Camera, FileText } from "lucide-react";
 import ImageUploader from "./ImageUploader";
 import TextDescriptionInput from "./TextDescriptionInput";
 import AnalysisResult from "./AnalysisResult";
 import { Plant } from "@/types/plants";
-import PlantCheckerFAQ from "./PlantCheckerFAQ";
 import AnalysisHistory from "./AnalysisHistory";
 
 interface PlantCheckerLayoutProps {
@@ -48,8 +47,8 @@ const PlantCheckerLayout = ({
       </div>
       
       {!result ? (
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          <div className="lg:col-span-3 plant-section">
+        <div className="grid grid-cols-1 gap-8">
+          <div className="plant-section">
             <Tabs defaultValue="image" className="mb-8">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="image" className="flex items-center">
@@ -100,11 +99,9 @@ const PlantCheckerLayout = ({
                 </Card>
               </TabsContent>
             </Tabs>
-
-            <PlantCheckerFAQ />
           </div>
 
-          <div className="lg:col-span-2">
+          <div>
             <AnalysisHistory onSelectAnalysis={selectAnalysis} />
           </div>
         </div>

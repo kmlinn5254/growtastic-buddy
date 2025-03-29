@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Leaf, Upload, Users, BookOpen, MapPin, Sparkles, Sprout } from "lucide-react";
+import { Leaf, Upload, Users, BookOpen, MapPin, Sparkles, Sprout, HelpCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navigation from "@/components/Navigation";
 
@@ -40,6 +40,13 @@ const features = [
     icon: MapPin,
     link: "/stores",
     color: "bg-red-100 text-red-700"
+  },
+  {
+    title: "Plant FAQs",
+    description: "Get answers to common questions about plant care and view previous analysis results.",
+    icon: HelpCircle,
+    link: "/faqs",
+    color: "bg-purple-100 text-purple-700"
   }
 ];
 
