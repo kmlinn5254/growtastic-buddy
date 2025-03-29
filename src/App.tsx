@@ -12,8 +12,10 @@ import StoreLocator from "./pages/StoreLocator";
 import Settings from "./pages/Settings";
 import MyGarden from "./pages/MyGarden";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
 import ChatBot from "./components/ChatBot";
 import { LanguageProvider } from "./hooks/useLanguage";
+import { AuthProvider } from "./hooks/useAuth";
 
 const queryClient = new QueryClient();
 
@@ -21,22 +23,25 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <LanguageProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/plant-checker" element={<PlantChecker />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/guides" element={<PlantGuides />} />
-            <Route path="/stores" element={<StoreLocator />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/my-garden" element={<MyGarden />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <ChatBot />
-        </BrowserRouter>
+        <AuthProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/plant-checker" element={<PlantChecker />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/guides" element={<PlantGuides />} />
+              <Route path="/stores" element={<StoreLocator />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/my-garden" element={<MyGarden />} />
+              <Route path="/login" element={<Login />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <ChatBot />
+          </BrowserRouter>
+        </AuthProvider>
       </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>

@@ -1,16 +1,23 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Book, Users, Map, Settings, Home, Sprout, Menu, X, Leaf } from "lucide-react";
+import { Book, Users, Map, Settings, Home, Sprout, Menu, X, Leaf, LogIn } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navigation = () => {
   const location = useLocation();
   const isMobile = useIsMobile();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
+  
+  // Determine which settings/login item to show based on auth state
+  const settingsOrLoginItem = isAuthenticated
+    ? { label: "Settings", path: "/settings", icon: Settings }
+    : { label: "Login", path: "/login", icon: LogIn };
   
   const navItems = [
     { label: "Home", path: "/", icon: Home },
@@ -18,7 +25,7 @@ const Navigation = () => {
     { label: "Community", path: "/community", icon: Users },
     { label: "Plant Guides", path: "/guides", icon: Book },
     { label: "Store Locator", path: "/stores", icon: Map },
-    { label: "Settings", path: "/settings", icon: Settings },
+    settingsOrLoginItem, // Add the dynamic item
   ];
 
   // Core navigation items for mobile bottom nav

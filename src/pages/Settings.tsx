@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,20 +7,37 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { User, Bell, Shield, Key, LogOut, Camera, Globe } from "lucide-react";
+import { User, Bell, Shield, Key, LogOut, Camera, Globe, LogIn } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useLanguage, LanguageCode } from "@/hooks/useLanguage";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate, Link } from "react-router-dom";
 
 const Settings = () => {
   const { toast } = useToast();
   const { language, setLanguage, languageOptions, translations } = useLanguage();
-  const [username, setUsername] = useState("plant_lover");
-  const [email, setEmail] = useState("user@example.com");
+  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+  
+  // State variables only used when authenticated
+  const [username, setUsername] = useState(user?.name || "plant_lover");
+  const [email, setEmail] = useState(user?.email || "user@example.com");
   const [isUpdating, setIsUpdating] = useState(false);
-  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [profilePicture, setProfilePicture] = useState<string | null>(user?.photoURL || null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Update user data if auth state changes
+  useEffect(() => {
+    if (user) {
+      setUsername(user.name);
+      setEmail(user.email);
+      if (user.photoURL) {
+        setProfilePicture(user.photoURL);
+      }
+    }
+  }, [user]);
   
   const [notifications, setNotifications] = useState({
     plantReminders: true,
@@ -83,6 +101,46 @@ const Settings = () => {
       description: `${translations.languageChangedTo} ${languageOptions.find(option => option.value === value)?.label}`,
     });
   };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+  
+  // If not authenticated, show login prompt
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
+        <Navigation />
+        
+        <main className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <h1 className="text-3xl font-bold text-center mb-8 text-plant-dark plant-section">{translations.settings}</h1>
+            
+            <Card className="text-center py-12">
+              <CardContent className="space-y-6">
+                <div className="flex flex-col items-center justify-center">
+                  <LogIn className="h-16 w-16 text-plant-primary mb-4" />
+                  <h2 className="text-2xl font-bold">{translations.loginRequired || "Login Required"}</h2>
+                  <p className="text-gray-500 mt-2 max-w-md mx-auto">
+                    {translations.loginToAccessSettings || "Please login to access your settings and personalize your experience."}
+                  </p>
+                </div>
+                
+                <Button 
+                  className="bg-plant-primary hover:bg-plant-dark"
+                  onClick={() => navigate("/login")}
+                >
+                  <LogIn className="mr-2 h-4 w-4" />
+                  {translations.login || "Login"}
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+      </div>
+    );
+  }
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
@@ -431,6 +489,18 @@ const Settings = () => {
               </Card>
             </TabsContent>
           </Tabs>
+          
+          {/* Logout button for authenticated users */}
+          <div className="mt-8 text-center">
+            <Button 
+              variant="outline" 
+              className="text-red-600 border-red-200 hover:bg-red-50"
+              onClick={handleLogout}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              {translations.logout || "Logout"}
+            </Button>
+          </div>
         </div>
       </main>
     </div>
