@@ -1,0 +1,66 @@
+
+import { Plant } from "@/types/plants";
+
+// Sample growable plants data
+export const growablePlants: Plant[] = [
+  {
+    id: 1,
+    name: "Basil",
+    image: "https://images.unsplash.com/photo-1528796940112-4979b4a98424?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
+    difficulty: "Easy",
+    light: "Full sun",
+    water: "Keep soil moist",
+    growTime: "3-4 weeks",
+    temperature: "65-85°F",
+  },
+  {
+    id: 2,
+    name: "Cherry Tomatoes",
+    image: "https://images.unsplash.com/photo-1592841200221-a6898f307baa?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
+    difficulty: "Moderate",
+    light: "Full sun",
+    water: "Regular watering",
+    growTime: "50-75 days",
+    temperature: "65-85°F",
+  },
+  {
+    id: 3,
+    name: "Mint",
+    image: "https://images.unsplash.com/photo-1628556270448-4d67a3e5e456?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+    difficulty: "Very Easy",
+    light: "Partial shade",
+    water: "Keep soil moist",
+    growTime: "2-3 weeks",
+    temperature: "65-75°F",
+  },
+  {
+    id: 4,
+    name: "Lettuce",
+    image: "https://images.unsplash.com/photo-1556801712-76c8eb07bbc9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1025&q=80",
+    difficulty: "Easy",
+    light: "Partial sun",
+    water: "Regular watering",
+    growTime: "45-55 days",
+    temperature: "60-70°F",
+  },
+  {
+    id: 5,
+    name: "Chili Peppers",
+    image: "https://images.unsplash.com/photo-1583119022894-919a68a3d0e3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    difficulty: "Moderate",
+    light: "Full sun",
+    water: "Moderate watering",
+    growTime: "60-90 days",
+    temperature: "70-85°F",
+  },
+  {
+    id: 6,
+    name: "Cilantro",
+    image: "https://images.unsplash.com/photo-1503767849114-976b67568b02?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80",
+    difficulty: "Easy",
+    light: "Partial sun",
+    water: "Keep soil moist",
+    growTime: "3-4 weeks",
+    temperature: "65-75°F",
+  },
+];
