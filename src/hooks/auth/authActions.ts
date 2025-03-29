@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 
 // Login with email/password
@@ -12,6 +13,15 @@ export const loginWithGoogle = async () => {
   
   const currentURL = window.location.origin;
   console.log("Current origin:", currentURL);
+  
+  // Check if there's a provider in the URL query params
+  const urlParams = new URLSearchParams(window.location.search);
+  const provider = urlParams.get('provider');
+  
+  // If this is a direct provider request, log it
+  if (provider === 'google') {
+    console.log("Direct Google auth request detected");
+  }
   
   // Don't specify a redirect URL - let Supabase handle it with its built-in callback
   console.log("Using Supabase's default callback URL");
