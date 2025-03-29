@@ -1,7 +1,7 @@
-
 import { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsListScrollable, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useIsMobile } from "@/hooks/use-mobile";
 import Navigation from "@/components/Navigation";
 import PlantSelection from "@/components/PlantSelection";
 import ReminderSystem from "@/components/ReminderSystem";
@@ -10,7 +10,6 @@ import GrowthTracker from "@/components/GrowthTracker";
 import { Plant } from "@/components/PlantSelection";
 import { Shovel, Bell, Sprout, Info, Camera } from "lucide-react";
 
-// Sample plants data for growing
 const growablePlants: Plant[] = [
   {
     id: 1,
@@ -77,13 +76,13 @@ const MyGarden = () => {
   const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
   const [activeView, setActiveView] = useState<'list' | 'detail' | 'growth'>('list');
   const [activeTab, setActiveTab] = useState("my-plants");
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     localStorage.setItem("myGardenPlants", JSON.stringify(myPlants));
   }, [myPlants]);
 
   const handleSelectPlants = (selectedPlants: Plant[]) => {
-    // Merge new plants with existing plants without duplicates
     const existingPlantIds = myPlants.map(plant => plant.id);
     const newPlants = selectedPlants.filter(plant => !existingPlantIds.includes(plant.id));
     
@@ -121,7 +120,7 @@ const MyGarden = () => {
           
           {activeView === 'list' ? (
             <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsListScrollable scrollable={true} className={isMobile ? "grid-cols-1" : "grid w-full grid-cols-3"}>
                 <TabsTrigger value="my-plants" className="flex items-center">
                   <Sprout className="h-4 w-4 mr-2" />
                   My Plants
@@ -134,7 +133,7 @@ const MyGarden = () => {
                   <Bell className="h-4 w-4 mr-2" />
                   Reminders
                 </TabsTrigger>
-              </TabsList>
+              </TabsListScrollable>
               
               <TabsContent value="my-plants">
                 {myPlants.length === 0 ? (
