@@ -88,7 +88,7 @@ export const allPlants = [
   {
     id: 9,
     name: "Aloe Vera",
-    image: "https://images.pexels.com/photos/1022695/pexels-photo-1022695.jpeg",
+    image: "https://images.pexels.com/photos/6803/green-plant-succulent.jpg",
     difficulty: "Easy",
     light: "Bright direct to indirect",
     water: "When soil is completely dry",
