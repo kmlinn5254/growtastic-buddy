@@ -1,4 +1,3 @@
-
 /**
  * Function to show browser account selection dialog
  * @returns Promise that resolves to the selected account or null if canceled
@@ -8,7 +7,6 @@ export const showBrowserAccountSelectionDialog = (): Promise<{ email: string; na
     // Try to use the browser's credential management API if available
     if (window.navigator && window.navigator.credentials) {
       navigator.credentials.get({
-        password: true,
         mediation: 'optional'
       }).then((credential) => {
         if (credential && 'id' in credential) {
@@ -181,4 +179,3 @@ const showCustomDialog = (resolve: (value: { email: string; name: string; photoU
     }
   });
 };
-
