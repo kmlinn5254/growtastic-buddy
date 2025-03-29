@@ -68,27 +68,27 @@ const Login = () => {
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-md mx-auto">
           <h1 className="text-3xl font-bold text-center mb-8 text-plant-dark">
-            {activeTab === "login" ? translations.login || "Login" : translations.signUp || "Create Account"}
+            {activeTab === "login" ? "Login" : "Create Account"}
           </h1>
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="login" className="flex items-center">
                 <LogIn className="mr-2 h-4 w-4" />
-                {translations.login || "Login"}
+                Login
               </TabsTrigger>
               <TabsTrigger value="signup" className="flex items-center">
                 <User className="mr-2 h-4 w-4" />
-                {translations.signUp || "Sign Up"}
+                Sign Up
               </TabsTrigger>
             </TabsList>
             
             <TabsContent value="login">
               <Card>
                 <CardHeader>
-                  <CardTitle>{translations.welcome || "Welcome Back"}</CardTitle>
+                  <CardTitle>Welcome Back</CardTitle>
                   <CardDescription>
-                    {translations.loginDescription || "Login to your account to continue"}
+                    Login to your account to continue
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -97,7 +97,7 @@ const Login = () => {
                       <Label htmlFor="email">
                         <div className="flex items-center">
                           <Mail className="h-4 w-4 mr-2" />
-                          {translations.email || "Email"}
+                          Email
                         </div>
                       </Label>
                       <Input 
@@ -114,7 +114,7 @@ const Login = () => {
                       <Label htmlFor="password">
                         <div className="flex items-center">
                           <Key className="h-4 w-4 mr-2" />
-                          {translations.password || "Password"}
+                          Password
                         </div>
                       </Label>
                       <Input 
@@ -132,9 +132,7 @@ const Login = () => {
                       className="w-full bg-plant-primary hover:bg-plant-dark"
                       disabled={isLoading}
                     >
-                      {isLoading ? 
-                        (translations.loggingIn || "Logging in...") : 
-                        (translations.login || "Login")}
+                      {isLoading ? "Logging in..." : "Login"}
                     </Button>
                   </form>
                 </CardContent>
@@ -145,7 +143,7 @@ const Login = () => {
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
                       <span className="bg-white px-2 text-gray-500">
-                        {translations.orContinueWith || "or continue with"}
+                        or continue with
                       </span>
                     </div>
                   </div>
@@ -188,9 +186,9 @@ const Login = () => {
             <TabsContent value="signup">
               <Card>
                 <CardHeader>
-                  <CardTitle>{translations.createAccount || "Create an Account"}</CardTitle>
+                  <CardTitle>Create an Account</CardTitle>
                   <CardDescription>
-                    {translations.signUpDescription || "Sign up to start tracking your plants"}
+                    Sign up to start tracking your plants
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -199,7 +197,7 @@ const Login = () => {
                       <Label htmlFor="name">
                         <div className="flex items-center">
                           <User className="h-4 w-4 mr-2" />
-                          {translations.name || "Name"}
+                          Name
                         </div>
                       </Label>
                       <Input 
@@ -215,7 +213,7 @@ const Login = () => {
                       <Label htmlFor="signup-email">
                         <div className="flex items-center">
                           <Mail className="h-4 w-4 mr-2" />
-                          {translations.email || "Email"}
+                          Email
                         </div>
                       </Label>
                       <Input 
@@ -232,7 +230,7 @@ const Login = () => {
                       <Label htmlFor="signup-password">
                         <div className="flex items-center">
                           <Lock className="h-4 w-4 mr-2" />
-                          {translations.password || "Password"}
+                          Password
                         </div>
                       </Label>
                       <Input 
@@ -249,7 +247,7 @@ const Login = () => {
                       <Label htmlFor="confirm-password">
                         <div className="flex items-center">
                           <Lock className="h-4 w-4 mr-2" />
-                          {translations.confirmPassword || "Confirm Password"}
+                          Confirm Password
                         </div>
                       </Label>
                       <Input 
@@ -267,9 +265,7 @@ const Login = () => {
                       className="w-full bg-plant-primary hover:bg-plant-dark"
                       disabled={isLoading || signupPassword !== signupConfirmPassword}
                     >
-                      {isLoading ? 
-                        (translations.creatingAccount || "Creating account...") : 
-                        (translations.signUp || "Sign Up")}
+                      {isLoading ? "Creating account..." : "Sign Up"}
                     </Button>
                   </form>
                 </CardContent>
@@ -280,7 +276,7 @@ const Login = () => {
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
                       <span className="bg-white px-2 text-gray-500">
-                        {translations.orContinueWith || "or continue with"}
+                        or continue with
                       </span>
                     </div>
                   </div>
