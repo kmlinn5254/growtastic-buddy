@@ -20,7 +20,9 @@ export const allPlants = [
     difficulty: "Easy",
     light: "Bright indirect",
     water: "Weekly",
-    temperature: "65-85°F"
+    temperature: "65-85°F",
+    edible: false,
+    edibleParts: "None - toxic if ingested"
   },
   {
     id: 2,
@@ -29,7 +31,9 @@ export const allPlants = [
     difficulty: "Very Easy",
     light: "Low to bright indirect",
     water: "Every 2-3 weeks",
-    temperature: "60-85°F"
+    temperature: "60-85°F",
+    edible: false,
+    edibleParts: "None - mildly toxic"
   },
   {
     id: 3,
@@ -38,7 +42,9 @@ export const allPlants = [
     difficulty: "Moderate",
     light: "Bright indirect",
     water: "When top inch is dry",
-    temperature: "65-75°F"
+    temperature: "65-75°F",
+    edible: false,
+    edibleParts: "None - toxic if ingested"
   },
   {
     id: 4,
@@ -47,7 +53,9 @@ export const allPlants = [
     difficulty: "Very Easy",
     light: "Low to bright indirect",
     water: "When top soil is dry",
-    temperature: "60-80°F"
+    temperature: "60-80°F",
+    edible: false,
+    edibleParts: "None - toxic if ingested"
   },
   {
     id: 5,
@@ -56,7 +64,9 @@ export const allPlants = [
     difficulty: "Moderate",
     light: "Indirect light",
     water: "Keep soil consistently moist",
-    temperature: "60-75°F"
+    temperature: "60-75°F",
+    edible: false,
+    edibleParts: "None - not considered edible"
   },
   {
     id: 6,
@@ -65,7 +75,9 @@ export const allPlants = [
     difficulty: "Easy",
     light: "Low to medium indirect",
     water: "When leaves start to droop",
-    temperature: "65-85°F"
+    temperature: "65-85°F",
+    edible: false,
+    edibleParts: "None - toxic if ingested"
   },
   {
     id: 7,
@@ -74,7 +86,9 @@ export const allPlants = [
     difficulty: "Very Easy",
     light: "Low to bright indirect",
     water: "Every 2-3 weeks",
-    temperature: "60-85°F"
+    temperature: "60-85°F",
+    edible: false,
+    edibleParts: "None - toxic if ingested"
   },
   {
     id: 8,
@@ -83,25 +97,31 @@ export const allPlants = [
     difficulty: "Easy",
     light: "Medium to bright indirect",
     water: "When top inch is dry",
-    temperature: "60-80°F"
+    temperature: "60-80°F",
+    edible: false,
+    edibleParts: "None - toxic if ingested"
   },
   {
     id: 9,
     name: "Aloe Vera",
-    image: "https://images.pexels.com/photos/6803/green-plant-succulent.jpg",
+    image: "https://images.pexels.com/photos/4505166/pexels-photo-4505166.jpeg",
     difficulty: "Easy",
     light: "Bright direct to indirect",
     water: "When soil is completely dry",
-    temperature: "55-80°F"
+    temperature: "55-80°F",
+    edible: true,
+    edibleParts: "The gel inside the leaves is edible and has medicinal properties"
   },
   {
     id: 10,
     name: "Jade Plant",
-    image: "https://images.pexels.com/photos/1382394/pexels-photo-1382394.jpeg",
+    image: "https://images.pexels.com/photos/1407862/pexels-photo-1407862.jpeg",
     difficulty: "Easy",
     light: "Bright direct to indirect",
     water: "When soil is completely dry",
-    temperature: "65-75°F"
+    temperature: "65-75°F",
+    edible: false,
+    edibleParts: "None - toxic if ingested"
   }
 ];
 

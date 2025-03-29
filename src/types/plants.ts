@@ -10,6 +10,8 @@ export interface Plant {
   temperature: string;
   growTime?: string;  // Optional to maintain compatibility with both usages
   description?: string;
+  edible?: boolean;   // Indicates if plant is edible
+  edibleParts?: string; // Describes which parts are edible
   careSteps?: {
     title: string;
     description: string;

@@ -12,6 +12,8 @@ export const growablePlants: Plant[] = [
     water: "Keep soil moist",
     growTime: "3-4 weeks",
     temperature: "65-85°F",
+    edible: true,
+    edibleParts: "Leaves can be eaten fresh or dried for culinary use"
   },
   {
     id: 2,
@@ -22,6 +24,8 @@ export const growablePlants: Plant[] = [
     water: "Regular watering",
     growTime: "50-75 days",
     temperature: "65-85°F",
+    edible: true,
+    edibleParts: "Fruits are edible when ripe"
   },
   {
     id: 3,
@@ -32,6 +36,8 @@ export const growablePlants: Plant[] = [
     water: "Keep soil moist",
     growTime: "2-3 weeks",
     temperature: "65-75°F",
+    edible: true,
+    edibleParts: "Leaves are edible and commonly used in teas and as garnish"
   },
   {
     id: 4,
@@ -42,6 +48,8 @@ export const growablePlants: Plant[] = [
     water: "Regular watering",
     growTime: "45-55 days",
     temperature: "60-70°F",
+    edible: true,
+    edibleParts: "Leaves are edible and commonly used in salads"
   },
   {
     id: 5,
@@ -52,6 +60,8 @@ export const growablePlants: Plant[] = [
     water: "Moderate watering",
     growTime: "60-90 days",
     temperature: "70-85°F",
+    edible: true,
+    edibleParts: "Fruits are edible and used as spices"
   },
   {
     id: 6,
@@ -62,5 +72,7 @@ export const growablePlants: Plant[] = [
     water: "Keep soil moist",
     growTime: "3-4 weeks",
     temperature: "65-75°F",
+    edible: true,
+    edibleParts: "Leaves and seeds (coriander) are edible and used in cooking"
   },
 ];

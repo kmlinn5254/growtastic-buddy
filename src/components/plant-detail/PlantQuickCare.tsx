@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { SunIcon, DropletIcon, ThermometerIcon, Wind, Leaf } from "lucide-react";
+import { SunIcon, DropletIcon, ThermometerIcon, Wind, Leaf, UtensilsCrossed } from "lucide-react";
 import { Plant } from "@/types/plants";
 
 interface PlantQuickCareProps {
@@ -50,6 +50,19 @@ const PlantQuickCare: React.FC<PlantQuickCareProps> = ({ plant }) => {
           <div>
             <p className="text-sm font-medium">Difficulty</p>
             <p className="text-gray-600">{plant.difficulty}</p>
+          </div>
+        </div>
+        
+        {/* Add edible information */}
+        <div className="flex items-center">
+          <UtensilsCrossed className="h-5 w-5 text-yellow-600 mr-3" />
+          <div>
+            <p className="text-sm font-medium">Edible</p>
+            <p className="text-gray-600">
+              {plant.edible ? 
+                `Yes - ${plant.edibleParts}` : 
+                `No - ${plant.edibleParts || "Not for consumption"}`}
+            </p>
           </div>
         </div>
       </div>
