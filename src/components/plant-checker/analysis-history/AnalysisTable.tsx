@@ -2,12 +2,19 @@
 import { Plant } from "@/types/plants";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-interface AnalysisHistoryTableProps {
+interface AnalysisTableProps {
   analyses: Plant[];
+  extractCondition: (description?: string) => { text: string; isHealthy: boolean };
   onSelectAnalysis: (plant: Plant) => void;
+  showDate?: boolean;
 }
 
-const AnalysisHistoryTable = ({ analyses, onSelectAnalysis }: AnalysisHistoryTableProps) => {
+const AnalysisTable = ({ 
+  analyses, 
+  extractCondition, 
+  onSelectAnalysis,
+  showDate = false
+}: AnalysisTableProps) => {
   return (
     <Table>
       <TableHeader>
@@ -15,27 +22,12 @@ const AnalysisHistoryTable = ({ analyses, onSelectAnalysis }: AnalysisHistoryTab
           <TableHead className="w-[100px]">Plant</TableHead>
           <TableHead>Disease</TableHead>
           <TableHead>Condition</TableHead>
+          {showDate && <TableHead className="text-right">Date</TableHead>}
         </TableRow>
       </TableHeader>
       <TableBody>
         {analyses.map((analysis) => {
-          // Extract condition from description if available
-          let condition = "Unknown";
-          if (analysis.description) {
-            // Look for common condition phrases in the description
-            const conditionPhrases = [
-              "Healthy with minor issues", "Healthy", "Mildly distressed", "Stressed", 
-              "Needs attention", "Minor problems", "Showing minor stress",
-              "Needs care adjustments"
-            ];
-            
-            for (const phrase of conditionPhrases) {
-              if (analysis.description.includes(phrase)) {
-                condition = phrase;
-                break;
-              }
-            }
-          }
+          const condition = extractCondition(analysis.description);
           
           return (
             <TableRow 
@@ -54,12 +46,19 @@ const AnalysisHistoryTable = ({ analyses, onSelectAnalysis }: AnalysisHistoryTab
               </TableCell>
               <TableCell className="font-medium">{analysis.name}</TableCell>
               <TableCell>
-                {condition.includes("Healthy") ? (
-                  <span className="text-green-600">{condition}</span>
+                {condition.isHealthy ? (
+                  <span className="text-green-600">{condition.text}</span>
                 ) : (
-                  <span className="text-amber-600">{condition}</span>
+                  <span className="text-amber-600">{condition.text}</span>
                 )}
               </TableCell>
+              {showDate && (
+                <TableCell className="text-right text-muted-foreground">
+                  {analysis.createdAt 
+                    ? new Date(analysis.createdAt).toLocaleDateString()
+                    : "Unknown date"}
+                </TableCell>
+              )}
             </TableRow>
           );
         })}
@@ -68,4 +67,4 @@ const AnalysisHistoryTable = ({ analyses, onSelectAnalysis }: AnalysisHistoryTab
   );
 };
 
-export default AnalysisHistoryTable;
+export default AnalysisTable;
