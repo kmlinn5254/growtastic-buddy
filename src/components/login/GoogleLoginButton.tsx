@@ -3,6 +3,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface GoogleLoginButtonProps {
   isLoading: boolean;
@@ -11,13 +12,20 @@ interface GoogleLoginButtonProps {
 const GoogleLoginButton = ({ isLoading }: GoogleLoginButtonProps) => {
   const { googleLogin } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   
   const handleGoogleLogin = async () => {
     try {
+      console.log("Starting Google login process");
       await googleLogin();
-      navigate("/");
-    } catch (error) {
-      // Error is handled in useAuth
+      // Navigation will be handled by the auth state change
+    } catch (error: any) {
+      console.error("Google login error:", error);
+      toast({
+        title: "Login failed",
+        description: error.message || "Could not sign in with Google",
+        variant: "destructive",
+      });
     }
   };
   

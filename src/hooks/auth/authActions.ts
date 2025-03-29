@@ -8,10 +8,16 @@ export const loginWithEmailAndPassword = async (email: string, password: string)
 
 // Google OAuth login
 export const loginWithGoogle = async () => {
+  const currentURL = window.location.origin;
+  console.log("Redirecting Google auth to:", currentURL);
+  
   return await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: window.location.origin,
+      redirectTo: currentURL,
+      queryParams: {
+        prompt: 'select_account',
+      }
     }
   });
 };

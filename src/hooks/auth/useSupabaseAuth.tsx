@@ -27,24 +27,35 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   // Initial auth check
   useEffect(() => {
     const initAuth = async () => {
-      const { data: { session } } = await getCurrentSession();
-      
-      if (session) {
-        const mappedUser = mapSupabaseUser(session.user);
-        setUser(mappedUser);
+      try {
+        // Set up auth state change listener first
+        const { data: { subscription } } = await setupAuthListener((user) => {
+          console.log("Auth state changed, user:", user ? "logged in" : "logged out");
+          const mappedUser = user ? mapSupabaseUser(user) : null;
+          setUser(mappedUser);
+          setIsLoading(false);
+        });
+        
+        // Then check for existing session
+        const { data: { session } } = await getCurrentSession();
+        
+        if (session) {
+          console.log("Existing session found");
+          const mappedUser = mapSupabaseUser(session.user);
+          setUser(mappedUser);
+        } else {
+          console.log("No existing session");
+        }
+        
+        setIsLoading(false);
+        
+        return () => {
+          subscription.unsubscribe();
+        };
+      } catch (error) {
+        console.error("Error initializing auth:", error);
+        setIsLoading(false);
       }
-      
-      setIsLoading(false);
-      
-      // Setup auth state change listener
-      const { data: { subscription } } = await setupAuthListener((user) => {
-        const mappedUser = mapSupabaseUser(user);
-        setUser(mappedUser);
-      });
-      
-      return () => {
-        subscription.unsubscribe();
-      };
     };
     
     initAuth();
@@ -78,11 +89,18 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const googleLogin = async () => {
     setIsLoading(true);
     try {
+      console.log("Initiating Google login from hook");
       const { error } = await loginWithGoogle();
       
-      if (error) throw error;
+      if (error) {
+        console.error("Google login error in hook:", error);
+        throw error;
+      }
+      
+      // Auth state change will handle the user update
       
     } catch (error: any) {
+      console.error("Google login error caught in hook:", error);
       toast({
         title: t.googleLoginFailed || "Google login failed",
         description: error.message || "Could not log in with Google. Please try again.",
@@ -129,7 +147,7 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       const { error } = await logoutUser();
       if (error) throw error;
       
-      setUser(null);
+      // User will be set to null by the auth state change listener
       
       toast({
         title: t.loggedOut || "Logged out",
