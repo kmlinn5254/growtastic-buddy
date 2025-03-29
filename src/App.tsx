@@ -17,37 +17,41 @@ import ChatBot from "./components/ChatBot";
 import { LanguageProvider } from "./hooks/useLanguage";
 import { AuthProvider } from "./hooks/useAuth";
 import { ThemeProvider } from "./hooks/useTheme";
+import { useState } from "react";
 
-const queryClient = new QueryClient();
+const App = () => {
+  // Create a new QueryClient instance for each app render
+  const [queryClient] = useState(() => new QueryClient());
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <LanguageProvider>
-        <AuthProvider>
-          <ThemeProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/plant-checker" element={<PlantChecker />} />
-                <Route path="/community" element={<Community />} />
-                <Route path="/guides" element={<PlantGuides />} />
-                <Route path="/stores" element={<StoreLocator />} />
-                <Route path="/settings" element={<Settings />} />
-                <Route path="/my-garden" element={<MyGarden />} />
-                <Route path="/login" element={<Login />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-              <ChatBot />
-            </BrowserRouter>
-          </ThemeProvider>
-        </AuthProvider>
-      </LanguageProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <ThemeProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/plant-checker" element={<PlantChecker />} />
+                  <Route path="/community" element={<Community />} />
+                  <Route path="/guides" element={<PlantGuides />} />
+                  <Route path="/stores" element={<StoreLocator />} />
+                  <Route path="/settings" element={<Settings />} />
+                  <Route path="/my-garden" element={<MyGarden />} />
+                  <Route path="/login" element={<Login />} />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+                <ChatBot />
+              </BrowserRouter>
+            </ThemeProvider>
+          </AuthProvider>
+        </LanguageProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

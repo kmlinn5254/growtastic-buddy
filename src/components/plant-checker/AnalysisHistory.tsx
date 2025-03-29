@@ -31,6 +31,7 @@ const AnalysisHistory = ({ onSelectAnalysis }: AnalysisHistoryProps) => {
 
         if (userId) {
           // Fetch user's plant analyses from Supabase
+          // Using a more direct approach to avoid type issues
           const { data, error, count } = await supabase
             .from('plants')
             .select('*', { count: 'exact' })
@@ -41,20 +42,20 @@ const AnalysisHistory = ({ onSelectAnalysis }: AnalysisHistoryProps) => {
           if (error) throw error;
           
           if (data && data.length > 0) {
-            // Map Supabase data to Plant type
-            const plants: Plant[] = data.map(item => ({
-              id: item.id,
-              name: item.name,
-              image: item.image,
-              difficulty: item.difficulty,
-              light: item.light,
-              water: item.water,
-              temperature: item.temperature,
+            // Map Supabase data to Plant type with proper type assertions
+            const plants: Plant[] = data.map((item: any) => ({
+              id: Number(item.id) || 0, // Convert to number for Plant interface
+              name: item.name || "",
+              image: item.image || "",
+              difficulty: item.difficulty || "",
+              light: item.light || "",
+              water: item.water || "",
+              temperature: item.temperature || "",
               description: item.description || "",
-              growTime: item.grow_time,
-              edible: item.edible || false,
+              growTime: item.grow_time || "",
+              edible: Boolean(item.edible),
               edibleParts: item.edible_parts || "",
-              createdAt: item.created_at
+              createdAt: item.created_at || new Date().toISOString()
             }));
             
             setAnalyses(plants);
@@ -141,7 +142,7 @@ const AnalysisHistory = ({ onSelectAnalysis }: AnalysisHistoryProps) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {analyses.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((analysis) => (
+                {analyses.map((analysis) => (
                   <TableRow 
                     key={analysis.id} 
                     className="cursor-pointer hover:bg-muted/60"
