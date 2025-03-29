@@ -1,4 +1,3 @@
-
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,12 +6,15 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { User, Bell, Shield, Key, LogOut, Camera } from "lucide-react";
+import { User, Bell, Shield, Key, LogOut, Camera, Globe } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const Settings = () => {
   const { toast } = useToast();
+  const { language, setLanguage, languageOptions, translations } = useLanguage();
   const [username, setUsername] = useState("plant_lover");
   const [email, setEmail] = useState("user@example.com");
   const [isUpdating, setIsUpdating] = useState(false);
@@ -34,8 +36,8 @@ const Settings = () => {
     setTimeout(() => {
       setIsUpdating(false);
       toast({
-        title: "Profile updated",
-        description: "Your profile information has been updated successfully.",
+        title: translations.profileUpdated,
+        description: translations.profileUpdatedDesc,
       });
     }, 1000);
   };
@@ -47,8 +49,8 @@ const Settings = () => {
     });
     
     toast({
-      title: "Notification settings updated",
-      description: `${key} notifications ${!notifications[key] ? "enabled" : "disabled"}.`,
+      title: translations.notificationSettingsUpdated,
+      description: `${key} ${!notifications[key] ? translations.enabled : translations.disabled}.`,
     });
   };
 
@@ -67,10 +69,19 @@ const Settings = () => {
       setProfilePicture(imageUrl);
       
       toast({
-        title: "Profile picture updated",
-        description: "Your profile picture has been updated successfully.",
+        title: translations.profilePictureUpdated,
+        description: translations.profilePictureUpdatedDesc,
       });
     }
+  };
+
+  const handleLanguageChange = (value: string) => {
+    setLanguage(value);
+    
+    toast({
+      title: translations.languageChanged,
+      description: `${translations.languageChangedTo} ${languageOptions.find(option => option.value === value)?.label}`,
+    });
   };
   
   return (
@@ -79,34 +90,38 @@ const Settings = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold text-center mb-8 text-plant-dark plant-section">Settings</h1>
+          <h1 className="text-3xl font-bold text-center mb-8 text-plant-dark plant-section">{translations.settings}</h1>
           
           <Tabs defaultValue="profile" className="plant-section">
-            <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsList className="grid w-full grid-cols-5 mb-8">
               <TabsTrigger value="profile" className="flex items-center">
                 <User className="mr-2 h-4 w-4" />
-                Profile
+                {translations.profile}
               </TabsTrigger>
               <TabsTrigger value="notifications" className="flex items-center">
                 <Bell className="mr-2 h-4 w-4" />
-                Notifications
+                {translations.notifications}
               </TabsTrigger>
               <TabsTrigger value="privacy" className="flex items-center">
                 <Shield className="mr-2 h-4 w-4" />
-                Privacy
+                {translations.privacy}
               </TabsTrigger>
               <TabsTrigger value="security" className="flex items-center">
                 <Key className="mr-2 h-4 w-4" />
-                Security
+                {translations.security}
+              </TabsTrigger>
+              <TabsTrigger value="language" className="flex items-center">
+                <Globe className="mr-2 h-4 w-4" />
+                {translations.language}
               </TabsTrigger>
             </TabsList>
             
             <TabsContent value="profile">
               <Card>
                 <CardHeader>
-                  <CardTitle>Profile Settings</CardTitle>
+                  <CardTitle>{translations.profileSettings}</CardTitle>
                   <CardDescription>
-                    Manage your personal information and account details.
+                    {translations.profileSettingsDesc}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -145,7 +160,7 @@ const Settings = () => {
                           className="mt-2 text-sm h-8"
                           onClick={handleProfilePictureClick}
                         >
-                          Change Profile Picture
+                          {translations.changeProfilePicture}
                         </Button>
                       </div>
                     </div>
@@ -197,13 +212,13 @@ const Settings = () => {
                   </form>
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                  <Button variant="outline">Cancel</Button>
+                  <Button variant="outline">{translations.cancel}</Button>
                   <Button 
                     className="bg-plant-primary hover:bg-plant-dark"
                     onClick={handleProfileUpdate}
                     disabled={isUpdating}
                   >
-                    {isUpdating ? "Updating..." : "Save Changes"}
+                    {isUpdating ? translations.updating : translations.saveChanges}
                   </Button>
                 </CardFooter>
               </Card>
@@ -212,9 +227,9 @@ const Settings = () => {
             <TabsContent value="notifications">
               <Card>
                 <CardHeader>
-                  <CardTitle>Notification Settings</CardTitle>
+                  <CardTitle>{translations.notificationSettings}</CardTitle>
                   <CardDescription>
-                    Control how and when you receive notifications.
+                    {translations.notificationSettingsDesc}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -276,9 +291,9 @@ const Settings = () => {
             <TabsContent value="privacy">
               <Card>
                 <CardHeader>
-                  <CardTitle>Privacy Settings</CardTitle>
+                  <CardTitle>{translations.privacySettings}</CardTitle>
                   <CardDescription>
-                    Control your data and privacy preferences.
+                    {translations.privacySettingsDesc}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -324,9 +339,9 @@ const Settings = () => {
             <TabsContent value="security">
               <Card>
                 <CardHeader>
-                  <CardTitle>Security Settings</CardTitle>
+                  <CardTitle>{translations.securitySettings}</CardTitle>
                   <CardDescription>
-                    Manage your account security and password.
+                    {translations.securitySettingsDesc}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -368,6 +383,51 @@ const Settings = () => {
                     </div>
                   </div>
                 </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="language">
+              <Card>
+                <CardHeader>
+                  <CardTitle>{translations.languageSettings}</CardTitle>
+                  <CardDescription>
+                    {translations.languageSettingsDesc}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="language-select">{translations.selectLanguage}</Label>
+                      <Select value={language} onValueChange={handleLanguageChange}>
+                        <SelectTrigger id="language-select" className="w-full md:w-[250px]">
+                          <SelectValue placeholder={translations.selectLanguage} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {languageOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div className="pt-4 text-sm text-gray-500">
+                      <p>{translations.languageNote}</p>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button 
+                    className="bg-plant-primary hover:bg-plant-dark"
+                    onClick={() => toast({
+                      title: translations.languagePreferencesSaved,
+                      description: translations.languagePreferencesSavedDesc,
+                    })}
+                  >
+                    {translations.saveLanguagePreferences}
+                  </Button>
+                </CardFooter>
               </Card>
             </TabsContent>
           </Tabs>

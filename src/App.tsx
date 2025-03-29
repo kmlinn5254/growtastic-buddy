@@ -13,28 +13,31 @@ import Settings from "./pages/Settings";
 import MyGarden from "./pages/MyGarden";
 import NotFound from "./pages/NotFound";
 import ChatBot from "./components/ChatBot";
+import { LanguageProvider } from "./hooks/useLanguage";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/plant-checker" element={<PlantChecker />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/guides" element={<PlantGuides />} />
-          <Route path="/stores" element={<StoreLocator />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/my-garden" element={<MyGarden />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        <ChatBot />
-      </BrowserRouter>
+      <LanguageProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/plant-checker" element={<PlantChecker />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/guides" element={<PlantGuides />} />
+            <Route path="/stores" element={<StoreLocator />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/my-garden" element={<MyGarden />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+          <ChatBot />
+        </BrowserRouter>
+      </LanguageProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
