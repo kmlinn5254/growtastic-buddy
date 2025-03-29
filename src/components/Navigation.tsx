@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Leaf, Book, Users, Map, Settings, Home, Sprout, Menu, X } from "lucide-react";
+import { Brain, Book, Users, Map, Settings, Home, Sprout, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ const Navigation = () => {
   
   const navItems = [
     { label: "Home", path: "/", icon: Home },
-    { label: "Plant Checker", path: "/plant-checker", icon: Leaf },
+    { label: "Plant Checker", path: "/plant-checker", icon: Sprout },
     { label: "My Garden", path: "/my-garden", icon: Sprout },
     { label: "Community", path: "/community", icon: Users },
     { label: "Plant Guides", path: "/guides", icon: Book },
@@ -84,7 +84,7 @@ const Navigation = () => {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="flex items-center">
-                <Leaf className="h-8 w-8 text-plant-primary" />
+                <Brain className="h-8 w-8 text-plant-primary" />
                 <span className="ml-2 text-xl font-bold text-plant-dark">ArgoMind</span>
               </Link>
             </div>
