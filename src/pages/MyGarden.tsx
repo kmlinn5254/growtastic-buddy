@@ -1,11 +1,14 @@
+
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Navigation from "@/components/Navigation";
 import PlantSelection from "@/components/PlantSelection";
 import ReminderSystem from "@/components/ReminderSystem";
+import PlantDetail from "@/components/PlantDetail";
+import GrowthTracker from "@/components/GrowthTracker";
 import { Plant } from "@/components/PlantSelection";
-import { Shovel, Bell, Sprout } from "lucide-react";
+import { Shovel, Bell, Sprout, Info, Camera } from "lucide-react";
 
 // Sample plants data for growing
 const growablePlants: Plant[] = [
@@ -70,6 +73,10 @@ const MyGarden = () => {
     const savedPlants = localStorage.getItem("myGardenPlants");
     return savedPlants ? JSON.parse(savedPlants) : [];
   });
+  
+  const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
+  const [activeView, setActiveView] = useState<'list' | 'detail' | 'growth'>('list');
+  const [activeTab, setActiveTab] = useState("my-plants");
 
   useEffect(() => {
     localStorage.setItem("myGardenPlants", JSON.stringify(myPlants));
@@ -81,6 +88,22 @@ const MyGarden = () => {
     const newPlants = selectedPlants.filter(plant => !existingPlantIds.includes(plant.id));
     
     setMyPlants([...myPlants, ...newPlants]);
+  };
+  
+  const handlePlantClick = (plant: Plant) => {
+    setSelectedPlant(plant);
+    setActiveView('detail');
+  };
+  
+  const handleTrackGrowth = (plant: Plant) => {
+    setSelectedPlant(plant);
+    setActiveView('growth');
+  };
+  
+  const handleBackToList = () => {
+    setSelectedPlant(null);
+    setActiveView('list');
+    setActiveTab("my-plants");
   };
 
   return (
@@ -96,71 +119,101 @@ const MyGarden = () => {
             </p>
           </div>
           
-          <Tabs defaultValue="my-plants" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="my-plants" className="flex items-center">
-                <Sprout className="h-4 w-4 mr-2" />
-                My Plants
-              </TabsTrigger>
-              <TabsTrigger value="add-plants" className="flex items-center">
-                <Shovel className="h-4 w-4 mr-2" />
-                Add Plants
-              </TabsTrigger>
-              <TabsTrigger value="reminders" className="flex items-center">
-                <Bell className="h-4 w-4 mr-2" />
-                Reminders
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="my-plants">
-              {myPlants.length === 0 ? (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>No plants yet</CardTitle>
-                    <CardDescription>
-                      Go to the "Add Plants" tab to choose plants for your garden.
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              ) : (
-                <div className="space-y-4">
-                  <h2 className="text-2xl font-semibold">Plants in My Garden</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {myPlants.map((plant) => (
-                      <Card key={plant.id}>
-                        <div className="aspect-[4/3] w-full overflow-hidden">
-                          <img 
-                            src={plant.image} 
-                            alt={plant.name} 
-                            className="h-full w-full object-cover"
-                          />
-                        </div>
-                        <CardHeader className="pb-2">
-                          <CardTitle>{plant.name}</CardTitle>
-                          <CardDescription>Growth time: {plant.growTime}</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="text-sm space-y-1">
-                            <p><span className="font-medium">Light:</span> {plant.light}</p>
-                            <p><span className="font-medium">Water:</span> {plant.water}</p>
-                            <p><span className="font-medium">Difficulty:</span> {plant.difficulty}</p>
+          {activeView === 'list' ? (
+            <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="space-y-6">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="my-plants" className="flex items-center">
+                  <Sprout className="h-4 w-4 mr-2" />
+                  My Plants
+                </TabsTrigger>
+                <TabsTrigger value="add-plants" className="flex items-center">
+                  <Shovel className="h-4 w-4 mr-2" />
+                  Add Plants
+                </TabsTrigger>
+                <TabsTrigger value="reminders" className="flex items-center">
+                  <Bell className="h-4 w-4 mr-2" />
+                  Reminders
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="my-plants">
+                {myPlants.length === 0 ? (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>No plants yet</CardTitle>
+                      <CardDescription>
+                        Go to the "Add Plants" tab to choose plants for your garden.
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                ) : (
+                  <div className="space-y-4">
+                    <h2 className="text-2xl font-semibold">Plants in My Garden</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {myPlants.map((plant) => (
+                        <Card key={plant.id} className="hover:shadow-md transition-shadow">
+                          <div className="aspect-[4/3] w-full overflow-hidden">
+                            <img 
+                              src={plant.image} 
+                              alt={plant.name} 
+                              className="h-full w-full object-cover"
+                            />
                           </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                          <CardHeader className="pb-2">
+                            <CardTitle>{plant.name}</CardTitle>
+                            <CardDescription>Growth time: {plant.growTime}</CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="text-sm space-y-1 mb-4">
+                              <p><span className="font-medium">Light:</span> {plant.light}</p>
+                              <p><span className="font-medium">Water:</span> {plant.water}</p>
+                              <p><span className="font-medium">Difficulty:</span> {plant.difficulty}</p>
+                            </div>
+                            <div className="flex space-x-2">
+                              <button 
+                                onClick={() => handlePlantClick(plant)}
+                                className="flex items-center text-sm text-plant-primary hover:text-plant-dark"
+                              >
+                                <Info className="h-4 w-4 mr-1" />
+                                Growing Guide
+                              </button>
+                              <button 
+                                onClick={() => handleTrackGrowth(plant)}
+                                className="flex items-center text-sm text-plant-primary hover:text-plant-dark"
+                              >
+                                <Camera className="h-4 w-4 mr-1" />
+                                Track Growth
+                              </button>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
-            </TabsContent>
-            
-            <TabsContent value="add-plants">
-              <PlantSelection plants={growablePlants} onSelectPlants={handleSelectPlants} />
-            </TabsContent>
-            
-            <TabsContent value="reminders">
-              <ReminderSystem plants={myPlants} />
-            </TabsContent>
-          </Tabs>
+                )}
+              </TabsContent>
+              
+              <TabsContent value="add-plants">
+                <PlantSelection plants={growablePlants} onSelectPlants={handleSelectPlants} />
+              </TabsContent>
+              
+              <TabsContent value="reminders">
+                <ReminderSystem plants={myPlants} />
+              </TabsContent>
+            </Tabs>
+          ) : activeView === 'detail' && selectedPlant ? (
+            <PlantDetail plant={selectedPlant} onBack={handleBackToList} />
+          ) : activeView === 'growth' && selectedPlant ? (
+            <div className="space-y-4">
+              <button 
+                onClick={handleBackToList}
+                className="text-plant-primary hover:text-plant-dark flex items-center"
+              >
+                ← Back to my plants
+              </button>
+              <GrowthTracker plant={selectedPlant} />
+            </div>
+          ) : null}
         </div>
       </main>
     </div>
