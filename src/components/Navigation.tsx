@@ -1,13 +1,12 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Book, Users, Map, Settings, Home, Sprout, Menu, X, Leaf, LogIn, Sun, Moon } from "lucide-react";
+import { Book, Users, Map, Settings, Home, Sprout, Menu, X, Leaf, LogIn } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useAuth } from "@/hooks/useAuth";
-import { useTheme } from "@/hooks/useTheme";
 
 const Navigation = () => {
   const location = useLocation();
@@ -15,7 +14,6 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const { isAuthenticated } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   
   // Determine which settings/login item to show based on auth state
   const settingsOrLoginItem = isAuthenticated
@@ -113,36 +111,10 @@ const Navigation = () => {
             
             <div className="hidden md:flex items-center space-x-4">
               {renderNavLinks()}
-              
-              {/* Only show theme toggle for authenticated users */}
-              {isAuthenticated && (
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={toggleTheme}
-                  className="ml-2 text-gray-700 dark:text-gray-300"
-                >
-                  {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                  <span className="sr-only">Toggle theme</span>
-                </Button>
-              )}
             </div>
             
             {/* Mobile - we'll hide this since we're using bottom nav */}
             <div className="block md:hidden">
-              {/* Only show theme toggle for authenticated users */}
-              {isAuthenticated && (
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  onClick={toggleTheme}
-                  className="mr-2 text-gray-700 dark:text-gray-300"
-                >
-                  {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                  <span className="sr-only">Toggle theme</span>
-                </Button>
-              )}
-              
               <Drawer>
                 <DrawerTrigger asChild>
                   <Button variant="ghost" size="icon" className="text-plant-dark hover:text-plant-primary dark:text-white">
