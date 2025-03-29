@@ -29,23 +29,7 @@ const Community = () => {
     }
   }, [searchParams]);
   
-  // Add an event listener for custom events from the CommunityChallenge component
-  useEffect(() => {
-    const handleTagEvent = (e: Event) => {
-      const customEvent = e as CustomEvent;
-      if (customEvent.detail?.tag) {
-        setInitialContent(customEvent.detail.tag);
-      }
-    };
-    
-    window.addEventListener('plant:tag', handleTagEvent);
-    
-    return () => {
-      window.removeEventListener('plant:tag', handleTagEvent);
-    };
-  }, []);
-  
-  // Function to fetch posts from Supabase
+  // Function to fetch posts from Supabase and deduplicate them
   const loadPosts = useCallback(async (showToast = false) => {
     try {
       setIsRefreshing(true);
@@ -55,8 +39,8 @@ const Community = () => {
       const transformedPosts = supabasePosts.map(post => ({
         id: post.id,
         user: {
-          name: post.user?.name || "Unknown User",
-          avatar: post.user?.avatar_url || "https://i.pravatar.cc/150?img=0",
+          name: post.profiles?.name || "Unknown User",
+          avatar: post.profiles?.avatar_url || "https://i.pravatar.cc/150?img=0",
           username: post.user_id.substring(0, 8)
         },
         content: post.content,

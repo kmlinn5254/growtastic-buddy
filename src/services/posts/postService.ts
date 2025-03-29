@@ -9,7 +9,7 @@ export const fetchPosts = async (): Promise<SupabasePost[]> => {
     const { data, error } = await fromTable('posts')
       .select(`
         *,
-        user:profiles(
+        profiles:user_id(
           name,
           avatar_url
         ),

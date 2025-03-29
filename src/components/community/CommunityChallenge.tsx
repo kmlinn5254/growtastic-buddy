@@ -31,18 +31,21 @@ const CommunityChallenge = () => {
       
       // Only add the hashtag if it doesn't already exist
       if (!currentContent.includes(hashTag)) {
-        const newContent = currentContent ? currentContent + " " + hashTag : hashTag;
+        // If there's existing content, add the hashtag on a new line
+        const newContent = currentContent 
+          ? (currentContent.endsWith('\n') ? currentContent + hashTag : currentContent + '\n' + hashTag)
+          : hashTag;
         
         (postFormElement as HTMLTextAreaElement).value = newContent;
-        (postFormElement as HTMLTextAreaElement).focus();
         
-        // Place cursor at the end
+        // Manually trigger React's onChange handler by dispatching an input event
+        const event = new Event('input', { bubbles: true });
+        postFormElement.dispatchEvent(event);
+        
+        // Focus the textarea and place cursor at the end
+        (postFormElement as HTMLTextAreaElement).focus();
         const len = newContent.length;
         (postFormElement as HTMLTextAreaElement).setSelectionRange(len, len);
-        
-        // Trigger a change event to update state
-        const event = new Event('change', { bubbles: true });
-        postFormElement.dispatchEvent(event);
         
         // Scroll to post form
         postFormElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
