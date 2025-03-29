@@ -28,11 +28,16 @@ export const searchPlants = (query: string) => {
   }
   
   // If no matches found, create a "placeholder" plant with the search query
-  // This simulates the ability to search for any plant
+  // This simulates the ability to search for any plant and uses query-relevant images
+  const plantName = query.charAt(0).toUpperCase() + query.slice(1);
+  
+  // Use the search term to find a more relevant image via Unsplash
+  const imageUrl = `https://source.unsplash.com/featured/?${encodeURIComponent(plantName)},plant`;
+  
   return [{
     id: 9999,
-    name: query.charAt(0).toUpperCase() + query.slice(1),
-    image: "https://images.unsplash.com/photo-1581300740943-cfa5f847db2c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+    name: plantName,
+    image: imageUrl,
     difficulty: "Unknown",
     light: "Research needed",
     water: "Research needed",
