@@ -22,6 +22,8 @@ const GoogleLoginButton = ({ isLoading }: GoogleLoginButtonProps) => {
       if (result?.error) {
         console.error("Google login error in button handler:", result.error);
         throw result.error;
+      } else {
+        console.log("Google login initiated successfully:", result);
       }
       
       // We don't need to navigate here - the OAuth flow will handle redirection
