@@ -1,5 +1,6 @@
 
 import { allPlants } from "@/data/plantFAQ";
+import { Leaf } from "lucide-react";
 
 // Plant search service
 export const searchPlants = (query: string) => {
@@ -31,7 +32,8 @@ export const searchPlants = (query: string) => {
   // This simulates the ability to search for any plant and uses query-relevant images
   const plantName = query.charAt(0).toUpperCase() + query.slice(1);
   
-  // Use the search term to find a more relevant image via Unsplash
+  // Try to get an image via Unsplash but use a placeholder icon name in the alt text
+  // for better accessibility and to indicate the use of a generic placeholder
   const imageUrl = `https://source.unsplash.com/featured/?${encodeURIComponent(plantName)},plant`;
   
   return [{
