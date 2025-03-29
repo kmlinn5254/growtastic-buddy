@@ -1,35 +1,20 @@
 
-import { useState, useEffect, createContext, useContext } from "react";
-import { supabase } from "@/lib/supabase";
+import { useState, useEffect, useContext } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
 import { User, AuthContextType } from "./types";
-
-type SupabaseUser = {
-  id: string;
-  email?: string;
-  user_metadata?: {
-    name?: string;
-    avatar_url?: string;
-  };
-  app_metadata?: any;
-};
-
-// Context for auth state
-export const SupabaseAuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// Convert Supabase user to our app's user model
-const mapSupabaseUser = (supabaseUser: SupabaseUser | null): User | null => {
-  if (!supabaseUser) return null;
-  
-  return {
-    id: supabaseUser.id,
-    email: supabaseUser.email || '',
-    name: supabaseUser.user_metadata?.name || supabaseUser.email?.split('@')[0] || 'User',
-    photoURL: supabaseUser.user_metadata?.avatar_url || null,
-    emailVerified: supabaseUser.app_metadata?.email_confirmed || false
-  };
-};
+import { SupabaseAuthContext } from "./AuthContext";
+import { mapSupabaseUser } from "./userMapper";
+import {
+  loginWithEmailAndPassword,
+  loginWithGoogle,
+  signUpWithEmailAndPassword,
+  createUserSettings,
+  logoutUser,
+  sendVerificationEmail as sendVerificationEmailAction,
+  getCurrentSession,
+  setupAuthListener
+} from "./authActions";
 
 // Supabase Auth Provider
 export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -42,7 +27,7 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   // Initial auth check
   useEffect(() => {
     const initAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await getCurrentSession();
       
       if (session) {
         const mappedUser = mapSupabaseUser(session.user);
@@ -52,12 +37,10 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       setIsLoading(false);
       
       // Setup auth state change listener
-      const { data: { subscription } } = await supabase.auth.onAuthStateChange(
-        (event, session) => {
-          const mappedUser = session ? mapSupabaseUser(session.user) : null;
-          setUser(mappedUser);
-        }
-      );
+      const { data: { subscription } } = await setupAuthListener((user) => {
+        const mappedUser = mapSupabaseUser(user);
+        setUser(mappedUser);
+      });
       
       return () => {
         subscription.unsubscribe();
@@ -71,7 +54,7 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await loginWithEmailAndPassword(email, password);
       
       if (error) throw error;
       
@@ -95,12 +78,7 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const googleLogin = async () => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: window.location.origin,
-        }
-      });
+      const { error } = await loginWithGoogle();
       
       if (error) throw error;
       
@@ -120,15 +98,7 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const signUp = async (email: string, password: string, name: string) => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signUp({ 
-        email, 
-        password,
-        options: {
-          data: {
-            name,
-          }
-        }
-      });
+      const { data, error } = await signUpWithEmailAndPassword(email, password, name);
       
       if (error) throw error;
       
@@ -139,15 +109,7 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       
       // Create user settings upon signup
       if (data.user) {
-        await supabase.from('user_settings').insert([{
-          user_id: data.user.id,
-          plant_reminders: true,
-          community_activity: true,
-          new_features: true,
-          marketing: false,
-          language: language,
-          theme: 'light'
-        }]);
+        await createUserSettings(data.user.id, language);
       }
     } catch (error: any) {
       toast({
@@ -164,7 +126,7 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
   // Logout
   const logout = async () => {
     try {
-      const { error } = await supabase.auth.signOut();
+      const { error } = await logoutUser();
       if (error) throw error;
       
       setUser(null);
@@ -188,10 +150,7 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     try {
       if (!user?.email) throw new Error("No email address");
       
-      const { error } = await supabase.auth.resend({
-        type: 'signup',
-        email: user.email,
-      });
+      const { error } = await sendVerificationEmailAction(user.email);
       
       if (error) throw error;
       
