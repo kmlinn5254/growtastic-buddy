@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Plant } from "@/components/PlantSelection";
+import { Plant } from "@/types/plants";
 import { Camera, Calendar, Leaf, Sprout, ArrowLeft, ArrowRight, Film, ImagePlus } from "lucide-react";
 
 interface GrowthEntry {

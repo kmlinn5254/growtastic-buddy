@@ -6,16 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { DropletIcon, SunIcon, Leaf } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-
-export type Plant = {
-  id: number;
-  name: string;
-  image: string;
-  difficulty: string;
-  light: string;
-  water: string;
-  growTime: string;
-};
+import { Plant } from "@/types/plants";
 
 interface PlantSelectionProps {
   plants: Plant[];
@@ -64,7 +55,7 @@ const PlantSelection = ({ plants, onSelectPlants }: PlantSelectionProps) => {
                   className="h-5 w-5 data-[state=checked]:bg-plant-primary"
                 />
               </CardTitle>
-              <CardDescription>Grow time: {plant.growTime}</CardDescription>
+              <CardDescription>Grow time: {plant.growTime || 'Unknown'}</CardDescription>
             </CardHeader>
             <CardContent className="pb-2">
               <div className="aspect-[4/3] w-full overflow-hidden rounded-md mb-2">

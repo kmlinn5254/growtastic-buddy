@@ -8,7 +8,7 @@ export interface Plant {
   light: string;
   water: string;
   temperature: string;
-  growTime?: string;  // Added growTime as optional property to fix compatibility issues
+  growTime?: string;  // Optional to maintain compatibility with both usages
   description?: string;
   careSteps?: {
     title: string;
