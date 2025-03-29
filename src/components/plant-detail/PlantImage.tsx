@@ -9,10 +9,16 @@ interface PlantImageProps {
 
 const PlantImage: React.FC<PlantImageProps> = ({ plant }) => {
   const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
   const handleImageError = () => {
     console.error(`Failed to load image for ${plant.name}:`, plant.image);
     setHasError(true);
+    setIsLoading(false);
+  };
+  
+  const handleImageLoad = () => {
+    setIsLoading(false);
   };
   
   return (
@@ -25,13 +31,23 @@ const PlantImage: React.FC<PlantImageProps> = ({ plant }) => {
           </div>
         </div>
       ) : (
-        <img
-          src={plant.image}
-          alt={plant.name}
-          className="w-full h-auto object-cover aspect-square"
-          onError={handleImageError}
-          loading="lazy"
-        />
+        <>
+          {isLoading && (
+            <div className="w-full h-full aspect-square flex items-center justify-center bg-green-50">
+              <div className="animate-pulse">
+                <Leaf className="h-10 w-10 text-plant-primary opacity-40" />
+              </div>
+            </div>
+          )}
+          <img
+            src={plant.image}
+            alt={plant.name}
+            className={`w-full h-auto object-cover aspect-square ${isLoading ? 'hidden' : 'block'}`}
+            onError={handleImageError}
+            onLoad={handleImageLoad}
+            loading="lazy"
+          />
+        </>
       )}
     </div>
   );

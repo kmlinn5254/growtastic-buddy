@@ -6,7 +6,7 @@ export const growablePlants: Plant[] = [
   {
     id: 1,
     name: "Basil",
-    image: "https://cdn.shopify.com/s/files/1/2016/8569/files/Basil.jpg",
+    image: "https://images.pexels.com/photos/5677011/pexels-photo-5677011.jpeg",
     difficulty: "Easy",
     light: "Full sun",
     water: "Keep soil moist",
@@ -16,7 +16,7 @@ export const growablePlants: Plant[] = [
   {
     id: 2,
     name: "Cherry Tomatoes",
-    image: "https://www.almanac.com/sites/default/files/styles/or/public/image_nodes/cherry-tomatoes-1.jpg",
+    image: "https://images.pexels.com/photos/533280/pexels-photo-533280.jpeg",
     difficulty: "Moderate",
     light: "Full sun",
     water: "Regular watering",
@@ -26,7 +26,7 @@ export const growablePlants: Plant[] = [
   {
     id: 3,
     name: "Mint",
-    image: "https://www.almanac.com/sites/default/files/styles/or/public/mint-planting-growing-harvesting.jpg",
+    image: "https://images.pexels.com/photos/2300434/pexels-photo-2300434.jpeg",
     difficulty: "Very Easy",
     light: "Partial shade",
     water: "Keep soil moist",
@@ -36,7 +36,7 @@ export const growablePlants: Plant[] = [
   {
     id: 4,
     name: "Lettuce",
-    image: "https://www.almanac.com/sites/default/files/styles/or/public/image_nodes/lettuce-hydroponic.jpg",
+    image: "https://images.pexels.com/photos/2329440/pexels-photo-2329440.jpeg",
     difficulty: "Easy",
     light: "Partial sun",
     water: "Regular watering",
@@ -46,7 +46,7 @@ export const growablePlants: Plant[] = [
   {
     id: 5,
     name: "Chili Peppers",
-    image: "https://www.almanac.com/sites/default/files/styles/or/public/image_nodes/chili-pepper-hot-spicy-food.jpg",
+    image: "https://images.pexels.com/photos/3850838/pexels-photo-3850838.jpeg",
     difficulty: "Moderate",
     light: "Full sun",
     water: "Moderate watering",
@@ -56,7 +56,7 @@ export const growablePlants: Plant[] = [
   {
     id: 6,
     name: "Cilantro",
-    image: "https://www.almanac.com/sites/default/files/styles/or/public/image_nodes/cilantro_coriander.jpg",
+    image: "https://images.pexels.com/photos/4198654/pexels-photo-4198654.jpeg",
     difficulty: "Easy",
     light: "Partial sun",
     water: "Keep soil moist",

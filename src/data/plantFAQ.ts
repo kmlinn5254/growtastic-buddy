@@ -16,7 +16,7 @@ export const allPlants = [
   {
     id: 1,
     name: "Monstera Deliciosa",
-    image: "https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_monstera_variant_medium_grant_cream_768x.jpg",
+    image: "https://images.pexels.com/photos/3097770/pexels-photo-3097770.jpeg",
     difficulty: "Easy",
     light: "Bright indirect",
     water: "Weekly",
@@ -25,7 +25,7 @@ export const allPlants = [
   {
     id: 2,
     name: "Snake Plant",
-    image: "https://www.thespruce.com/thmb/StjXqA3Tj3pe1zsqkiEZkZjJD0c=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/snake-plant-care-guide-4797223-hero-b10beccc74e04251a0afa33f320a91c2.jpg",
+    image: "https://images.pexels.com/photos/2123482/pexels-photo-2123482.jpeg",
     difficulty: "Very Easy",
     light: "Low to bright indirect",
     water: "Every 2-3 weeks",
@@ -34,7 +34,7 @@ export const allPlants = [
   {
     id: 3,
     name: "Fiddle Leaf Fig",
-    image: "https://bloomscape.com/wp-content/uploads/2022/03/Fiddle-Leaf-Fig_Stone_Carousel.jpg",
+    image: "https://images.pexels.com/photos/6208087/pexels-photo-6208087.jpeg",
     difficulty: "Moderate",
     light: "Bright indirect",
     water: "When top inch is dry",
@@ -43,7 +43,7 @@ export const allPlants = [
   {
     id: 4,
     name: "Pothos",
-    image: "https://cdn.shopify.com/s/files/1/0150/6262/products/the-sill_pothos-marble-queen_variant_small_tabitha_citrine_768x.jpg",
+    image: "https://images.pexels.com/photos/1084199/pexels-photo-1084199.jpeg",
     difficulty: "Very Easy",
     light: "Low to bright indirect",
     water: "When top soil is dry",
@@ -52,7 +52,7 @@ export const allPlants = [
   {
     id: 5,
     name: "Boston Fern",
-    image: "https://www.gardeningknowhow.com/wp-content/uploads/2019/11/Boston-fern-1.jpg",
+    image: "https://images.pexels.com/photos/1084196/pexels-photo-1084196.jpeg",
     difficulty: "Moderate",
     light: "Indirect light",
     water: "Keep soil consistently moist",
@@ -61,7 +61,7 @@ export const allPlants = [
   {
     id: 6,
     name: "Peace Lily",
-    image: "https://cdn.shopify.com/s/files/1/0662/5489/products/Peace_Lily_-_Spathiphyllum_-_pistils_nursery.jpg",
+    image: "https://images.pexels.com/photos/4751969/pexels-photo-4751969.jpeg",
     difficulty: "Easy",
     light: "Low to medium indirect",
     water: "When leaves start to droop",
@@ -70,7 +70,7 @@ export const allPlants = [
   {
     id: 7,
     name: "ZZ Plant",
-    image: "https://www.gardendesign.com/pictures/images/900x705Max/site_3/zanzibar-gem-zz-plant-zamioculcas-zamiifolia-shutterstock-com_15962.jpg",
+    image: "https://images.pexels.com/photos/7728782/pexels-photo-7728782.jpeg",
     difficulty: "Very Easy",
     light: "Low to bright indirect",
     water: "Every 2-3 weeks",
@@ -79,7 +79,7 @@ export const allPlants = [
   {
     id: 8,
     name: "Rubber Plant",
-    image: "https://www.thespruce.com/thmb/5phoVGgI4aBCZR6xBLVaROgBrJs=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/grow-rubber-plants-ficus-elastica-1902755-04-86c6574a284b40248a78bbed5a43a61c.jpg",
+    image: "https://images.pexels.com/photos/1005058/pexels-photo-1005058.jpeg",
     difficulty: "Easy",
     light: "Medium to bright indirect",
     water: "When top inch is dry",
@@ -88,7 +88,7 @@ export const allPlants = [
   {
     id: 9,
     name: "Aloe Vera",
-    image: "https://www.almanac.com/sites/default/files/styles/or/public/image_nodes/aloe-vera-white-pot_sunwand24-ss_edit.jpg",
+    image: "https://images.pexels.com/photos/4505165/pexels-photo-4505165.jpeg",
     difficulty: "Easy",
     light: "Bright direct to indirect",
     water: "When soil is completely dry",
@@ -97,7 +97,7 @@ export const allPlants = [
   {
     id: 10,
     name: "Jade Plant",
-    image: "https://www.almanac.com/sites/default/files/styles/or/public/image_nodes/jade-plante.jpg",
+    image: "https://images.pexels.com/photos/6208086/pexels-photo-6208086.jpeg",
     difficulty: "Easy",
     light: "Bright direct to indirect",
     water: "When soil is completely dry",
