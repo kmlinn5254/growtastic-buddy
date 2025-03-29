@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Brain, Book, Users, Map, Settings, Home, Sprout, Menu, X, Leaf } from "lucide-react";
+import { Book, Users, Map, Settings, Home, Sprout, Menu, X, Leaf } from "lucide-react";
 import { useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -83,7 +83,7 @@ const Navigation = () => {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
               <Link to="/" className="flex items-center">
-                <Brain className="h-8 w-8 text-plant-primary" />
+                <Sprout className="h-8 w-8 text-plant-primary" />
                 <span className="ml-2 text-xl font-bold text-plant-dark">ArgoMind</span>
               </Link>
             </div>
