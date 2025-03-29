@@ -59,8 +59,11 @@ const Index = () => {
               </span>
             </span>
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-700 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl mb-4 text-gray-700 max-w-3xl mx-auto">
             Empowering farmers with the wisdom of nature and the power of AI.
+          </p>
+          <p className="text-lg md:text-xl mb-8 text-gray-600 max-w-3xl mx-auto italic">
+            Bridging nature and knowledge for a greener tomorrow.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-plant-primary hover:bg-plant-dark">
