@@ -35,8 +35,14 @@ export const addComment = async (postId: number, content: string, userId: string
         post_id: postId,
         user_id: userId,
         content
-      }])
-      .select()
+      }] as any)
+      .select(`
+        *,
+        user:user_id (
+          name,
+          avatar_url
+        )
+      `)
       .single();
       
     if (error) throw error;

@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,15 +11,29 @@ import { createPost } from "@/services/posts/postService";
 
 interface PostFormProps {
   onSubmitPost: (content: string, imageUrl: string) => void;
+  initialContent?: string;
 }
 
-const PostForm = ({ onSubmitPost }: PostFormProps) => {
+const PostForm = ({ onSubmitPost, initialContent = "" }: PostFormProps) => {
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
-  const [newPost, setNewPost] = useState("");
+  const [newPost, setNewPost] = useState(initialContent);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // If there's initialContent, set focus to beginning of input
+    if (initialContent && inputRef.current) {
+      inputRef.current.focus();
+      
+      // Set cursor position to beginning
+      if (typeof inputRef.current.setSelectionRange === 'function') {
+        inputRef.current.setSelectionRange(0, 0);
+      }
+    }
+  }, [initialContent]);
 
   const handleSubmitPost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,6 +100,7 @@ const PostForm = ({ onSubmitPost }: PostFormProps) => {
         </Avatar>
         <div className="flex-1 relative">
           <Input
+            ref={inputRef}
             placeholder={isAuthenticated ? "Share your plant journey..." : "Sign in to share your plant journey..."}
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
