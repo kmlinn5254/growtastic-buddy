@@ -1,6 +1,7 @@
+
 import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsListScrollable, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Plant } from "@/components/PlantSelection";
 import { Shovel, Droplet, Sun, Calendar, Sprout } from "lucide-react";
@@ -98,7 +99,7 @@ const PlantDetail = ({ plant, onBack }: PlantDetailProps) => {
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="instructions" className="space-y-4">
-            <TabsListScrollable scrollable={true} className={isMobile ? "w-full" : ""}>
+            <TabsList className="w-full">
               <TabsTrigger value="instructions" className="flex items-center">
                 <Shovel className="h-4 w-4 mr-2" />
                 Growing Instructions
@@ -107,7 +108,7 @@ const PlantDetail = ({ plant, onBack }: PlantDetailProps) => {
                 <Droplet className="h-4 w-4 mr-2" />
                 Plant Care
               </TabsTrigger>
-            </TabsListScrollable>
+            </TabsList>
             
             <TabsContent value="instructions" className="space-y-4">
               <div className="space-y-4">

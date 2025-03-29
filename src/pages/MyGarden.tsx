@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from "react";
-import { Tabs, TabsContent, TabsListScrollable, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useIsMobile } from "@/hooks/use-mobile";
 import Navigation from "@/components/Navigation";
@@ -120,7 +121,7 @@ const MyGarden = () => {
           
           {activeView === 'list' ? (
             <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsListScrollable scrollable={true} className={isMobile ? "grid-cols-1" : "grid w-full grid-cols-3"}>
+              <TabsList className={`${isMobile ? "w-full flex" : "grid w-full grid-cols-3"}`}>
                 <TabsTrigger value="my-plants" className="flex items-center">
                   <Sprout className="h-4 w-4 mr-2" />
                   My Plants
@@ -133,7 +134,7 @@ const MyGarden = () => {
                   <Bell className="h-4 w-4 mr-2" />
                   Reminders
                 </TabsTrigger>
-              </TabsListScrollable>
+              </TabsList>
               
               <TabsContent value="my-plants">
                 {myPlants.length === 0 ? (
