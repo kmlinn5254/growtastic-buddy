@@ -10,7 +10,7 @@ import { User, Bell, Shield, Key, LogOut, Camera, Globe } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useLanguage } from "@/hooks/useLanguage";
+import { useLanguage, LanguageCode } from "@/hooks/useLanguage";
 
 const Settings = () => {
   const { toast } = useToast();
@@ -76,7 +76,7 @@ const Settings = () => {
   };
 
   const handleLanguageChange = (value: string) => {
-    setLanguage(value);
+    setLanguage(value as LanguageCode);
     
     toast({
       title: translations.languageChanged,
@@ -405,7 +405,7 @@ const Settings = () => {
                         <SelectContent>
                           {languageOptions.map((option) => (
                             <SelectItem key={option.value} value={option.value}>
-                              {option.label}
+                              {option.label} ({option.nativeName})
                             </SelectItem>
                           ))}
                         </SelectContent>

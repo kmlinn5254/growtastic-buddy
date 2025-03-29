@@ -4,8 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, MessageCircle, Share2, Sparkles, Image as ImageIcon, Send } from "lucide-react";
+import { Heart, MessageCircle, Share2, Sparkles, Image as ImageIcon, Send, Lock } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 import Navigation from "@/components/Navigation";
+
+// Mock data for user authentication status
+const mockUser = {
+  isAuthenticated: false, // Set to false by default to simulate non-authenticated user
+  name: "You",
+  avatar: "https://i.pravatar.cc/150?img=1",
+  username: "me"
+};
 
 // Mock data for community posts
 const initialPosts = [
@@ -54,6 +63,7 @@ const initialPosts = [
 ];
 
 const Community = () => {
+  const { toast } = useToast();
   const [posts, setPosts] = useState(initialPosts);
   const [newPost, setNewPost] = useState("");
   const [likedPosts, setLikedPosts] = useState<number[]>([]);
@@ -78,13 +88,22 @@ const Community = () => {
     e.preventDefault();
     if (!newPost.trim()) return;
     
+    if (!mockUser.isAuthenticated) {
+      toast({
+        title: "Authentication required",
+        description: "You need to sign in to create posts.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     // Add new post to the top
     const newPostObj = {
       id: Date.now(),
       user: {
-        name: "You",
-        avatar: "https://i.pravatar.cc/150?img=1",
-        username: "me"
+        name: mockUser.name,
+        avatar: mockUser.avatar,
+        username: mockUser.username
       },
       content: newPost,
       image: "", // No image in this simplified version
@@ -112,32 +131,46 @@ const Community = () => {
               <form onSubmit={handleSubmitPost}>
                 <div className="flex items-start gap-4">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src="https://i.pravatar.cc/150?img=1" alt="Your avatar" />
+                    <AvatarImage src={mockUser.avatar} alt="Your avatar" />
                     <AvatarFallback>You</AvatarFallback>
                   </Avatar>
-                  <div className="flex-1">
+                  <div className="flex-1 relative">
                     <Input
-                      placeholder="Share your plant journey..."
+                      placeholder={mockUser.isAuthenticated ? "Share your plant journey..." : "Sign in to share your plant journey..."}
                       value={newPost}
                       onChange={(e) => setNewPost(e.target.value)}
                       className="plant-input border-b-2 border-x-0 border-t-0 rounded-none px-0 focus-visible:ring-0 focus-visible:border-plant-primary"
+                      disabled={!mockUser.isAuthenticated}
                     />
+                    {!mockUser.isAuthenticated && (
+                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <Lock className="h-4 w-4" />
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex justify-between mt-4">
-                  <Button type="button" variant="ghost" className="text-gray-500">
+                  <Button type="button" variant="ghost" className="text-gray-500" disabled={!mockUser.isAuthenticated}>
                     <ImageIcon className="h-5 w-5 mr-2" />
                     Add Photo
                   </Button>
                   <Button 
                     type="submit" 
                     className="bg-plant-primary hover:bg-plant-dark"
-                    disabled={!newPost.trim()}
+                    disabled={!mockUser.isAuthenticated || !newPost.trim()}
                   >
                     <Send className="h-5 w-5 mr-2" />
                     Post
                   </Button>
                 </div>
+                {!mockUser.isAuthenticated && (
+                  <div className="mt-4 text-center">
+                    <p className="text-sm text-gray-500 mb-2">You need to sign in to create posts</p>
+                    <Button variant="outline" className="mx-auto">
+                      Sign In
+                    </Button>
+                  </div>
+                )}
               </form>
             </CardContent>
           </Card>

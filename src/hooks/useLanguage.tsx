@@ -1,8 +1,7 @@
-
 import { useState, useEffect, createContext, useContext, ReactNode } from "react";
 
 // Available languages
-export type LanguageCode = "en" | "es" | "fr" | "de" | "zh";
+export type LanguageCode = "en" | "es" | "fr" | "de" | "zh" | "my";
 
 // Language option type
 export interface LanguageOption {
@@ -18,6 +17,7 @@ export const LANGUAGE_OPTIONS: LanguageOption[] = [
   { value: "fr", label: "French", nativeName: "Français" },
   { value: "de", label: "German", nativeName: "Deutsch" },
   { value: "zh", label: "Chinese", nativeName: "中文" },
+  { value: "my", label: "Myanmar", nativeName: "မြန်မာ" },
 ];
 
 // Translation dictionaries
@@ -271,6 +271,56 @@ export const TRANSLATIONS = {
     saveLanguagePreferences: "保存语言偏好",
     languagePreferencesSaved: "语言偏好已保存",
     languagePreferencesSavedDesc: "您的语言偏好已成功保存。",
+  },
+  my: {
+    // General
+    settings: "ဆက်တင်များ",
+    cancel: "ပယ်ဖျက်ရန်",
+    save: "သိမ်းဆည်းရန်",
+    saveChanges: "အပြောင်းအလဲများကို သိမ်းဆည်းရန်",
+    updating: "အပ်ဒိတ်လုပ်နေသည်...",
+
+    // Tab names
+    profile: "ပရိုဖိုင်း",
+    notifications: "အသိပေးချက်များ",
+    privacy: "လုံခြုံမှု",
+    security: "လုံခြုံရေး",
+    language: "ဘာသာစကား",
+
+    // Profile tab
+    profileSettings: "ပရိုဖိုင်းဆက်တင်များ",
+    profileSettingsDesc: "သင့်ကိုယ်ရေးအချက်အလက်နှင့် အကောင့်အသေးစိတ်ကို စီမံခန့်ခွဲပါ။",
+    changeProfilePicture: "ပရိုဖိုင်းပုံပြောင်းရန်",
+    profileUpdated: "ပရိုဖိုင်းကို အပ်ဒိတ်လုပ်ပြီးပါပြီ",
+    profileUpdatedDesc: "သင့်ပရိုဖိုင်းအချက်အလက်ကို အောင်မြင်စွာ အပ်ဒိတ်လုပ်ပြီးပါပြီ။",
+    profilePictureUpdated: "ပရိုဖိုင်းပုံကို အပ်ဒိတ်လုပ်ပြီးပါပြီ",
+    profilePictureUpdatedDesc: "သင့်ပရိုဖိုင်းပုံကို အောင်မြင်စွာ အပ်ဒိတ်လုပ်ပြီးပါပြီ။",
+
+    // Notifications tab
+    notificationSettings: "အသိပေးချက်ဆက်တင်များ",
+    notificationSettingsDesc: "သင်မည်သို့နှင့် မည်သည့်အချိန်တွင် အသိပေးချက်များရရှိမည်ကို ထိန်းချုပ်ပါ။",
+    notificationSettingsUpdated: "အသိပေးချက်ဆက်တင်များကို အပ်ဒိတ်လုပ်ပြီးပါပြီ",
+    enabled: "ဖွင့်ထားသည်",
+    disabled: "ပိတ်ထားသည်",
+
+    // Privacy tab
+    privacySettings: "လုံခြုံမှုဆက်တင်များ",
+    privacySettingsDesc: "သင့်ဒေတာနှင့် လုံခြုံမှုဦးစားပေးချက်များကို ထိန်းချုပ်ပါ။",
+
+    // Security tab
+    securitySettings: "လုံခြုံရေးဆက်တင်များ",
+    securitySettingsDesc: "သင့်အကောင့်လုံခြုံရေးနှင့် စကားဝှက်ကို စီမံခန့်ခွဲပါ။",
+
+    // Language tab
+    languageSettings: "ဘာသာစကားဆက်တင်များ",
+    languageSettingsDesc: "အပလီကေးရှင်းအတွက် သင့်ဘာသာစကားဦးစားပေးချက်များကို ပြောင်းလဲပါ။",
+    selectLanguage: "ဘာသာစကားရွေးချယ်ပါ",
+    languageNote: "ဘာသာစကားပြောင်းလဲခြင်းသည် အပလီကေးရှင်းတစ်ခုလုံးရှိ စာသားအားလုံးကို သက်ရောက်စေပါမည်။",
+    languageChanged: "ဘာသာစကားပြောင်းလဲပြီး",
+    languageChangedTo: "အပလီကေးရှင်းဘာသာစကားကို ပြောင်းလဲပြီး",
+    saveLanguagePreferences: "ဘာသာစကားဦးစားပေးချက်များကို သိမ်းဆည်းရန်",
+    languagePreferencesSaved: "ဘာသာစကားဦးစားပေးချက်များကို သိမ်းဆည်းပြီး",
+    languagePreferencesSavedDesc: "သင့်ဘာသာစကားဦးစားပေးချက်များကို အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ။",
   }
 };
 
