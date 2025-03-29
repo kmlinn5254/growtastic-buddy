@@ -16,14 +16,21 @@ const GoogleLoginButton = ({ isLoading }: GoogleLoginButtonProps) => {
   
   const handleGoogleLogin = async () => {
     try {
-      console.log("Starting Google login process");
-      await googleLogin();
-      // Navigation will be handled by the auth state change
+      console.log("Starting Google login process from button");
+      const { error } = await googleLogin();
+      
+      if (error) {
+        console.error("Google login error in button handler:", error);
+        throw error;
+      }
+      
+      // We don't need to navigate here - the OAuth flow will handle redirection
+      // and the auth state change listener will handle post-auth navigation
     } catch (error: any) {
       console.error("Google login error:", error);
       toast({
         title: "Login failed",
-        description: error.message || "Could not sign in with Google",
+        description: error.message || "Could not sign in with Google. Please try again.",
         variant: "destructive",
       });
     }
