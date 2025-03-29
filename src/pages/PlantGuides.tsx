@@ -11,13 +11,14 @@ import SeasonalGuideView from "@/components/SeasonalGuideView";
 import PlantCardGrid from "@/components/PlantCardGrid";
 import SeasonalGuidesGrid from "@/components/SeasonalGuidesGrid";
 import { Loader2 } from "lucide-react";
+import { Plant } from "@/types/plants";
 
 const PlantGuides = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedPlant, setSelectedPlant] = useState<typeof allPlants[0] | null>(null);
+  const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
   const [selectedSeasonalGuide, setSelectedSeasonalGuide] = useState<typeof seasonalGuides[0] | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [filteredPlants, setFilteredPlants] = useState<typeof allPlants>([]);
+  const [filteredPlants, setFilteredPlants] = useState<Plant[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   
   // Effect to search plants when query changes
@@ -91,7 +92,7 @@ const PlantGuides = () => {
                     <PlantCardGrid 
                       plants={filteredPlants} 
                       searchQuery={searchQuery}
-                      onSelectPlant={setSelectedPlant} 
+                      onSelectPlant={(plant: Plant) => setSelectedPlant(plant)} 
                       key={`plant-grid-${refreshTrigger}`} // Ensure grid refreshes when new plants are added
                     />
                   )}

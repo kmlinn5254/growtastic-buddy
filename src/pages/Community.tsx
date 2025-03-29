@@ -8,14 +8,6 @@ import CommunityChallenge from "@/components/community/CommunityChallenge";
 import PostFeed from "@/components/community/PostFeed";
 import { Post } from "@/components/community/PostItem";
 
-// Mock data for user authentication status
-const mockUser = {
-  isAuthenticated: false, // Set to false by default to simulate non-authenticated user
-  name: "You",
-  avatar: "https://i.pravatar.cc/150?img=1",
-  username: "me"
-};
-
 // Mock data for community posts
 const initialPosts: Post[] = [
   {
@@ -67,22 +59,13 @@ const Community = () => {
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   
   const handleSubmitPost = (content: string) => {
-    if (!mockUser.isAuthenticated) {
-      toast({
-        title: "Authentication required",
-        description: "You need to sign in to create posts.",
-        variant: "destructive"
-      });
-      return;
-    }
-    
     // Add new post to the top
     const newPost: Post = {
       id: Date.now(),
       user: {
-        name: mockUser.name,
-        avatar: mockUser.avatar,
-        username: mockUser.username
+        name: "You",
+        avatar: "https://i.pravatar.cc/150?img=1",
+        username: "me"
       },
       content: content,
       image: "", // No image in this simplified version
@@ -106,7 +89,7 @@ const Community = () => {
           {/* Post creation */}
           <Card className="mb-8 plant-section">
             <CardContent className="pt-6">
-              <PostForm user={mockUser} onSubmitPost={handleSubmitPost} />
+              <PostForm onSubmitPost={handleSubmitPost} />
             </CardContent>
           </Card>
           
