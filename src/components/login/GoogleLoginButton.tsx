@@ -16,7 +16,11 @@ const GoogleLoginButton = ({ isLoading }: GoogleLoginButtonProps) => {
   
   const handleGoogleLogin = async () => {
     try {
-      console.log("Starting Google login process from button");
+      console.log("Starting Google login process from button", {
+        currentUrl: window.location.href,
+        origin: window.location.origin
+      });
+      
       const result = await googleLogin();
       
       if (result?.error) {
@@ -24,6 +28,9 @@ const GoogleLoginButton = ({ isLoading }: GoogleLoginButtonProps) => {
         throw result.error;
       } else {
         console.log("Google login initiated successfully:", result);
+        // This line will only show up in the console if the OAuth flow doesn't
+        // immediately redirect the user away from the page
+        console.log("OAuth flow started - user should be redirected to Google");
       }
       
       // We don't need to navigate here - the OAuth flow will handle redirection
