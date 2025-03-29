@@ -14,42 +14,62 @@ const AnalysisHistoryTable = ({ analyses, onSelectAnalysis }: AnalysisHistoryTab
       <TableHeader>
         <TableRow>
           <TableHead className="w-[100px]">Plant</TableHead>
-          <TableHead>Name</TableHead>
+          <TableHead>Disease</TableHead>
           <TableHead>Condition</TableHead>
           <TableHead className="text-right">Date</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {analyses.map((analysis) => (
-          <TableRow 
-            key={analysis.id} 
-            className="cursor-pointer hover:bg-muted/60"
-            onClick={() => onSelectAnalysis(analysis)}
-          >
-            <TableCell>
-              <div className="w-12 h-12 rounded-md overflow-hidden">
-                <img 
-                  src={analysis.image} 
-                  alt={analysis.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </TableCell>
-            <TableCell className="font-medium">{analysis.name}</TableCell>
-            <TableCell>
-              {analysis.description?.includes("Healthy") ? (
-                <span className="text-green-600">Healthy</span>
-              ) : (
-                <span className="text-amber-600">Needs attention</span>
-              )}
-            </TableCell>
-            <TableCell className="text-right text-muted-foreground">
-              {analysis.createdAt 
-                ? formatDistanceToNow(new Date(analysis.createdAt), { addSuffix: true })
-                : "Unknown date"}
-            </TableCell>
-          </TableRow>
-        ))}
+        {analyses.map((analysis) => {
+          // Extract condition from description if available
+          let condition = "Unknown";
+          if (analysis.description) {
+            // Look for common condition phrases in the description
+            const conditionPhrases = [
+              "Healthy", "Mildly distressed", "Stressed", 
+              "Needs attention", "Minor problems", "Showing minor stress",
+              "Needs care adjustments"
+            ];
+            
+            for (const phrase of conditionPhrases) {
+              if (analysis.description.includes(phrase)) {
+                condition = phrase;
+                break;
+              }
+            }
+          }
+          
+          return (
+            <TableRow 
+              key={analysis.id} 
+              className="cursor-pointer hover:bg-muted/60"
+              onClick={() => onSelectAnalysis(analysis)}
+            >
+              <TableCell>
+                <div className="w-12 h-12 rounded-md overflow-hidden">
+                  <img 
+                    src={analysis.image} 
+                    alt={analysis.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              </TableCell>
+              <TableCell className="font-medium">{analysis.name}</TableCell>
+              <TableCell>
+                {condition === "Healthy" ? (
+                  <span className="text-green-600">Healthy</span>
+                ) : (
+                  <span className="text-amber-600">{condition}</span>
+                )}
+              </TableCell>
+              <TableCell className="text-right text-muted-foreground">
+                {analysis.createdAt 
+                  ? formatDistanceToNow(new Date(analysis.createdAt), { addSuffix: true })
+                  : "Unknown date"}
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   );
