@@ -3,7 +3,7 @@ import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
-import { AuthProvider as CustomAuthProvider, User, AuthContextType } from "./types";
+import { User, AuthContextType } from "./types";
 
 type SupabaseUser = {
   id: string;
@@ -248,5 +248,5 @@ export const useSupabaseAuth = () => {
   return context;
 };
 
-// For backward compatibility with the existing auth hook
-export const useAuth: CustomAuthProvider = useSupabaseAuth;
+// Export the hook directly
+export const useAuth = useSupabaseAuth;
