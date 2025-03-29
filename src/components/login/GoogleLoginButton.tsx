@@ -16,14 +16,16 @@ const GoogleLoginButton = ({ isLoading }: GoogleLoginButtonProps) => {
   
   const handleGoogleLogin = async () => {
     try {
+      // Clear browser local storage to prevent stale auth state
+      localStorage.removeItem('supabase.auth.token');
+      
+      // Log important information for debugging
       console.log("Starting Google login process from button", {
         currentUrl: window.location.href,
         origin: window.location.origin,
-        pathname: window.location.pathname
+        pathname: window.location.pathname,
+        fullUrl: `${window.location.origin}${window.location.pathname}`
       });
-      
-      // Clear any previous OAuth state from localStorage to prevent conflicts
-      localStorage.removeItem('supabase.auth.token');
       
       const result = await googleLogin();
       
@@ -34,7 +36,7 @@ const GoogleLoginButton = ({ isLoading }: GoogleLoginButtonProps) => {
         throw result.error;
       } else {
         console.log("Google OAuth flow initiated successfully");
-        // The auth flow will now redirect to Google for authentication
+        // The OAuth flow will now redirect to Google for authentication
       }
     } catch (error: any) {
       console.error("Google login error:", error);

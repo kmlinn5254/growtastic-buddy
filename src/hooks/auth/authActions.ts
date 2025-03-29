@@ -8,14 +8,17 @@ export const loginWithEmailAndPassword = async (email: string, password: string)
 
 // Google OAuth login
 export const loginWithGoogle = async () => {
-  // For OAuth to work correctly, use the Supabase-provided callback URL instead of a custom redirect
-  // The auth.signInWithOAuth method will handle the redirection automatically
+  // For OAuth to work correctly, we need to provide the exact preview URL that Google has whitelisted
   console.log("Initiating Google OAuth flow");
   
+  const currentURL = window.location.origin;
+  console.log("Current origin:", currentURL);
+  
+  // Use the current URL as the redirect URL to ensure it matches what's configured in Google Console
   return await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: window.location.origin,
+      redirectTo: `${currentURL}/login`,
       queryParams: {
         prompt: 'select_account',
         access_type: 'offline',
