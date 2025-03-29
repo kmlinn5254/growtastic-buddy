@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,15 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Custom plant-themed colors
+				plant: {
+					primary: '#4CAF50',
+					dark: '#2E7D32',
+					light: '#81C784',
+					accent: '#FFB74D',
+					brown: '#795548',
+					lightBrown: '#A1887F',
 				}
 			},
 			borderRadius: {
@@ -84,11 +94,16 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'plant-grow': {
+					'0%': { transform: 'scale(0.95)', opacity: '0.7' },
+					'100%': { transform: 'scale(1)', opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'plant-grow': 'plant-grow 1.5s ease-out'
 			}
 		}
 	},
