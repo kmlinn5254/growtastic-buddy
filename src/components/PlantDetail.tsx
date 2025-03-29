@@ -3,7 +3,7 @@ import React from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Plant } from "@/components/PlantSelection";
+import { Plant } from "@/types/plants";
 import { Shovel, Droplet, Sun, Calendar, Sprout } from "lucide-react";
 
 interface PlantDetailProps {
