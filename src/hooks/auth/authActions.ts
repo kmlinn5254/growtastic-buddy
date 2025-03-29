@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 // Login with email/password
@@ -14,16 +13,12 @@ export const loginWithGoogle = async () => {
   const currentURL = window.location.origin;
   console.log("Current origin:", currentURL);
   
-  // Use the explicit callback URL from Supabase
-  const supabaseURL = "https://uvjisnawrhxfxorajgqv.supabase.co";
-  const callbackURL = `${currentURL}/login`;
-  
-  console.log("Using callback URL:", callbackURL);
+  // Don't specify a redirect URL - let Supabase handle it with its built-in callback
+  console.log("Using Supabase's default callback URL");
   
   return await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: callbackURL,
       queryParams: {
         prompt: 'select_account',
         access_type: 'offline',
