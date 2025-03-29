@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plant } from "@/types/plants";
@@ -8,6 +7,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Clock, Leaf } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
+import { fromTable } from "@/lib/supabaseHelpers";
 
 interface AnalysisHistoryProps {
   onSelectAnalysis: (plant: Plant) => void;
@@ -30,10 +30,8 @@ const AnalysisHistory = ({ onSelectAnalysis }: AnalysisHistoryProps) => {
         const userId = userData?.user?.id;
 
         if (userId) {
-          // Fetch user's plant analyses from Supabase
-          // Using a more direct approach to avoid type issues
-          const { data, error, count } = await supabase
-            .from('plants')
+          // Use fromTable helper to avoid TypeScript errors
+          const { data, error, count } = await fromTable('plants')
             .select('*', { count: 'exact' })
             .eq('user_id', userId)
             .order('created_at', { ascending: false })
@@ -42,9 +40,9 @@ const AnalysisHistory = ({ onSelectAnalysis }: AnalysisHistoryProps) => {
           if (error) throw error;
           
           if (data && data.length > 0) {
-            // Map Supabase data to Plant type with proper type assertions
+            // Map Supabase data to Plant type with proper type assertions and null checking
             const plants: Plant[] = data.map((item: any) => ({
-              id: Number(item.id) || 0, // Convert to number for Plant interface
+              id: typeof item.id === 'number' ? item.id : Number(item.id) || 0,
               name: item.name || "",
               image: item.image || "",
               difficulty: item.difficulty || "",

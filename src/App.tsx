@@ -19,10 +19,10 @@ import { AuthProvider } from "./hooks/useAuth";
 import { ThemeProvider } from "./hooks/useTheme";
 import { useState } from "react";
 
-const App = () => {
-  // Create a new QueryClient instance for each app render
-  const [queryClient] = useState(() => new QueryClient());
+// Create a QueryClient instance outside the component to avoid re-initialization
+const queryClient = new QueryClient();
 
+const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
