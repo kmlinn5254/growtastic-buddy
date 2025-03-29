@@ -1,6 +1,6 @@
 
 import { Link, useLocation } from "react-router-dom";
-import { Leaf, Book, Users, Map, Settings, Home } from "lucide-react";
+import { Leaf, Book, Users, Map, Settings, Home, SeedingIcon } from "lucide-react";
 
 const Navigation = () => {
   const location = useLocation();
@@ -8,6 +8,7 @@ const Navigation = () => {
   const navItems = [
     { label: "Home", path: "/", icon: Home },
     { label: "Plant Checker", path: "/plant-checker", icon: Leaf },
+    { label: "My Garden", path: "/my-garden", icon: SeedingIcon },
     { label: "Community", path: "/community", icon: Users },
     { label: "Plant Guides", path: "/guides", icon: Book },
     { label: "Store Locator", path: "/stores", icon: Map },
