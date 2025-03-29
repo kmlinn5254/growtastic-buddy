@@ -12,12 +12,12 @@ const LoginPrompt = () => {
   const t = translations[language] || translations.en;
 
   return (
-    <Card className="text-center py-12">
+    <Card className="text-center py-12 bg-white dark:bg-gray-800 shadow-md">
       <CardContent className="space-y-6">
         <div className="flex flex-col items-center justify-center">
           <LogIn className="h-16 w-16 text-plant-primary mb-4" />
-          <h2 className="text-2xl font-bold">{t.loginRequired}</h2>
-          <p className="text-gray-500 mt-2 max-w-md mx-auto">
+          <h2 className="text-2xl font-bold dark:text-white">{t.loginRequired}</h2>
+          <p className="text-gray-500 dark:text-gray-400 mt-2 max-w-md mx-auto">
             {t.loginToAccessSettings}
           </p>
         </div>

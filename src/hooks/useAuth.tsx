@@ -7,6 +7,7 @@ type User = {
   email: string;
   name: string;
   photoURL?: string;
+  emailVerified?: boolean;
 };
 
 interface AuthContextType {
@@ -17,6 +18,7 @@ interface AuthContextType {
   googleLogin: () => Promise<void>;
   signUp: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
+  verifyEmail: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -51,6 +53,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: "user-1",
         email,
         name: email.split('@')[0],
+        emailVerified: false
       };
       
       setUser(mockUser);
@@ -84,6 +87,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email: "user@gmail.com",
         name: "Google User",
         photoURL: "https://lh3.googleusercontent.com/a/default-user=s120-c",
+        emailVerified: true
       };
       
       setUser(mockUser);
@@ -121,6 +125,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         id: "new-user-1",
         email,
         name,
+        emailVerified: false
       };
       
       setUser(mockUser);
@@ -152,6 +157,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
   };
 
+  // Email verification
+  const verifyEmail = async (email: string) => {
+    setIsLoading(true);
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // In a real app, this would send an email verification link
+      // For mock purposes, we'll just update the user status
+      if (user) {
+        const updatedUser = {
+          ...user,
+          emailVerified: true
+        };
+        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+      }
+      
+      return Promise.resolve();
+    } catch (error) {
+      toast({
+        title: "Verification failed",
+        description: "Could not send verification email. Please try again.",
+        variant: "destructive",
+      });
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -162,6 +198,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         googleLogin,
         signUp,
         logout,
+        verifyEmail
       }}
     >
       {children}

@@ -16,6 +16,7 @@ import Login from "./pages/Login";
 import ChatBot from "./components/ChatBot";
 import { LanguageProvider } from "./hooks/useLanguage";
 import { AuthProvider } from "./hooks/useAuth";
+import { ThemeProvider } from "./hooks/useTheme";
 
 const queryClient = new QueryClient();
 
@@ -24,23 +25,25 @@ const App = () => (
     <TooltipProvider>
       <AuthProvider>
         <LanguageProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/plant-checker" element={<PlantChecker />} />
-              <Route path="/community" element={<Community />} />
-              <Route path="/guides" element={<PlantGuides />} />
-              <Route path="/stores" element={<StoreLocator />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/my-garden" element={<MyGarden />} />
-              <Route path="/login" element={<Login />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <ChatBot />
-          </BrowserRouter>
+          <ThemeProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/plant-checker" element={<PlantChecker />} />
+                <Route path="/community" element={<Community />} />
+                <Route path="/guides" element={<PlantGuides />} />
+                <Route path="/stores" element={<StoreLocator />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/my-garden" element={<MyGarden />} />
+                <Route path="/login" element={<Login />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              <ChatBot />
+            </BrowserRouter>
+          </ThemeProvider>
         </LanguageProvider>
       </AuthProvider>
     </TooltipProvider>

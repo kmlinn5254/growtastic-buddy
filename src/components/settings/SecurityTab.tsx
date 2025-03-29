@@ -1,15 +1,42 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Shield, LogOut } from "lucide-react";
+import { Shield, LogOut, Moon, Sun, Mail } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useTheme } from "@/hooks/useTheme";
+import { Switch } from "@/components/ui/switch";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 const SecurityTab = () => {
   const { language, translations } = useLanguage();
+  const { theme, toggleTheme } = useTheme();
+  const { user, verifyEmail } = useAuth();
+  const { toast } = useToast();
+  const [isVerificationSent, setIsVerificationSent] = useState(false);
   const t = translations[language] || translations.en;
+
+  const handleVerifyEmail = async () => {
+    if (!user?.email) return;
+    
+    try {
+      await verifyEmail(user.email);
+      setIsVerificationSent(true);
+      toast({
+        title: t.verificationEmailSent,
+        description: t.verificationEmailSentDesc,
+      });
+    } catch (error) {
+      toast({
+        title: t.errorSendingVerification,
+        description: t.tryAgainLater,
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <Card>
@@ -42,18 +69,58 @@ const SecurityTab = () => {
           </Button>
         </div>
         
-        <div className="pt-6 border-t mt-6">
-          <h3 className="text-lg font-semibold mb-4">Account Actions</h3>
+        <div className="pt-6 border-t mt-6 space-y-4">
+          <h3 className="text-lg font-semibold mb-4">Account Settings</h3>
+
+          {/* Theme toggle */}
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5 flex items-center">
+              {theme === 'dark' ? <Moon className="mr-2 h-5 w-5" /> : <Sun className="mr-2 h-5 w-5" />}
+              <div>
+                <h4 className="font-medium">{t.darkMode}</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {theme === 'dark' ? t.darkModeEnabled : t.lightModeEnabled}
+                </p>
+              </div>
+            </div>
+            <Switch 
+              checked={theme === 'dark'} 
+              onCheckedChange={toggleTheme} 
+            />
+          </div>
           
-          <div className="space-y-4">
-            <Button variant="outline" className="w-full justify-start text-amber-600 border-amber-200 hover:bg-amber-50">
+          {/* Email verification */}
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5 flex items-center">
+              <Mail className="mr-2 h-5 w-5" />
+              <div>
+                <h4 className="font-medium">{t.verifyEmail}</h4>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {user?.emailVerified ? t.emailVerified : t.emailNotVerified}
+                </p>
+              </div>
+            </div>
+            {!user?.emailVerified && (
+              <Button 
+                variant="outline" 
+                className="text-blue-600 border-blue-200 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                onClick={handleVerifyEmail}
+                disabled={isVerificationSent}
+              >
+                {isVerificationSent ? t.verificationSent : t.sendVerification}
+              </Button>
+            )}
+          </div>
+          
+          <div className="space-y-4 pt-2">
+            <Button variant="outline" className="w-full justify-start text-amber-600 border-amber-200 hover:bg-amber-50 dark:hover:bg-amber-900/20">
               <Shield className="mr-2 h-5 w-5" />
-              Enable Two-Factor Authentication
+              {t.enableTwoFactor}
             </Button>
             
-            <Button variant="outline" className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50">
+            <Button variant="outline" className="w-full justify-start text-red-600 border-red-200 hover:bg-red-50 dark:hover:bg-red-900/20">
               <LogOut className="mr-2 h-5 w-5" />
-              Sign Out of All Devices
+              {t.signOutAllDevices}
             </Button>
           </div>
         </div>
