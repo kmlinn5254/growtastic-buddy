@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/components/ui/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
+import { supabase } from "@/lib/supabase";
 
 interface NotificationSettings {
   plantReminders: boolean;
@@ -54,6 +55,14 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   // Get translations for current language
   const t = translations[language] || translations.en;
   
+  // Default notification settings
+  const [notifications, setNotifications] = useState({
+    plantReminders: true,
+    communityActivity: true,
+    newFeatures: true,
+    marketing: false
+  });
+  
   // Update user data if auth state changes
   useEffect(() => {
     if (user) {
@@ -68,6 +77,9 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       if (user.photoURL) {
         setProfilePicture(user.photoURL);
       }
+      
+      // Fetch user settings from Supabase
+      fetchUserSettings(user.id);
     }
   }, [user]);
   
@@ -79,37 +91,145 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, [firstName, lastName]);
   
-  const [notifications, setNotifications] = useState({
-    plantReminders: true,
-    communityActivity: true,
-    newFeatures: true,
-    marketing: false
-  });
+  // Fetch user settings from Supabase
+  const fetchUserSettings = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('user_settings')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+        
+      if (error && error.code !== 'PGRST116') {
+        console.error('Error fetching user settings:', error);
+        return;
+      }
+      
+      if (data) {
+        setNotifications({
+          plantReminders: data.plant_reminders,
+          communityActivity: data.community_activity,
+          newFeatures: data.new_features,
+          marketing: data.marketing
+        });
+      } else {
+        // Create default settings if none exist
+        await supabase.from('user_settings').insert([{
+          user_id: userId,
+          plant_reminders: true,
+          community_activity: true,
+          new_features: true,
+          marketing: false,
+          language: language,
+          theme: 'light'
+        }]);
+      }
+    } catch (error) {
+      console.error('Error fetching user settings:', error);
+    }
+  };
   
-  const handleProfileUpdate = (e: React.FormEvent) => {
+  const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+    
     setIsUpdating(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsUpdating(false);
+    try {
+      // Update user metadata in Supabase
+      const { error } = await supabase.auth.updateUser({
+        data: {
+          name: username
+        }
+      });
+      
+      if (error) throw error;
+      
+      // Upload profile picture if it's a File object (new upload)
+      if (profilePicture && profilePicture.startsWith('blob:')) {
+        const response = await fetch(profilePicture);
+        const blob = await response.blob();
+        
+        // Upload to Supabase Storage
+        const fileName = `avatars/${user.id}-${Date.now()}.jpg`;
+        const { data, error: uploadError } = await supabase.storage
+          .from('profiles')
+          .upload(fileName, blob, { upsert: true });
+          
+        if (uploadError) throw uploadError;
+        
+        // Get public URL of the uploaded image
+        const { data: urlData } = supabase.storage
+          .from('profiles')
+          .getPublicUrl(fileName);
+          
+        if (urlData) {
+          // Update user metadata with new avatar URL
+          await supabase.auth.updateUser({
+            data: {
+              avatar_url: urlData.publicUrl
+            }
+          });
+          
+          setProfilePicture(urlData.publicUrl);
+        }
+      }
+      
       toast({
         title: t.profileUpdated,
         description: t.profileUpdatedDesc,
       });
-    }, 1000);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Could not update profile",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUpdating(false);
+    }
   };
   
-  const handleNotificationChange = (key: keyof typeof notifications) => {
-    setNotifications({
-      ...notifications,
-      [key]: !notifications[key]
-    });
+  const handleNotificationChange = async (key: keyof NotificationSettings) => {
+    if (!user) return;
     
-    toast({
-      title: t.notificationSettingsUpdated,
-      description: `${key} ${!notifications[key] ? t.enabled : t.disabled}.`,
-    });
+    try {
+      const newSettings = {
+        ...notifications,
+        [key]: !notifications[key]
+      };
+      
+      setNotifications(newSettings);
+      
+      // Update in Supabase
+      const updateData = {
+        plant_reminders: newSettings.plantReminders,
+        community_activity: newSettings.communityActivity,
+        new_features: newSettings.newFeatures,
+        marketing: newSettings.marketing
+      };
+      
+      const { error } = await supabase
+        .from('user_settings')
+        .update(updateData)
+        .eq('user_id', user.id);
+        
+      if (error) throw error;
+      
+      toast({
+        title: t.notificationSettingsUpdated,
+        description: `${key} ${!notifications[key] ? t.enabled : t.disabled}.`,
+      });
+    } catch (error: any) {
+      // Revert the change if update fails
+      setNotifications({...notifications});
+      
+      toast({
+        title: "Error",
+        description: error.message || "Could not update notification settings",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleProfilePictureClick = () => {

@@ -2,9 +2,8 @@
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navigation from "@/components/Navigation";
-import { searchPlants } from "@/services/plantService";
-import { allPlants } from "@/data/plantFAQ";
-import seasonalGuides from "@/data/seasonalGuides";
+import { searchPlants } from "@/services/plantSearchService";
+import { fetchPlants } from "@/services/supabasePlantService";
 import SearchPlant from "@/components/SearchPlant";
 import PlantDetailView from "@/components/PlantDetailView";
 import SeasonalGuideView from "@/components/SeasonalGuideView";
@@ -12,18 +11,92 @@ import PlantCardGrid from "@/components/PlantCardGrid";
 import SeasonalGuidesGrid from "@/components/SeasonalGuidesGrid";
 import { Loader2 } from "lucide-react";
 import { Plant } from "@/types/plants";
+import { supabase } from "@/lib/supabase";
+
+// Fetch seasonal guides from Supabase
+const fetchSeasonalGuides = async () => {
+  try {
+    const { data, error } = await supabase
+      .from('seasonal_guides')
+      .select(`
+        *,
+        content:seasonal_guide_content(*)
+      `)
+      .order('season');
+      
+    if (error) throw error;
+    
+    // Transform to the expected format
+    return (data || []).map(guide => ({
+      id: guide.id,
+      season: guide.season,
+      title: guide.title,
+      description: guide.description,
+      image: guide.image,
+      content: guide.content?.map((item: any) => ({
+        heading: item.heading,
+        text: item.text
+      })) || []
+    }));
+  } catch (error) {
+    console.error('Error fetching seasonal guides:', error);
+    return [];
+  }
+};
+
+// Fetch a specific seasonal guide
+const fetchSeasonalGuideById = async (id: number) => {
+  try {
+    const { data, error } = await supabase
+      .from('seasonal_guides')
+      .select(`
+        *,
+        content:seasonal_guide_content(*)
+      `)
+      .eq('id', id)
+      .single();
+      
+    if (error) throw error;
+    
+    return {
+      id: data.id,
+      season: data.season,
+      title: data.title,
+      description: data.description,
+      image: data.image,
+      content: data.content?.map((item: any) => ({
+        heading: item.heading,
+        text: item.text
+      })) || []
+    };
+  } catch (error) {
+    console.error('Error fetching seasonal guide:', error);
+    return null;
+  }
+};
 
 const PlantGuides = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPlant, setSelectedPlant] = useState<Plant | null>(null);
-  const [selectedSeasonalGuide, setSelectedSeasonalGuide] = useState<typeof seasonalGuides[0] | null>(null);
+  const [selectedSeasonalGuide, setSelectedSeasonalGuide] = useState<any | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [filteredPlants, setFilteredPlants] = useState<Plant[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [seasonalGuides, setSeasonalGuides] = useState<any[]>([]);
+  
+  // Effect to load seasonal guides
+  useEffect(() => {
+    const loadSeasonalGuides = async () => {
+      const guides = await fetchSeasonalGuides();
+      setSeasonalGuides(guides);
+    };
+    
+    loadSeasonalGuides();
+  }, []);
   
   // Effect to search plants when query changes
   useEffect(() => {
-    const fetchPlants = async () => {
+    const fetchPlantsData = async () => {
       setIsLoading(true);
       try {
         const plants = await searchPlants(searchQuery);
@@ -39,7 +112,7 @@ const PlantGuides = () => {
       }
     };
     
-    fetchPlants();
+    fetchPlantsData();
   }, [searchQuery, refreshTrigger]);
   
   return (

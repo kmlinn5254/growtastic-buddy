@@ -1,11 +1,5 @@
 
-import { useContext } from "react";
-import { AuthContext } from "./AuthProvider";
+// Re-export from the new Supabase auth module
+import { useSupabaseAuth } from './useSupabaseAuth';
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
+export const useAuth = useSupabaseAuth;
