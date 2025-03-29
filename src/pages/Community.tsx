@@ -22,7 +22,27 @@ const initialPosts: Post[] = [
     likes: 87,
     comments: 12,
     shares: 5,
-    timestamp: "2 hours ago"
+    timestamp: "2 hours ago",
+    commentList: [
+      {
+        id: 101,
+        user: {
+          name: "Sarah Parker",
+          avatar: "https://i.pravatar.cc/150?img=4"
+        },
+        content: "It looks amazing! What kind of fertilizer are you using?",
+        timestamp: "1 hour ago"
+      },
+      {
+        id: 102,
+        user: {
+          name: "John Smith",
+          avatar: "https://i.pravatar.cc/150?img=7"
+        },
+        content: "Beautiful! I need to adjust my lighting setup too.",
+        timestamp: "30 minutes ago"
+      }
+    ]
   },
   {
     id: 2,
@@ -36,7 +56,27 @@ const initialPosts: Post[] = [
     likes: 34,
     comments: 28,
     shares: 2,
-    timestamp: "5 hours ago"
+    timestamp: "5 hours ago",
+    commentList: [
+      {
+        id: 201,
+        user: {
+          name: "Plant Expert",
+          avatar: "https://i.pravatar.cc/150?img=10"
+        },
+        content: "It looks like a fungal infection. Try treating with neem oil and reduce watering.",
+        timestamp: "4 hours ago"
+      },
+      {
+        id: 202,
+        user: {
+          name: "Garden Helper",
+          avatar: "https://i.pravatar.cc/150?img=11"
+        },
+        content: "Check for pests under the leaves too. Spider mites can cause similar damage.",
+        timestamp: "3 hours ago"
+      }
+    ]
   },
   {
     id: 3,
@@ -50,7 +90,27 @@ const initialPosts: Post[] = [
     likes: 142,
     comments: 45,
     shares: 18,
-    timestamp: "1 day ago"
+    timestamp: "1 day ago",
+    commentList: [
+      {
+        id: 301,
+        user: {
+          name: "Light Expert",
+          avatar: "https://i.pravatar.cc/150?img=12"
+        },
+        content: "Great setup! Just make sure the ones in the back still get enough light.",
+        timestamp: "20 hours ago"
+      },
+      {
+        id: 302,
+        user: {
+          name: "Succulent Lover",
+          avatar: "https://i.pravatar.cc/150?img=14"
+        },
+        content: "I love your collection! Consider grouping plants with similar water needs together.",
+        timestamp: "15 hours ago"
+      }
+    ]
   }
 ];
 
@@ -72,7 +132,8 @@ const Community = () => {
       likes: 0,
       comments: 0,
       shares: 0,
-      timestamp: "Just now"
+      timestamp: "Just now",
+      commentList: []
     };
     
     setPosts([newPost, ...posts]);
