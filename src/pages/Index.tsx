@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Leaf, Upload, Users, BookOpen, MapPin, Sparkles, Sprout } from "lucide-react";
@@ -59,7 +60,7 @@ const Index = () => {
             </span>
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-gray-700 max-w-3xl mx-auto">
-            Your AI-powered plant care companion. Diagnose problems, get personalized recommendations, and connect with other plant lovers.
+            Empowering farmers with the wisdom of nature and the power of AI.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="bg-plant-primary hover:bg-plant-dark">
