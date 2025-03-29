@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,46 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Search, Leaf, DropletIcon, SunIcon, ThermometerIcon, Wind, CheckCircle, ArrowLeft } from "lucide-react";
 import Navigation from "@/components/Navigation";
-
-// Mock data for popular plants
-const popularPlants = [
-  {
-    id: 1,
-    name: "Monstera Deliciosa",
-    image: "https://images.unsplash.com/photo-1614594975525-e45190c55d0b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1344&q=80",
-    difficulty: "Easy",
-    light: "Bright indirect",
-    water: "Weekly",
-    temperature: "65-85°F"
-  },
-  {
-    id: 2,
-    name: "Snake Plant",
-    image: "https://images.unsplash.com/photo-1572686424871-ef929e9e50e2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=986&q=80",
-    difficulty: "Very Easy",
-    light: "Low to bright indirect",
-    water: "Every 2-3 weeks",
-    temperature: "60-85°F"
-  },
-  {
-    id: 3,
-    name: "Fiddle Leaf Fig",
-    image: "https://images.unsplash.com/photo-1545165375-75ee42079cf9?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1287&q=80",
-    difficulty: "Moderate",
-    light: "Bright indirect",
-    water: "When top inch is dry",
-    temperature: "65-75°F"
-  },
-  {
-    id: 4,
-    name: "Pothos",
-    image: "https://images.unsplash.com/photo-1600411833114-5c51f36863a7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
-    difficulty: "Very Easy",
-    light: "Low to bright indirect",
-    water: "When top soil is dry",
-    temperature: "60-80°F"
-  }
-];
+import { searchPlants } from "@/services/plantService";
+import { allPlants } from "@/data/plantFAQ";
 
 // Mock data for seasonal guides
 const seasonalGuides = [
@@ -182,13 +143,11 @@ const plantCareSteps = [
 
 const PlantGuides = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedPlant, setSelectedPlant] = useState<typeof popularPlants[0] | null>(null);
+  const [selectedPlant, setSelectedPlant] = useState<typeof allPlants[0] | null>(null);
   const [selectedSeasonalGuide, setSelectedSeasonalGuide] = useState<typeof seasonalGuides[0] | null>(null);
   
-  // Convert search query to lowercase for case-insensitive filtering
-  const filteredPlants = popularPlants.filter(plant => 
-    plant.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Use the searchPlants service to search for plants
+  const filteredPlants = searchPlants(searchQuery);
   
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
@@ -377,7 +336,7 @@ const PlantGuides = () => {
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                   <Input
-                    placeholder="Search for a plant..."
+                    placeholder="Search for any plant..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10 plant-input"
@@ -387,7 +346,7 @@ const PlantGuides = () => {
               
               <Tabs defaultValue="popular" className="plant-section">
                 <TabsList className="grid w-full grid-cols-2 mb-8">
-                  <TabsTrigger value="popular">Popular Plants</TabsTrigger>
+                  <TabsTrigger value="popular">Plants</TabsTrigger>
                   <TabsTrigger value="seasonal">Seasonal Guides</TabsTrigger>
                 </TabsList>
                 

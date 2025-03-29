@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { setupSpeechSynthesis, speakText } from '@/utils/speechUtils';
-import plantFAQ from '@/data/plantFAQ';
+import plantFAQ, { allPlants } from '@/data/plantFAQ';
 
 export type Message = {
   text: string;
@@ -80,6 +80,15 @@ export const useChatBot = () => {
       if (lowercaseQuery.includes(keyword)) {
         return answer;
       }
+    }
+    
+    // Check if user is asking about a specific plant
+    const plantMentioned = allPlants.find(plant => 
+      lowercaseQuery.includes(plant.name.toLowerCase())
+    );
+    
+    if (plantMentioned) {
+      return `${plantMentioned.name} is a ${plantMentioned.difficulty.toLowerCase()} plant to care for. It prefers ${plantMentioned.light.toLowerCase()} light and should be watered ${plantMentioned.water.toLowerCase()}. The ideal temperature range is ${plantMentioned.temperature}.`;
     }
     
     // Default response
