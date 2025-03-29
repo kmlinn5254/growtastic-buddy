@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Camera, FileText } from "lucide-react";
@@ -6,7 +5,7 @@ import ImageUploader from "./ImageUploader";
 import TextDescriptionInput from "./TextDescriptionInput";
 import AnalysisResult from "./AnalysisResult";
 import { Plant } from "@/types/plants";
-import AnalysisHistory from "./AnalysisHistory";
+import AnalysisHistory from "./analysis-history/AnalysisHistory";
 
 interface PlantCheckerLayoutProps {
   preview: string | null;
