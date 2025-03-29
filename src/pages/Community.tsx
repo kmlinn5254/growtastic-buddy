@@ -1,12 +1,12 @@
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Heart, MessageCircle, Share2, Sparkles, Image as ImageIcon, Send, Lock } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
+import { Card, CardContent } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
 import Navigation from "@/components/Navigation";
+import PostForm from "@/components/community/PostForm";
+import CommunityChallenge from "@/components/community/CommunityChallenge";
+import PostFeed from "@/components/community/PostFeed";
+import { Post } from "@/components/community/PostItem";
 
 // Mock data for user authentication status
 const mockUser = {
@@ -17,7 +17,7 @@ const mockUser = {
 };
 
 // Mock data for community posts
-const initialPosts = [
+const initialPosts: Post[] = [
   {
     id: 1,
     user: {
@@ -64,30 +64,9 @@ const initialPosts = [
 
 const Community = () => {
   const { toast } = useToast();
-  const [posts, setPosts] = useState(initialPosts);
-  const [newPost, setNewPost] = useState("");
-  const [likedPosts, setLikedPosts] = useState<number[]>([]);
+  const [posts, setPosts] = useState<Post[]>(initialPosts);
   
-  const handleLike = (postId: number) => {
-    if (likedPosts.includes(postId)) {
-      // Unlike
-      setLikedPosts(likedPosts.filter(id => id !== postId));
-      setPosts(posts.map(post => 
-        post.id === postId ? { ...post, likes: post.likes - 1 } : post
-      ));
-    } else {
-      // Like
-      setLikedPosts([...likedPosts, postId]);
-      setPosts(posts.map(post => 
-        post.id === postId ? { ...post, likes: post.likes + 1 } : post
-      ));
-    }
-  };
-  
-  const handleSubmitPost = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newPost.trim()) return;
-    
+  const handleSubmitPost = (content: string) => {
     if (!mockUser.isAuthenticated) {
       toast({
         title: "Authentication required",
@@ -98,14 +77,14 @@ const Community = () => {
     }
     
     // Add new post to the top
-    const newPostObj = {
+    const newPost: Post = {
       id: Date.now(),
       user: {
         name: mockUser.name,
         avatar: mockUser.avatar,
         username: mockUser.username
       },
-      content: newPost,
+      content: content,
       image: "", // No image in this simplified version
       likes: 0,
       comments: 0,
@@ -113,8 +92,7 @@ const Community = () => {
       timestamp: "Just now"
     };
     
-    setPosts([newPostObj, ...posts]);
-    setNewPost("");
+    setPosts([newPost, ...posts]);
   };
 
   return (
@@ -128,124 +106,19 @@ const Community = () => {
           {/* Post creation */}
           <Card className="mb-8 plant-section">
             <CardContent className="pt-6">
-              <form onSubmit={handleSubmitPost}>
-                <div className="flex items-start gap-4">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={mockUser.avatar} alt="Your avatar" />
-                    <AvatarFallback>You</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 relative">
-                    <Input
-                      placeholder={mockUser.isAuthenticated ? "Share your plant journey..." : "Sign in to share your plant journey..."}
-                      value={newPost}
-                      onChange={(e) => setNewPost(e.target.value)}
-                      className="plant-input border-b-2 border-x-0 border-t-0 rounded-none px-0 focus-visible:ring-0 focus-visible:border-plant-primary"
-                      disabled={!mockUser.isAuthenticated}
-                    />
-                    {!mockUser.isAuthenticated && (
-                      <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400">
-                        <Lock className="h-4 w-4" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="flex justify-between mt-4">
-                  <Button type="button" variant="ghost" className="text-gray-500" disabled={!mockUser.isAuthenticated}>
-                    <ImageIcon className="h-5 w-5 mr-2" />
-                    Add Photo
-                  </Button>
-                  <Button 
-                    type="submit" 
-                    className="bg-plant-primary hover:bg-plant-dark"
-                    disabled={!mockUser.isAuthenticated || !newPost.trim()}
-                  >
-                    <Send className="h-5 w-5 mr-2" />
-                    Post
-                  </Button>
-                </div>
-                {!mockUser.isAuthenticated && (
-                  <div className="mt-4 text-center">
-                    <p className="text-sm text-gray-500 mb-2">You need to sign in to create posts</p>
-                    <Button variant="outline" className="mx-auto">
-                      Sign In
-                    </Button>
-                  </div>
-                )}
-              </form>
+              <PostForm user={mockUser} onSubmitPost={handleSubmitPost} />
             </CardContent>
           </Card>
           
           {/* Community challenges */}
           <Card className="mb-8 bg-gradient-to-r from-green-500 to-teal-500 text-white plant-section">
             <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-xl font-bold mb-2 flex items-center">
-                    <Sparkles className="h-5 w-5 mr-2" />
-                    Weekly Challenge
-                  </h3>
-                  <p>Show us your most creative plant arrangement! Use #PlantSpace to participate.</p>
-                </div>
-                <Button variant="secondary" className="bg-white text-green-600 hover:bg-gray-100">
-                  Join
-                </Button>
-              </div>
+              <CommunityChallenge />
             </CardContent>
           </Card>
           
           {/* Feed */}
-          <div className="space-y-6">
-            {posts.map((post) => (
-              <Card key={post.id} className="plant-section">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <Avatar>
-                      <AvatarImage src={post.user.avatar} alt={post.user.name} />
-                      <AvatarFallback>{post.user.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-semibold">{post.user.name}</p>
-                      <p className="text-sm text-gray-500">@{post.user.username} · {post.timestamp}</p>
-                    </div>
-                  </div>
-                  
-                  <p className="mb-4">{post.content}</p>
-                  
-                  {post.image && (
-                    <div className="rounded-lg overflow-hidden mb-4">
-                      <img 
-                        src={post.image} 
-                        alt="Post" 
-                        className="w-full h-auto"
-                      />
-                    </div>
-                  )}
-                </CardContent>
-                
-                <CardFooter className="border-t pt-4 pb-2">
-                  <div className="flex justify-between w-full">
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      onClick={() => handleLike(post.id)}
-                      className={likedPosts.includes(post.id) ? "text-pink-500" : "text-gray-500 hover:text-pink-500"}
-                    >
-                      <Heart className={`h-5 w-5 mr-1 ${likedPosts.includes(post.id) ? "fill-pink-500" : ""}`} />
-                      {post.likes}
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-gray-500">
-                      <MessageCircle className="h-5 w-5 mr-1" />
-                      {post.comments}
-                    </Button>
-                    <Button variant="ghost" size="sm" className="text-gray-500">
-                      <Share2 className="h-5 w-5 mr-1" />
-                      {post.shares}
-                    </Button>
-                  </div>
-                </CardFooter>
-              </Card>
-            ))}
-          </div>
+          <PostFeed initialPosts={posts} />
         </div>
       </main>
     </div>
