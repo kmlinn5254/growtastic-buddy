@@ -10,6 +10,11 @@ interface PlantImageProps {
 const PlantImage: React.FC<PlantImageProps> = ({ plant }) => {
   const [hasError, setHasError] = useState(false);
   
+  const handleImageError = () => {
+    console.error(`Failed to load image for ${plant.name}:`, plant.image);
+    setHasError(true);
+  };
+  
   return (
     <div className="rounded-lg overflow-hidden shadow-md">
       {hasError ? (
@@ -24,7 +29,8 @@ const PlantImage: React.FC<PlantImageProps> = ({ plant }) => {
           src={plant.image}
           alt={plant.name}
           className="w-full h-auto object-cover aspect-square"
-          onError={() => setHasError(true)}
+          onError={handleImageError}
+          loading="lazy"
         />
       )}
     </div>

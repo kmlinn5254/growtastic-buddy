@@ -6,7 +6,7 @@ export const growablePlants: Plant[] = [
   {
     id: 1,
     name: "Basil",
-    image: "https://images.unsplash.com/photo-1619846227717-205b9dccac17?q=80&w=987&auto=format&fit=crop",
+    image: "https://cdn.shopify.com/s/files/1/2016/8569/files/Basil.jpg",
     difficulty: "Easy",
     light: "Full sun",
     water: "Keep soil moist",
@@ -16,7 +16,7 @@ export const growablePlants: Plant[] = [
   {
     id: 2,
     name: "Cherry Tomatoes",
-    image: "https://images.unsplash.com/photo-1629185752152-fe85697ffa27?q=80&w=987&auto=format&fit=crop",
+    image: "https://www.almanac.com/sites/default/files/styles/or/public/image_nodes/cherry-tomatoes-1.jpg",
     difficulty: "Moderate",
     light: "Full sun",
     water: "Regular watering",
@@ -26,7 +26,7 @@ export const growablePlants: Plant[] = [
   {
     id: 3,
     name: "Mint",
-    image: "https://images.unsplash.com/photo-1594131431617-93ffd9b61a31?q=80&w=987&auto=format&fit=crop",
+    image: "https://www.almanac.com/sites/default/files/styles/or/public/mint-planting-growing-harvesting.jpg",
     difficulty: "Very Easy",
     light: "Partial shade",
     water: "Keep soil moist",
@@ -36,7 +36,7 @@ export const growablePlants: Plant[] = [
   {
     id: 4,
     name: "Lettuce",
-    image: "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?q=80&w=1170&auto=format&fit=crop",
+    image: "https://www.almanac.com/sites/default/files/styles/or/public/image_nodes/lettuce-hydroponic.jpg",
     difficulty: "Easy",
     light: "Partial sun",
     water: "Regular watering",
@@ -46,7 +46,7 @@ export const growablePlants: Plant[] = [
   {
     id: 5,
     name: "Chili Peppers",
-    image: "https://images.unsplash.com/photo-1603049489986-d01b0ff891cd?q=80&w=1170&auto=format&fit=crop",
+    image: "https://www.almanac.com/sites/default/files/styles/or/public/image_nodes/chili-pepper-hot-spicy-food.jpg",
     difficulty: "Moderate",
     light: "Full sun",
     water: "Moderate watering",
@@ -56,7 +56,7 @@ export const growablePlants: Plant[] = [
   {
     id: 6,
     name: "Cilantro",
-    image: "https://images.unsplash.com/photo-1638867422967-3273df064d74?q=80&w=1170&auto=format&fit=crop",
+    image: "https://www.almanac.com/sites/default/files/styles/or/public/image_nodes/cilantro_coriander.jpg",
     difficulty: "Easy",
     light: "Partial sun",
     water: "Keep soil moist",
