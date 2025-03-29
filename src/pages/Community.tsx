@@ -25,6 +25,22 @@ const Community = () => {
     }
   }, [searchParams]);
   
+  // Add an event listener for custom events from the CommunityChallenge component
+  useEffect(() => {
+    const handleTagEvent = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail?.tag) {
+        setInitialContent(customEvent.detail.tag);
+      }
+    };
+    
+    window.addEventListener('plant:tag', handleTagEvent);
+    
+    return () => {
+      window.removeEventListener('plant:tag', handleTagEvent);
+    };
+  }, []);
+  
   // Fetch posts from Supabase
   useEffect(() => {
     const loadPosts = async () => {

@@ -22,13 +22,17 @@ const CommunityChallenge = () => {
     }
 
     // Get post form element and set focus
-    const postFormElement = document.querySelector('textarea, input[placeholder*="Share your plant journey"]');
+    const postFormElement = document.querySelector('textarea[placeholder*="Share your plant journey"]');
     
     if (postFormElement) {
       // Set value to hashtag and place cursor at beginning
       const hashTag = "#PlantSpace ";
-      (postFormElement as HTMLInputElement | HTMLTextAreaElement).value = hashTag;
-      (postFormElement as HTMLInputElement | HTMLTextAreaElement).focus();
+      (postFormElement as HTMLTextAreaElement).value = hashTag;
+      (postFormElement as HTMLTextAreaElement).focus();
+      
+      // Trigger a change event to update state
+      const event = new Event('change', { bubbles: true });
+      postFormElement.dispatchEvent(event);
       
       // Scroll to post form
       postFormElement.scrollIntoView({ behavior: 'smooth', block: 'center' });

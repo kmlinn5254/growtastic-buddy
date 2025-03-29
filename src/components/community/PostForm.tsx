@@ -1,7 +1,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Lock, Send, Image as ImageIcon, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -21,19 +21,28 @@ const PostForm = ({ onSubmitPost, initialContent = "" }: PostFormProps) => {
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
-    // If there's initialContent, set focus to beginning of input
-    if (initialContent && inputRef.current) {
-      inputRef.current.focus();
+    // If there's initialContent, set focus to beginning of textarea
+    if (initialContent && textareaRef.current) {
+      textareaRef.current.focus();
       
       // Set cursor position to beginning
-      if (typeof inputRef.current.setSelectionRange === 'function') {
-        inputRef.current.setSelectionRange(0, 0);
+      if (typeof textareaRef.current.setSelectionRange === 'function') {
+        textareaRef.current.setSelectionRange(0, 0);
       }
     }
   }, [initialContent]);
+  
+  // Auto adjust textarea height based on content
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+    }
+  }, [newPost]);
 
   const handleSubmitPost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,7 +65,13 @@ const PostForm = ({ onSubmitPost, initialContent = "" }: PostFormProps) => {
       setNewPost("");
       setSelectedImage(null);
       setImagePreview(null);
+      
+      // Reset textarea height
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto';
+      }
     } catch (error) {
+      console.error("Error creating post:", error);
       toast({
         title: "Error",
         description: "Failed to create post.",
@@ -94,18 +109,21 @@ const PostForm = ({ onSubmitPost, initialContent = "" }: PostFormProps) => {
   return (
     <form onSubmit={handleSubmitPost}>
       <div className="flex items-start gap-4">
-        <Avatar className="h-10 w-10">
+        <Avatar className="h-10 w-10 mt-1">
           <AvatarImage src={user?.photoURL} alt={user?.name || "Avatar"} />
           <AvatarFallback>{user?.name ? user.name.charAt(0) : "U"}</AvatarFallback>
         </Avatar>
-        <div className="flex-1 relative">
-          <Input
-            ref={inputRef}
+        <div className={`flex-1 relative ${isFocused ? 'ring-2 ring-plant-primary rounded-md' : ''}`}>
+          <Textarea
+            ref={textareaRef}
             placeholder={isAuthenticated ? "Share your plant journey..." : "Sign in to share your plant journey..."}
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
-            className="plant-input border-b-2 border-x-0 border-t-0 rounded-none px-0 focus-visible:ring-0 focus-visible:border-plant-primary"
+            className="plant-input border-b-2 border-x-0 border-t-0 rounded-none px-0 focus-visible:ring-0 focus-visible:border-plant-primary min-h-[80px] resize-none overflow-hidden"
             disabled={!isAuthenticated}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            rows={3}
           />
           {!isAuthenticated && (
             <div className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400">

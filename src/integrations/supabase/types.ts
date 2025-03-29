@@ -9,6 +9,62 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      comments: {
+        Row: {
+          content: string
+          created_at: string
+          id: number
+          post_id: number
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: number
+          post_id: number
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: number
+          post_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          content: string
+          created_at: string
+          id: number
+          image_url: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: number
+          image_url?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: number
+          image_url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -32,6 +88,67 @@ export type Database = {
           name?: string | null
         }
         Relationships: []
+      }
+      reactions: {
+        Row: {
+          created_at: string
+          id: number
+          post_id: number
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          post_id: number
+          type?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          post_id?: number
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shares: {
+        Row: {
+          created_at: string
+          id: number
+          post_id: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          post_id: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          post_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shares_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_settings: {
         Row: {
