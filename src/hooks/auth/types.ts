@@ -12,7 +12,7 @@ export interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  googleLogin: () => Promise<void>;
+  googleLogin: () => Promise<any>; // Updated return type to allow proper error handling
   signUp: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
   verifyEmail: (email: string) => Promise<void>;

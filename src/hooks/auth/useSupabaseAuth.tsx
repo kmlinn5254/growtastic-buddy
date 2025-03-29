@@ -90,14 +90,15 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
     setIsLoading(true);
     try {
       console.log("Initiating Google login from hook");
-      const { error } = await loginWithGoogle();
+      const result = await loginWithGoogle();
       
-      if (error) {
-        console.error("Google login error in hook:", error);
-        throw error;
+      if (result.error) {
+        console.error("Google login error in hook:", result.error);
+        throw result.error;
       }
       
       // Auth state change will handle the user update
+      return result; // Return the full result to allow error checking in the component
       
     } catch (error: any) {
       console.error("Google login error caught in hook:", error);
