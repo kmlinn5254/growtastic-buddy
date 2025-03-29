@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import Navigation from "@/components/Navigation";
@@ -12,7 +12,7 @@ import SeasonalGuideView from "@/components/SeasonalGuideView";
 import PlantCardGrid from "@/components/PlantCardGrid";
 import SeasonalGuidesGrid from "@/components/SeasonalGuidesGrid";
 import ImportPlantForm from "@/components/ImportPlantForm";
-import { Leaf, Plus } from "lucide-react";
+import { Leaf, Plus, Loader2 } from "lucide-react";
 
 const PlantGuides = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -20,9 +20,25 @@ const PlantGuides = () => {
   const [selectedSeasonalGuide, setSelectedSeasonalGuide] = useState<typeof seasonalGuides[0] | null>(null);
   const [showImportForm, setShowImportForm] = useState(false);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [filteredPlants, setFilteredPlants] = useState<typeof allPlants>([]);
+  const [isLoading, setIsLoading] = useState(false);
   
-  // Use the searchPlants service to search for plants
-  const filteredPlants = searchPlants(searchQuery);
+  // Effect to search plants when query changes
+  useEffect(() => {
+    const fetchPlants = async () => {
+      setIsLoading(true);
+      try {
+        const plants = await searchPlants(searchQuery);
+        setFilteredPlants(plants);
+      } catch (error) {
+        console.error("Error searching plants:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchPlants();
+  }, [searchQuery, refreshTrigger]);
   
   const handleImportSuccess = () => {
     setShowImportForm(false);
@@ -83,12 +99,19 @@ const PlantGuides = () => {
                 </TabsList>
                 
                 <TabsContent value="popular">
-                  <PlantCardGrid 
-                    plants={filteredPlants} 
-                    searchQuery={searchQuery}
-                    onSelectPlant={setSelectedPlant} 
-                    key={`plant-grid-${refreshTrigger}`} // Ensure grid refreshes when new plants are added
-                  />
+                  {isLoading ? (
+                    <div className="flex justify-center items-center py-12">
+                      <Loader2 className="h-8 w-8 animate-spin text-plant-primary" />
+                      <span className="ml-2 text-plant-primary">Searching for plant guides...</span>
+                    </div>
+                  ) : (
+                    <PlantCardGrid 
+                      plants={filteredPlants} 
+                      searchQuery={searchQuery}
+                      onSelectPlant={setSelectedPlant} 
+                      key={`plant-grid-${refreshTrigger}`} // Ensure grid refreshes when new plants are added
+                    />
+                  )}
                 </TabsContent>
                 
                 <TabsContent value="seasonal">
