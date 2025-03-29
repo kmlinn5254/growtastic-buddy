@@ -39,7 +39,7 @@ const AnalysisHistory = ({ onSelectAnalysis }: AnalysisHistoryProps) => {
           Your Analysis History
         </CardTitle>
         <CardDescription>
-          View your previous plant analyses
+          View plant analyses and their results
         </CardDescription>
       </CardHeader>
       <CardContent>

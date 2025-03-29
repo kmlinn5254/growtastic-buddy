@@ -1,6 +1,5 @@
 
 import { Plant } from "@/types/plants";
-import { formatDistanceToNow } from "date-fns";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 interface AnalysisHistoryTableProps {
@@ -16,7 +15,6 @@ const AnalysisHistoryTable = ({ analyses, onSelectAnalysis }: AnalysisHistoryTab
           <TableHead className="w-[100px]">Plant</TableHead>
           <TableHead>Disease</TableHead>
           <TableHead>Condition</TableHead>
-          <TableHead className="text-right">Date</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -26,7 +24,7 @@ const AnalysisHistoryTable = ({ analyses, onSelectAnalysis }: AnalysisHistoryTab
           if (analysis.description) {
             // Look for common condition phrases in the description
             const conditionPhrases = [
-              "Healthy", "Mildly distressed", "Stressed", 
+              "Healthy with minor issues", "Healthy", "Mildly distressed", "Stressed", 
               "Needs attention", "Minor problems", "Showing minor stress",
               "Needs care adjustments"
             ];
@@ -56,16 +54,11 @@ const AnalysisHistoryTable = ({ analyses, onSelectAnalysis }: AnalysisHistoryTab
               </TableCell>
               <TableCell className="font-medium">{analysis.name}</TableCell>
               <TableCell>
-                {condition === "Healthy" ? (
-                  <span className="text-green-600">Healthy</span>
+                {condition.includes("Healthy") ? (
+                  <span className="text-green-600">{condition}</span>
                 ) : (
                   <span className="text-amber-600">{condition}</span>
                 )}
-              </TableCell>
-              <TableCell className="text-right text-muted-foreground">
-                {analysis.createdAt 
-                  ? formatDistanceToNow(new Date(analysis.createdAt), { addSuffix: true })
-                  : "Unknown date"}
               </TableCell>
             </TableRow>
           );
