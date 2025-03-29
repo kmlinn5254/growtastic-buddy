@@ -69,9 +69,14 @@ export const SupabaseAuthProvider: React.FC<{ children: React.ReactNode }> = ({ 
       
       if (error) throw error;
       
+      // Extract user name from data to display in welcome message
+      const userName = data.user?.user_metadata?.name || 
+                      data.user?.email?.split('@')[0] || 
+                      'User';
+      
       toast({
         title: t.loginSuccessful || "Login successful",
-        description: t.welcomeBack || "Welcome back!",
+        description: `${t.welcomeBack || "Welcome back"}, ${userName}!`,
       });
     } catch (error: any) {
       toast({
