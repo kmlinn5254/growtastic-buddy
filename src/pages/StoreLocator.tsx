@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -68,6 +68,15 @@ const StoreLocator = () => {
     store.specialties.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()))
   );
   
+  // Set first store as selected when component mounts or when filtered stores change
+  useEffect(() => {
+    if (filteredStores.length > 0) {
+      setSelectedStore(filteredStores[0]);
+    } else {
+      setSelectedStore(null);
+    }
+  }, [filteredStores]);
+  
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-white">
       <Navigation />
@@ -133,6 +142,13 @@ const StoreLocator = () => {
                 ) : (
                   <div className="text-center py-8">
                     <p className="text-gray-500">No stores found matching "{searchQuery}"</p>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setSearchQuery("")}
+                      className="mt-2 text-plant-primary border-plant-primary"
+                    >
+                      Clear Search
+                    </Button>
                   </div>
                 )}
               </div>
@@ -238,9 +254,9 @@ const StoreLocator = () => {
                 <div className="h-full flex items-center justify-center bg-gray-100 rounded-lg p-8">
                   <div className="text-center max-w-md">
                     <MapPin className="h-16 w-16 text-plant-primary/30 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold mb-2">Select a Store</h3>
+                    <h3 className="text-xl font-semibold mb-2">No Stores Found</h3>
                     <p className="text-gray-600">
-                      Choose a store from the list to view detailed information, specialties, and recommended products.
+                      No stores match your search criteria. Please try adjusting your search or browse our complete directory.
                     </p>
                   </div>
                 </div>
