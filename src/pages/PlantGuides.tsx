@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Navigation from "@/components/Navigation";
@@ -11,9 +10,8 @@ import PlantCardGrid from "@/components/PlantCardGrid";
 import SeasonalGuidesGrid from "@/components/SeasonalGuidesGrid";
 import { Loader2 } from "lucide-react";
 import { Plant } from "@/types/plants";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 
-// Fetch seasonal guides from Supabase
 const fetchSeasonalGuides = async () => {
   try {
     const { data, error } = await supabase
@@ -26,7 +24,6 @@ const fetchSeasonalGuides = async () => {
       
     if (error) throw error;
     
-    // Transform to the expected format
     return (data || []).map(guide => ({
       id: guide.id,
       season: guide.season,
@@ -44,7 +41,6 @@ const fetchSeasonalGuides = async () => {
   }
 };
 
-// Fetch a specific seasonal guide
 const fetchSeasonalGuideById = async (id: number) => {
   try {
     const { data, error } = await supabase
@@ -84,7 +80,6 @@ const PlantGuides = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [seasonalGuides, setSeasonalGuides] = useState<any[]>([]);
   
-  // Effect to load seasonal guides
   useEffect(() => {
     const loadSeasonalGuides = async () => {
       const guides = await fetchSeasonalGuides();
@@ -94,14 +89,12 @@ const PlantGuides = () => {
     loadSeasonalGuides();
   }, []);
   
-  // Effect to search plants when query changes
   useEffect(() => {
     const fetchPlantsData = async () => {
       setIsLoading(true);
       try {
         const plants = await searchPlants(searchQuery);
         setFilteredPlants(plants);
-        // If plants were fetched from external API, trigger a refresh
         if (plants.some(plant => plant.isExternal)) {
           setRefreshTrigger(prev => prev + 1);
         }
@@ -166,7 +159,7 @@ const PlantGuides = () => {
                       plants={filteredPlants} 
                       searchQuery={searchQuery}
                       onSelectPlant={(plant: Plant) => setSelectedPlant(plant)} 
-                      key={`plant-grid-${refreshTrigger}`} // Ensure grid refreshes when new plants are added
+                      key={`plant-grid-${refreshTrigger}`}
                     />
                   )}
                 </TabsContent>

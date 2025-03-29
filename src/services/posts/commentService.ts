@@ -1,6 +1,6 @@
 
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/auth/useAuth';
 import { SupabaseComment } from './types';
 
 // Fetch comments for a post

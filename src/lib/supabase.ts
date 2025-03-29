@@ -1,19 +1,5 @@
-
-import { createClient } from '@supabase/supabase-js';
-
-// Supabase configuration
-// For development, we'll provide fallback values if environment variables are not set
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://uvjisnawrhxfxorajgqv.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2amlzbmF3cmh4ZnhvcmFqZ3F2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDMyNTE1ODEsImV4cCI6MjA1ODgyNzU4MX0.ITKovtSxK3XvPOLgRs8OHgexPjoTcFiovwlkOjHOyWc';
-
-// Create Supabase client
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    storage: localStorage,
-    persistSession: true,
-    autoRefreshToken: true,
-  }
-});
+// Re-export the Supabase client from our integrations folder
+export { supabase } from '@/integrations/supabase/client';
 
 // Type definitions for database schema
 export type Tables = {

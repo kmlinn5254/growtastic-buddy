@@ -1,9 +1,8 @@
-
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/auth/useAuth";
 import { useToast } from "@/components/ui/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 
 interface NotificationSettings {
   plantReminders: boolean;
@@ -47,15 +46,12 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [profilePicture, setProfilePicture] = useState<string | null>(user?.photoURL || null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   
-  // Split username into first and last name
   const nameParts = username.split(" ");
   const [firstName, setFirstName] = useState(nameParts[0] || "");
   const [lastName, setLastName] = useState(nameParts.slice(1).join(" ") || "");
   
-  // Get translations for current language
   const t = translations[language] || translations.en;
   
-  // Default notification settings
   const [notifications, setNotifications] = useState({
     plantReminders: true,
     communityActivity: true,
@@ -63,13 +59,11 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     marketing: false
   });
   
-  // Update user data if auth state changes
   useEffect(() => {
     if (user) {
       setUsername(user.name);
       setEmail(user.email);
       
-      // Update first and last name when username changes
       const parts = user.name.split(" ");
       setFirstName(parts[0] || "");
       setLastName(parts.slice(1).join(" ") || "");
@@ -78,12 +72,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         setProfilePicture(user.photoURL);
       }
       
-      // Fetch user settings from Supabase
       fetchUserSettings(user.id);
     }
   }, [user]);
   
-  // Update username when first or last name changes
   useEffect(() => {
     const fullName = [firstName, lastName].filter(Boolean).join(" ");
     if (fullName && fullName !== username) {
@@ -91,7 +83,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     }
   }, [firstName, lastName]);
   
-  // Fetch user settings from Supabase
   const fetchUserSettings = async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -113,7 +104,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           marketing: data.marketing
         });
       } else {
-        // Create default settings if none exist
         await supabase.from('user_settings').insert([{
           user_id: userId,
           plant_reminders: true,
@@ -136,7 +126,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     setIsUpdating(true);
     
     try {
-      // Update user metadata in Supabase
       const { error } = await supabase.auth.updateUser({
         data: {
           name: username
@@ -145,12 +134,10 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       
       if (error) throw error;
       
-      // Upload profile picture if it's a File object (new upload)
       if (profilePicture && profilePicture.startsWith('blob:')) {
         const response = await fetch(profilePicture);
         const blob = await response.blob();
         
-        // Upload to Supabase Storage
         const fileName = `avatars/${user.id}-${Date.now()}.jpg`;
         const { data, error: uploadError } = await supabase.storage
           .from('profiles')
@@ -158,13 +145,11 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           
         if (uploadError) throw uploadError;
         
-        // Get public URL of the uploaded image
         const { data: urlData } = supabase.storage
           .from('profiles')
           .getPublicUrl(fileName);
           
         if (urlData) {
-          // Update user metadata with new avatar URL
           await supabase.auth.updateUser({
             data: {
               avatar_url: urlData.publicUrl
@@ -201,7 +186,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       
       setNotifications(newSettings);
       
-      // Update in Supabase
       const updateData = {
         plant_reminders: newSettings.plantReminders,
         community_activity: newSettings.communityActivity,
@@ -221,7 +205,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         description: `${key} ${!notifications[key] ? t.enabled : t.disabled}.`,
       });
     } catch (error: any) {
-      // Revert the change if update fails
       setNotifications({...notifications});
       
       toast({
@@ -242,7 +225,6 @@ export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     const file = e.target.files?.[0];
     
     if (file) {
-      // Create a URL for the selected image file
       const imageUrl = URL.createObjectURL(file);
       setProfilePicture(imageUrl);
       
