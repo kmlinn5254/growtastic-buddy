@@ -2,16 +2,96 @@
 import { allPlants } from "@/data/plantFAQ";
 import { Leaf } from "lucide-react";
 
+// Plant interface for consistent type checking
+export interface Plant {
+  id: number;
+  name: string;
+  image: string;
+  difficulty: string;
+  light: string;
+  water: string;
+  temperature: string;
+  description?: string;
+  careSteps?: {
+    title: string;
+    description: string;
+  }[];
+  // Flag to identify if this is an imported plant
+  isImported?: boolean;
+}
+
+// Storage key for imported plants
+const IMPORTED_PLANTS_KEY = 'imported_plants';
+
+// Get imported plants from localStorage
+export const getImportedPlants = (): Plant[] => {
+  try {
+    const storedPlants = localStorage.getItem(IMPORTED_PLANTS_KEY);
+    return storedPlants ? JSON.parse(storedPlants) : [];
+  } catch (error) {
+    console.error("Error loading imported plants:", error);
+    return [];
+  }
+};
+
+// Save imported plants to localStorage
+export const saveImportedPlant = (plant: Plant): boolean => {
+  try {
+    const importedPlants = getImportedPlants();
+    
+    // Check if plant with same name already exists
+    const existingIndex = importedPlants.findIndex(p => 
+      p.name.toLowerCase() === plant.name.toLowerCase()
+    );
+    
+    // Generate a unique ID for the new plant
+    const newPlant = {
+      ...plant,
+      id: existingIndex >= 0 ? importedPlants[existingIndex].id : Date.now(),
+      isImported: true
+    };
+    
+    // Replace if exists, otherwise add
+    if (existingIndex >= 0) {
+      importedPlants[existingIndex] = newPlant;
+    } else {
+      importedPlants.push(newPlant);
+    }
+    
+    localStorage.setItem(IMPORTED_PLANTS_KEY, JSON.stringify(importedPlants));
+    return true;
+  } catch (error) {
+    console.error("Error saving imported plant:", error);
+    return false;
+  }
+};
+
+// Delete an imported plant
+export const deleteImportedPlant = (plantId: number): boolean => {
+  try {
+    const importedPlants = getImportedPlants();
+    const filteredPlants = importedPlants.filter(p => p.id !== plantId);
+    localStorage.setItem(IMPORTED_PLANTS_KEY, JSON.stringify(filteredPlants));
+    return true;
+  } catch (error) {
+    console.error("Error deleting imported plant:", error);
+    return false;
+  }
+};
+
 // Plant search service
-export const searchPlants = (query: string) => {
+export const searchPlants = (query: string): Plant[] => {
   if (!query.trim()) {
-    return allPlants;
+    // Return combined list of predefined and imported plants
+    return [...allPlants, ...getImportedPlants()];
   }
   
   const normalizedQuery = query.toLowerCase().trim();
+  const importedPlants = getImportedPlants();
+  const allAvailablePlants = [...allPlants, ...importedPlants];
   
   // First try exact matches
-  const exactMatches = allPlants.filter(plant => 
+  const exactMatches = allAvailablePlants.filter(plant => 
     plant.name.toLowerCase() === normalizedQuery
   );
   
@@ -20,7 +100,7 @@ export const searchPlants = (query: string) => {
   }
   
   // Then try partial matches
-  const partialMatches = allPlants.filter(plant => 
+  const partialMatches = allAvailablePlants.filter(plant => 
     plant.name.toLowerCase().includes(normalizedQuery)
   );
   
