@@ -17,9 +17,8 @@ const GoogleLoginButton = ({ isLoading }: GoogleLoginButtonProps) => {
   const handleGoogleLogin = async () => {
     try {
       // Clear browser local storage to prevent stale auth state
-      localStorage.removeItem('supabase.auth.token');
+      localStorage.clear(); // Clear all local storage to ensure a fresh start
       
-      // Log important information for debugging
       console.log("Starting Google login process from button", {
         currentUrl: window.location.href,
         origin: window.location.origin,
