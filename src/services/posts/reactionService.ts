@@ -17,23 +17,23 @@ export const addReaction = async (postId: number, userId: string, type: 'like' |
       
     if (existingReaction) {
       // Update existing reaction if different type
-      if (existingReaction.type !== type) {
+      if ((existingReaction as unknown as ReactionType).type !== type) {
         const { data, error } = await supabase
           .from('reactions')
-          .update({ type })
-          .eq('id', existingReaction.id)
+          .update({ type } as any)
+          .eq('id', (existingReaction as unknown as ReactionType).id)
           .select()
           .single();
           
         if (error) throw error;
-        return data as ReactionType;
+        return data as unknown as ReactionType;
       }
       
       // Remove reaction if same type (toggle off)
       const { error } = await supabase
         .from('reactions')
         .delete()
-        .eq('id', existingReaction.id);
+        .eq('id', (existingReaction as unknown as ReactionType).id);
         
       if (error) throw error;
       return null;
@@ -46,13 +46,13 @@ export const addReaction = async (postId: number, userId: string, type: 'like' |
         post_id: postId,
         user_id: userId,
         type
-      }])
+      }] as any)
       .select()
       .single();
       
     if (error) throw error;
     
-    return data as ReactionType;
+    return data as unknown as ReactionType;
   } catch (error) {
     console.error('Error adding reaction:', error);
     throw error;

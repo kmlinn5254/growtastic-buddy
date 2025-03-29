@@ -21,7 +21,7 @@ export const fetchPosts = async (): Promise<SupabasePost[]> => {
       
     if (error) throw error;
     
-    return (data || []) as SupabasePost[];
+    return (data || []) as unknown as SupabasePost[];
   } catch (error) {
     console.error('Error fetching posts:', error);
     return [];
@@ -45,7 +45,7 @@ export const createPost = async (content: string, userId: string, imageUrl: stri
       
     if (error) throw error;
     
-    return data as SupabasePost;
+    return data as unknown as SupabasePost;
   } catch (error) {
     console.error('Error creating post:', error);
     throw error;

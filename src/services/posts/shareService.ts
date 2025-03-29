@@ -11,7 +11,7 @@ export const sharePost = async (postId: number, userId: string) => {
       .insert([{
         post_id: postId,
         user_id: userId
-      }])
+      }] as any)
       .select();
       
     if (error) throw error;

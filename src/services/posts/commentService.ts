@@ -19,7 +19,7 @@ export const fetchComments = async (postId: number): Promise<SupabaseComment[]> 
       
     if (error) throw error;
     
-    return (data || []) as SupabaseComment[];
+    return (data || []) as unknown as SupabaseComment[];
   } catch (error) {
     console.error('Error fetching comments:', error);
     return [];
@@ -43,7 +43,7 @@ export const addComment = async (postId: number, content: string, userId: string
       
     if (error) throw error;
     
-    return data as SupabaseComment;
+    return data as unknown as SupabaseComment;
   } catch (error) {
     console.error('Error adding comment:', error);
     throw error;
