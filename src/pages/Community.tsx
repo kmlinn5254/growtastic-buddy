@@ -58,7 +58,7 @@ const Community = () => {
   const { toast } = useToast();
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   
-  const handleSubmitPost = (content: string) => {
+  const handleSubmitPost = (content: string, imageUrl: string) => {
     // Add new post to the top
     const newPost: Post = {
       id: Date.now(),
@@ -68,7 +68,7 @@ const Community = () => {
         username: "me"
       },
       content: content,
-      image: "", // No image in this simplified version
+      image: imageUrl, // Now using the image URL from the form
       likes: 0,
       comments: 0,
       shares: 0,
@@ -76,6 +76,11 @@ const Community = () => {
     };
     
     setPosts([newPost, ...posts]);
+    
+    toast({
+      title: "Post created",
+      description: "Your post has been shared with the community!",
+    });
   };
 
   return (

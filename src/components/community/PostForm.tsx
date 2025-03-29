@@ -1,25 +1,28 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Lock, Send, Image as ImageIcon } from "lucide-react";
+import { Lock, Send, Image as ImageIcon, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
 
 interface PostFormProps {
-  onSubmitPost: (content: string) => void;
+  onSubmitPost: (content: string, imageUrl: string) => void;
 }
 
 const PostForm = ({ onSubmitPost }: PostFormProps) => {
   const { toast } = useToast();
   const { user, isAuthenticated } = useAuth();
   const [newPost, setNewPost] = useState("");
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmitPost = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newPost.trim()) return;
+    if (!newPost.trim() && !imagePreview) return;
     
     if (!isAuthenticated) {
       toast({
@@ -30,8 +33,36 @@ const PostForm = ({ onSubmitPost }: PostFormProps) => {
       return;
     }
     
-    onSubmitPost(newPost);
+    onSubmitPost(newPost, imagePreview || "");
     setNewPost("");
+    setSelectedImage(null);
+    setImagePreview(null);
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedImage(file);
+      
+      // Create a preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const handleClickAddPhoto = () => {
+    fileInputRef.current?.click();
   };
 
   return (
@@ -56,15 +87,47 @@ const PostForm = ({ onSubmitPost }: PostFormProps) => {
           )}
         </div>
       </div>
+      
+      {/* Image preview section */}
+      {imagePreview && (
+        <div className="mt-4 relative">
+          <div className="relative rounded-lg overflow-hidden">
+            <img src={imagePreview} alt="Preview" className="w-full max-h-80 object-cover" />
+            <Button 
+              type="button" 
+              variant="destructive" 
+              size="icon" 
+              className="absolute top-2 right-2 rounded-full h-8 w-8"
+              onClick={handleRemoveImage}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+      
       <div className="flex justify-between mt-4">
-        <Button type="button" variant="ghost" className="text-gray-500" disabled={!isAuthenticated}>
+        <input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          accept="image/*"
+          onChange={handleFileChange}
+        />
+        <Button 
+          type="button" 
+          variant="ghost" 
+          className="text-gray-500" 
+          disabled={!isAuthenticated}
+          onClick={handleClickAddPhoto}
+        >
           <ImageIcon className="h-5 w-5 mr-2" />
           Add Photo
         </Button>
         <Button 
           type="submit" 
           className="bg-plant-primary hover:bg-plant-dark"
-          disabled={!isAuthenticated || !newPost.trim()}
+          disabled={!isAuthenticated || (!newPost.trim() && !imagePreview)}
         >
           <Send className="h-5 w-5 mr-2" />
           Post
