@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -7,14 +7,17 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { User, Bell, Shield, Key, LogOut } from "lucide-react";
+import { User, Bell, Shield, Key, LogOut, Camera } from "lucide-react";
 import Navigation from "@/components/Navigation";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const Settings = () => {
   const { toast } = useToast();
   const [username, setUsername] = useState("plant_lover");
   const [email, setEmail] = useState("user@example.com");
   const [isUpdating, setIsUpdating] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [notifications, setNotifications] = useState({
     plantReminders: true,
@@ -47,6 +50,27 @@ const Settings = () => {
       title: "Notification settings updated",
       description: `${key} notifications ${!notifications[key] ? "enabled" : "disabled"}.`,
     });
+  };
+
+  const handleProfilePictureClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    
+    if (file) {
+      // Create a URL for the selected image file
+      const imageUrl = URL.createObjectURL(file);
+      setProfilePicture(imageUrl);
+      
+      toast({
+        title: "Profile picture updated",
+        description: "Your profile picture has been updated successfully.",
+      });
+    }
   };
   
   return (
@@ -88,13 +112,41 @@ const Settings = () => {
                 <CardContent>
                   <form onSubmit={handleProfileUpdate}>
                     <div className="flex items-center gap-6 mb-8">
-                      <div className="w-24 h-24 rounded-full bg-plant-light flex items-center justify-center text-plant-primary text-2xl font-bold">
-                        {username.charAt(0).toUpperCase()}
+                      <div 
+                        className="relative cursor-pointer" 
+                        onClick={handleProfilePictureClick}
+                      >
+                        <Avatar className="w-24 h-24 border-2 border-gray-200">
+                          {profilePicture ? (
+                            <AvatarImage src={profilePicture} alt={username} />
+                          ) : (
+                            <AvatarFallback className="bg-plant-light text-plant-primary text-2xl font-bold">
+                              {username.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          )}
+                        </Avatar>
+                        <div className="absolute bottom-0 right-0 p-1 bg-plant-primary text-white rounded-full">
+                          <Camera className="h-4 w-4" />
+                        </div>
+                        <input 
+                          type="file" 
+                          ref={fileInputRef}
+                          onChange={handleFileChange}
+                          accept="image/*"
+                          className="hidden"
+                        />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold">{username}</h3>
                         <p className="text-gray-500">{email}</p>
-                        <Button variant="outline" className="mt-2 text-sm h-8">Change Profile Picture</Button>
+                        <Button 
+                          variant="outline" 
+                          type="button"
+                          className="mt-2 text-sm h-8"
+                          onClick={handleProfilePictureClick}
+                        >
+                          Change Profile Picture
+                        </Button>
                       </div>
                     </div>
                     
